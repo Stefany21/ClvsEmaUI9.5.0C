@@ -1,0 +1,314 @@
+.ItemTaxOnly {
+    //  background-color:rgb(120, 192, 138);
+    background-color: #a2c4ea;
+    input {
+        // color: black !important  
+        font-weight: 500;
+    }
+    select {
+        // color: black !important  
+        font-weight: 500;
+    }
+}
+.ItemLineStatus {
+    background-color: #ccc;
+    input:disabled, select:disabled {
+  background: #ccc;
+}
+}  
+
+.hasDeviation {
+    color: red;
+    input {
+        color: red;
+    }
+}
+
+.tableFixHead {
+    overflow: auto;
+    height: 60vh;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.Rendered {
+    margin-right: 30px !important;
+}
+
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}
+
+.invi {
+    border: none;
+    background-color: transparent;
+    /*word-break:break-all;*/
+}
+
+.STYLEUDF {
+    margin-bottom: 0% !important;
+}
+
+.inputEd {
+    order: 1px solid rgb(92, 86, 86);
+    background-color: #ffffffef;
+    font-weight: 400;
+    font-size: 16px;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+}
+
+.fontTD {
+    font-weight: 400;
+    margin-top: 0.2vw;
+    font-size: 14px;
+}
+
+.txtRigth {
+    text-align: right;
+}
+
+.FaHover :hover {
+    cursor: pointer !important;
+    color: darkslategray;
+}
+
+::ng-deep .Modal-Xl .modal-dialog {
+    max-width: 80%;
+    width: 80%;
+}
+
+// tamaño de los textos de la modal de pagos
+.Text22 input,
+.Text22 select,
+.Text22 label {
+    font-size: 22px;
+}
+
+//  .divButon button{
+//     font-size: 18px;
+//     margin-left: 2px;
+//     bottom:0px;
+//     right:0px;
+// }
+.divButon {
+    position: relative;
+}
+
+.div-container {
+    position: relative;
+}
+
+.topPoscicion {
+    position: absolute;
+    bottom: -75px;
+    right: auto;
+}
+
+
+/*
+////////////////////////////////////////////
+TABLE FIXED HEADER, AND SCROLL IN BODY, BEGIN
+////////////////////////////////////////////
+*/
+
+.textNoMarginBottom {
+    margin-bottom: 0px !important;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    /* table-layout: fixed; */
+    display: block;
+    height: 34vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #3c75b5;
+}
+
+table th,
+table td {
+    padding: .1em 0.2em;
+    content: ' ';
+}
+
+tr td:last-child {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.tableSubtotal {
+    width: 100% !important;
+    height: unset !important;
+    /*overflow:hidden;*/
+}
+
+.tableCreditCardPayment {
+    width: 100% !important;
+    height: 100% !important;
+    display: table;
+    /*overflow:hidden;	*/
+    color: white;
+}
+
+.tableCreditCardPayment td {
+    color: black !important;
+    /*height:20px !important;*/
+}
+
+.sticky {
+    display: sticky !important;
+    top: 0px !important;
+}
+
+.topMinusNegative50 {
+    top: -50px !important;
+}
+
+.tableCreditCardPayment tr {
+    height: 20px !important;
+    width: 100%;
+}
+
+.tableCreditCardPaymentHeader {
+    position: sticky !important;
+    top: 0 !important;
+    height: 30 !important;
+    background-color: #3c75b5;
+    width: 100% !important;
+    display: table;
+}
+
+.tableAlmacenesExistencias {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.tableAlmacenesExistencias tr td:last-child {
+    width: unset !important;
+    white-space: nowrap;
+}
+
+.tableAlmacenesExistenciasHeader {
+    position: sticky !important;
+    color: white;
+    text-align: center;
+    top: 0 !important;
+    height: 30 !important;
+    background-color: #3c75b5;
+    width: 100% !important
+}
+
+.tableAlmacenesExistenciasNumber {
+    text-align: right;
+}
+
+.tableSubtotal tbody {
+    width: 100% !important;
+    display: table;
+}
+
+.tableSubtotal tr td:last-child {
+    width: unset !important;
+    white-space: nowrap;
+}
+
+.tableSubtotal td,
+th {
+    /* border: 1px solid red; */
+    word-break: break-all;
+}
+
+.table-sm td,
+th {
+    padding: 0px !important;
+}
+
+
+/*
+////////////////////////////////////////////
+TABLE FIXED HEADER, AND SCROLL IN BODY, END
+////////////////////////////////////////////
+*/
+
+.btn-Document {
+    float: right !important;
+}
+
+.table-scroll thead {
+    display: block;
+    width: 100%;
+}
+
+.table-scroll tbody {
+    // overflow-y: scroll;
+    //  display:block;
+    //  width: 2300px;
+    //  height:28vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    display: block;
+    width: 100%;
+    height: 34vh;
+}
+
+.disabled-content {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.well {
+    display: block;
+    /*height: 33vh;*/
+    overflow-x: scroll;
+    width: 2300px;
+}
+
+.mtable {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.mOrange {
+    color: #ff8000;
+    font: bold;
+}
+
+.onTitleHover:hover {
+    text-decoration: underline;
+}
+
+.hiddenComponent {
+    display: none;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+
+.tableTarjeta {
+    position: sticky;
+    top: 0px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: lighter;
+}

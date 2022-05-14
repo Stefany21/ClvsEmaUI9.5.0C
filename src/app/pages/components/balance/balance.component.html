@@ -1,0 +1,328 @@
+<block-ui>
+    <div *ngIf="permisos" class="container-fluid">
+        <ngb-tabset [destroyOnHide]="false" (tabChange)="onTabChange($event)" #tabset>
+            <ngb-tab id="tabCreate">
+                <ng-template ngbTabTitle>Crear cierre de caja</ng-template>
+                <ng-template ngbTabContent>
+                    <div class="container-fluid">
+                        <div class="row justify-content-end mb-2">                           
+                            <div class="col-md-2 mt-1">
+                              <button type="button" class="btn btn-sm btn-success btn-block"  (click)="onClickCreatePaydeskBalance()">
+                                Crear cierre
+                              </button>
+                            </div>
+                          </div>  
+                        <div class="row mt-3">
+                            <form class="col-12" [formGroup]="paydeskBalanceForm">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Efectivo</label>
+                                            <input type="number" class="form-control form-control-sm"
+                                                formControlName="Cash">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tarjeta manual</label>
+                                            <input type="number" class="form-control form-control-sm"
+                                                formControlName="Cards">
+                                        </div>
+                                    </div>                                  
+                                    <div *ngIf="Pinpad" class="col-md-3">
+                                        <label>Tarjeta pinpad</label>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend" (click)="onClickSearchPinpad()" title="Obtener total de tarjetas pinpad" style="cursor: pointer">
+                                              <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-arrow-circle-right"></i></span>
+                                            </div>
+                                            <input type="number" class="form-control"  formControlName="CardsPinpad" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                                          </div>
+
+                                          
+                                        <!-- <div class="form-group">
+                                            <label>Tarjeta pinpad</label>
+                                            <div class="input-group">
+                                              <div class="input-group-addon">
+                                                @
+                                              </div>
+                                              <input type="number" class="form-control form-control-sm"
+                                              formControlName="CardsPinpad">
+                                            </div>
+                                          </div> -->
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Transferencia</label>
+                                            <input type="number" class="form-control form-control-sm"
+                                                formControlName="Transfer">
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tabSearch">
+                <ng-template ngbTabTitle>Buscar cierre de caja</ng-template>
+                <ng-template ngbTabContent>
+                    <form [formGroup]="BForm">
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="UserCode">Usuario</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="UserName">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="FechaIni">Fecha</label>
+                                    <input type="date" formControlName="FechaIni"
+                                        class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label>&nbsp;</label>
+                                        <a class="btn btn-block btn-primary btn-sm button-action"
+                                            (click)="onClickSearchPaydeskBalance()">
+                                            <i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <label>&nbsp;</label>
+                                        <button [disabled]="!BtnOptionDocument" type="button" placement="bottom"
+                                            class="btn btn-sm btn-info btn-block" [ngbPopover]="popContent">
+                                            <i class="fas fa-ellipsis-v"></i> Opciones del documento
+                                        </button>
+                                        <ng-template #popContent>
+                                            <div>
+                                                <a class="btn btn-info btn-sm button-action ml-1"
+                                                    triggers="mouseenter:mouseleave" ngbPopover="Enviar por Email "
+                                                    (click)="sendOptionDocumento(content)">
+                                                    <i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                                <a class="btn btn-info btn-sm button-action ml-1"
+                                                    triggers="mouseenter:mouseleave" ngbPopover="Imprimir"
+                                                    (click)="printReport()">
+                                                    <i class="fa fa-print" aria-hidden="true"></i></a>
+                                                <a class="btn btn-info btn-sm button-action ml-1"
+                                                    triggers="mouseenter:mouseleave" ngbPopover="Descargar"
+                                                    (click)="onClickDownloadPdf()">
+                                                    <i class="far fa-file-pdf " aria-hidden="true"></i></a>
+                                                <a style="display: none;" class="btn btn-info btn-sm button-action ml-1"
+                                                    triggers="mouseenter:mouseleave" ngbPopover="Enviar por Whatsapp"
+                                                    data-toggle="modal" data-target="#exampleModal">
+                                                    <i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div style="height: 60vh; max-height: 60vh; overflow: scroll;">
+                        <pdf-viewer [src]="pdfSrc" [original-size]="false" [render-text]="true">
+                        </pdf-viewer>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+
+
+        <!-- <div class="row">
+            <div class="col-md-12">
+                <div class="float-right ">
+                    <a class="btn btn-primary btn-sm button-action" (click)="displayPdfReport()">
+                        <i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>
+                </div>
+                <div class="float-right mr-2" *ngIf="BtnOptionDocument">
+                    <button type="button" placement="bottom" class="btn btn-sm btn-info" [ngbPopover]="popContent">
+
+                        <i class="fas fa-cog"></i> Opciones Documento
+                    </button>
+
+                    <ng-template #popContent>
+                        <div class="">
+                            <a class="btn btn-info btn-sm button-action ml-1" triggers="mouseenter:mouseleave" ngbPopover="Enviar por Email " (click)="sendOptionDocumento(content)">
+                                <i class="fa fa-envelope" aria-hidden="true"></i></a>
+
+                            <a class="btn btn-info btn-sm button-action ml-1" triggers="mouseenter:mouseleave" ngbPopover="Imprimir" (click)="printReport()">
+                                <i class="fa fa-print" aria-hidden="true"></i></a>
+                            <a class="btn btn-info btn-sm button-action ml-1" triggers="mouseenter:mouseleave" ngbPopover="Descargar" (click)="download()">
+                                <i class="far fa-file-pdf " aria-hidden="true"></i></a>
+                            <a style="display: none;" class="btn btn-info btn-sm button-action ml-1" triggers="mouseenter:mouseleave" ngbPopover="Enviar por Whatsapp" data-toggle="modal" data-target="#exampleModal">
+                                <i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>    -->
+
+   
+</div>
+<div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+</div> 
+    <!-- <div style="height: 60vh; max-height: 60vh; overflow: scroll;">
+        <pdf-viewer 
+            [src]="pdfSrc" 
+            [original-size]="false"
+            [render-text]="true"
+            >
+        </pdf-viewer>
+    </div> --> 
+
+    <!-- <div class="row pt-3" style="display: none;">
+        <div class="col-sm text-right">
+            <button class="btn btn-info btn-sm" (click)="increaseZoom()"  [disabled]="zoom === 1 || isLocked">
+                <i class="fa fa-search-plus" aria-hidden="true"></i>&nbsp; Zoom
+            </button>
+        </div>
+        <div class="col-sm-1 text-center">
+            <h5>{{zoom * 200}}</h5>
+        </div>
+        <div class="col-sm">
+            <button class="btn btn-info btn-sm text-left" (click)="decreaseZoom()" [disabled]="zoom === 0.1 || isLocked">
+                <i class="fa fa-search-minus" aria-hidden="true"></i>&nbsp; Zoom
+            </button>
+        </div>
+    </div> -->
+
+
+
+
+
+    <ng-template #content let-modal>
+        <div class="modal-body Text22">
+            <div class="modal-header icon-color">
+                <b><span class="modal-title" id="exampleModalLabel">Mensaje Nuevo</span></b>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div id="colc" class="col-md-12">
+                            <!-- <ngb-tabset>
+                                <ngb-tab>
+                                    <ng-template ngbTabTitle><b>Enviar por Correo</b></ng-template>
+                                    <ng-template ngbTabContent> -->
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form [formGroup]="correoForm">
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                <label for="E_Mail">Para</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input type="text" formControlName="emailsend" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': ced.emailsend.errors && ced.emailsend.touched }" />
+                                                <div *ngIf="ced.emailsend.errors" class="invalid-feedback">
+                                                    <div *ngIf="ced.emailsend.errors.pattern">El formato de Email es: algo@ejemplo.com </div>
+                                                    <div *ngIf="ced.emailsend.errors.required">Este campo es requerido
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1" *ngIf="AddCc">
+                                                <a style="cursor: pointer;" id="under" triggers="mouseenter:mouseleave" ngbPopover="Añadir copia" class="hover" aria-hidden="true" (click)="addCorreo()">Cc</a>
+
+                                            </div>
+                                        </div>
+                                        <div class="row form-group " *ngIf="AddCopiaMail">
+                                            <div class="col-sm-1">
+                                                <label class="col-form-label">Cc</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" placeholder="12@ejemplo.com;123@ejemplo.com" formControlName="tags" ngbPopover="Utilizar el signo ; como separador de copia correos" />
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <button ngbPopover="Eliminar" triggers="mouseenter:mouseleave" class="btn btn-danger btn-sm" (click)="deleteCc(1)">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                <label for="subject">Asunto</label>
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" formControlName="subject" class="form-control form-control-sm" />
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                <label for="message">Mensaje</label>
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <textarea type="text" formControlName="message" class="form-control form-control-sm" rows="3"></textarea>
+
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="float-right">
+                                        <button class="btn btn-danger btn-sm ml-1" (click)="close()" aria-label="Cancelar">
+                                            <i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar
+                                        </button>
+                                    </div>
+                                    <div class="float-right">
+                                        <button class="btn btn-success btn-sm ml-1" aria-label="Enviar" (click)="SendDocument()" [disabled]="!correoForm.valid">
+                                            <i class="fa fa-check" aria-hidden="true"></i>&nbsp;Enviar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </ng-template>
+    <!-- Modal -->
+    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="exampleModalLabel"><b>Mensaje Nuevo</b></p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="whatsappForm">
+                        <div class="row mt-1 mb-1">
+                            <div class="col-sm-2">
+                                <label>Para</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input type="text" formControlName="numeroWhatsapp" placeholder="+50688888888" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-sm-2">
+                                <label>Mensaje</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <textarea type="text" formControlName="messageWhatsapp" class="form-control form-control-sm" rows="1"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding: 5px;">
+                    <button type="button" class="btn btn-success btn-sm" (click)="SendWhatsappDocument()">
+                        <i class="fa fa-check" aria-hidden="true"></i>&nbsp;Enviar</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">
+                    <i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+</block-ui> 

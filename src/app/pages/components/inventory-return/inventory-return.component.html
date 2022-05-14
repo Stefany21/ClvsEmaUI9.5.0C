@@ -1,0 +1,428 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" float-right ml-1">
+                    <a class="btn btn-danger btn-sm button-action" (click)="resetGUI()">
+                        <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                </div>  
+                <div class="float-right ml-1">
+                    <a class="btn btn-success btn-sm button-action" (click)="createGoodsReciptReturn()">
+                        <i class="fas fa-receipt" aria-hidden="true"></i>&nbsp;Crear devolución</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <form [formGroup]="headerForm">
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="form-group input-group-sm">
+                        <label for="">Cant.</label>
+                        <input id="demoDrop" type="number" formControlName="Quantity"
+                            class="form-control form-control-sm">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group input-group-sm">
+                        <label for="">Artículo</label>
+                        <div id="scrollable-dropdown-menu">
+                            <!-- <input #name formControlName="ItemInfo" [ngbTypeahead]="searchItemCode"
+                                class="form-control form-control-sm input-lg" type="text"
+                                (selectItem)="addItems($event)" id="ItemCodeManualTrigger"> -->
+                            <input #name [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm" 
+                                type="text" (selectItem)="addItems($event)" id="ItemCodeManualTrigger">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group input-group-sm">
+                        <label for="">Almacén</label>
+                        <select class="form-control form-control-sm" formControlName="WareHouse"
+                            (change)="onSelectBoxChange($event)">
+                            <option *ngFor="let s of Stores" value="{{s.StoreCode}}">
+                                {{ s.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group input-group-sm">
+                        <div class="form-group input-group-sm">
+                            <ng-template #supplierName let-r="result" let-t="term">
+                                <ngb-highlight [result]="r.FullCardName" [term]="t"></ngb-highlight>
+                            </ng-template>
+                            <label for="typeahead-templatesuppname" (click)="GetSuppliers()"
+                                title="Actualizar lista de proveedores" style="cursor: pointer;"
+                                class="onTitleHover">Nombre proveedor</label>
+                            <input type="search" class="form-control form-control-sm" formControlName="Supplier"
+                                [ngbTypeahead]="supplierSearchName" [resultTemplate]="supplierName"
+                                [inputFormatter]="supplierNameformatter" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+            <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                    <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                        <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                            <label>{{udf.Description}}</label>
+                            <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm"
+                                id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                        </div>
+                        <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                            <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                            <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}"
+                                style="display: inline;">
+                                <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                    {{value.Description}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- <div class="row">
+                <div class="col-md-1">
+                    <div class="form-group input-group-sm">
+                        <label for="">Cant.</label>
+                        <input min="0" type="number" [(ngModel)]="Quantity" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group input-group-sm">
+                        <label for="">Artículo</label>
+                        <div id="scrollable-dropdown-menu">
+                            <input #input1 #name [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode"
+                                class="form-control form-control-sm" type="text" (selectItem)="addItems($event,true)"
+                                id="ItemCodeManualTrigger">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group input-group-sm">
+                        <label for="">Almacén</label>
+                        <select class="form-control form-control-sm" [(ngModel)]="WareHouse"
+                            (change)="onSelectBoxChange($event)">
+                            <option *ngFor="let s of Stores" value="{{s.StoreCode}}">
+                                {{ s.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group input-group-sm">
+                        <ng-template #supplierName let-r="result" let-t="term">
+                            <ngb-highlight [result]="r.CardName" [term]="t"></ngb-highlight>
+                        </ng-template>
+                        <label for="typeahead-templatesuppname" (click)="GetSuppliers()"
+                            title="Actualizar lista de proveedores" style="cursor: pointer;" class="onTitleHover">Nombre
+                            proveedor</label>
+                        <input type="search" class="form-control" [(ngModel)]="supplierModel"
+                            [ngbTypeahead]="supplierSearchName" [resultTemplate]="supplierName"
+                            [inputFormatter]="supplierNameformatter" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="exampleInputEmail1">&#160;</label>
+                            <button class="btn btn-success btn-sm btn-block" (click)="createGoodsReciptReturn()"><i
+                                    aria-hidden="true" class="fas fa-receipt"></i> Crear devolución</button>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleInputEmail1">&#160;</label>
+                            <button class="btn btn-danger btn-sm btn-block" (click)="resetGUI()"><i aria-hidden="true"
+                                    class="fas fa-trash"></i> Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+        <div class="row">
+            <!-- #scrollable -->
+            <div #scrollMe [scrollTop]="scrollMe.scrollHeight" class=" tableFixHead col-md-12"
+                style="height: 50vh; max-height: 50vh; overflow: scroll;">
+                <table id="mtable" class="table table-sm table-responsive-lg table-bordered">
+                    <thead style="background-color:#3B75B5; color:white;">
+                        <tr>
+                            <th class="thHeader" style="width: 5%;">#</th>
+                            <th class="thHeader" style="width: 4%;">Código</th>
+                            <th class="thHeader" style="width: 29%;">Descripción</th>
+                            <th class="thHeader" style="width: 16%;">Almacén</th>
+                            <th class="thHeader" style="width: 1%;">Cantidad</th>
+                            <th class="thHeader" style="width: 10%;">P. unitario</th>
+
+                            <th class="thHeader" style="width: 1%;">Descuento</th>
+                            <th class="thHeader" style="width: 8%;">Impuesto</th>
+                            <th title="Muestra el total de la linea sin el impuesto" class="thHeader"
+                                style="width: 10%;">Total línea</th>
+                            <th title="Muestra el total de la linea mas el impuesto" class="thHeader"
+                                style="width: 20%;">Total línea + Imp</th>
+                            <th class="thHeader text-center" style="width: 1%;">Opc</th>
+                        </tr>
+                    </thead>
+                    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="canDrag"
+                        [ngStyle]="{ 'width': '100%' }" style="overflow-y: scroll;">
+                        <tr *ngFor="let line of lines;let i=index; " [ngClass]="{'UnitPriceExceeded': line.IsExeeded}"
+                            cdkDrag cdkDragLockAxis="y" class="p-0">
+                            <td scope="row ">{{ i + 1 }}
+                                <a *ngIf="line.IsExeeded" style="cursor: pointer;"
+                                    (click)="OpenModalMaginsExceed(ModalExceededMargins, line)"
+                                    class="fa fa-info-circle"></a>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">{{ line.ItemCode }}</td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">{{ line.ItemName }}</td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <select style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="form-control form-control-sm" (change)="onSelectBoxLineChange($event, i)">
+                                    <option *ngFor="let s of Stores" [selected]="s.StoreCode == line.WareHouse"
+                                        value="{{s.StoreCode}}">
+                                        {{ s.Name }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <!-- <input
+                                    (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center " type="number"
+                                    (change)="onKeyUp(i,$event, '0') " value="{{line.Quantity }}"> -->
+
+                                <input min="0" id="quantity_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none; height: calc(1.2rem + 2px); padding: 0px;"
+                                    class="inputFocused form-control text-center form-control-sm"
+                                    [ngModel]="line.Quantity" (change)="focusOut($event, i, '0')" type="number"
+                                    (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    (ngModelChange)="line.Quantity = $event>=0? $event:0">
+                            </td>
+
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <!-- <input
+                                    (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center " (keyup)="onKeyUp(i,$event, '1') "
+                                    value="{{line.UnitPrice | number:TO_FIXED_PRICE}} "> -->
+
+
+                                <input cdkDragDisabled="true" id="unitPrice_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;"
+                                    class="inputFocused  form-control text-center form-control-sm"
+                                    [ngModel]="line.UnitPrice | number:TO_FIXED_PRICE"
+                                    (change)="focusOut($event, i, '1')" type="text" (mouseenter)="onMouseEnterColumn()"
+                                    (mouseleave)="onMouseLeaveColumn()"
+                                    (ngModelChange)="line.UnitPrice = $event>=0? $event:0">
+
+
+
+
+
+                            </td>
+
+
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <!-- <input
+                                    (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused  form-control text-center " type="number"
+                                    (change)="onKeyUp(i,$event, '2') " value="{{line.Discount}}"> -->
+
+                                <input min="0" id="discount_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;"
+                                    class="inputFocused form-control text-center form-control-sm"
+                                    [ngModel]="line.Discount" (change)="focusOut($event, i, '2')" type="number"
+                                    (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    (ngModelChange)="line.Discount = $event>=0? $event:0">
+
+
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <!-- <select style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="form-control form-control-sm" (change)="onSelectBoxLineChangeTax($event, i)">
+                                    <option *ngFor="let t of taxesList; let iT = index"
+                                        [selected]="t.TaxCode == line.TaxCode" [ngValue]="iT">
+                                        {{ t.TaxCode }}
+                                    </option>
+                                </select> -->
+
+                                <select
+                                    style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;"
+                                    class="form-control form-control-sm "
+                                    (change)="onSelectBoxLineChangeTax($event, i)">
+                                    <option *ngFor="let t of taxesList; let iT = index"
+                                        [selected]="t.TaxCode == line.TaxCode" [ngValue]="iT">
+                                        {{ t.TaxCode }}
+                                    </option>
+                                </select>
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <!-- <input (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center " (keyup)="onKeyUp(i,$event, '4') "
+                                    value="{{(line.UnitPrice * line.Quantity ) | number:TO_FIXED_TOTALLINE }}"> -->
+
+
+                                <input id="totalLine_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;"
+                                    class=" form-control text-center inputFocused"
+                                    [ngModel]="line.TotalLine | number:TO_FIXED_TOTALLINE"
+                                    (change)="focusOut($event, i, '3')" type="text" (mouseenter)="onMouseEnterColumn()"
+                                    (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()"
+                                    (ngModelChange)="line.TotalLine = $event>=0? $event:0">
+
+
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <input id="totalLineWhTax_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;"
+                                    class="inputFocused form-control text-center form-control-sm"
+                                    [ngModel]="line.TotalLineWithTax | number:TO_FIXED_TOTALLINE"
+                                    (change)="focusOut($event, i, '4')" type="text" (mouseenter)="onMouseEnterColumn()"
+                                    (mouseleave)="onMouseLeaveColumn()"
+                                    (ngModelChange)="line.TotalLineWithTax = $event>=0? $event:0">
+
+
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto text-center ">
+
+                                <!-- <button style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="btn btn-link btn-xs" ngbpopover="Eliminar" placement="left"
+                                    triggers="mouseenter:mouseleave" (click)="removeItem(i)" type="button"><i
+                                        class="fa fa-trash"></i>
+                                </button> -->
+
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-trash" aria-hidden="true" title="Eliminar línea"
+                                        (click)=" removeItem(i)"></i>
+                                </li>
+
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-plus" aria-hidden="true" title="Agregar línea"
+                                        (click)=" addLine(i)"></i>
+                                </li>
+
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <input type="text" [(ngModel)]="comments" class="form-control form-control-sm"
+                    placeholder="Observaciones">
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label style="font-size:18px; text-align: left">&#160;</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Sub total</td>
+                            <td>C</td>
+                            <td> {{totalLines | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                        <tr>
+                            <td>Descuentos</td>
+                            <td>C</td>
+                            <td>{{DiscountTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                        <tr>
+                            <td>Impuestos</td>
+                            <td>C</td>
+                            <td>{{TaxesTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total dólares</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ USTotal | currency:'USD':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="col">
+                <label style="font-size:18px; text-align: left">Total Colones</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ CRCTotal | currency:'CRC':'symbol-narrow':'.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total Colones</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ CRCTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="col">
+                <label style="font-size:18px; text-align: left">Comentarios</label>
+                <textarea style="background-color:#ecf0f8; color:black; border: none; height: 60%;" class="form-control  form-control-sm" [(ngModel)]="comments" placeholder="Comentario nota de crédito"></textarea>
+            </div> -->
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+
+
+    <!-- 001 Ventana modal para mostrar el msj de margenes excedidos-->
+
+    <ng-template #ModalExceededMargins let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title">Información</h5>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div>
+                <div class="text">
+                    {{MsgForExceededMargins}}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light btn-sm shadow btn-st" (click)="CloseModal()"><i
+                    class="fa fa-times-circle" aria-hidden="true"></i> Cerrar&nbsp;</button>
+        </div>
+    </ng-template>
+
+
+    <!--Fin modal margenes excedidos-->
+
+
+
+    <div *ngIf="!permisos ">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+</block-ui>

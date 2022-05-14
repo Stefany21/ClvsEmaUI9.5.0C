@@ -1,0 +1,60 @@
+<block-ui>
+  <header *ngIf="currentUser !== null" class="flux-header clearfix" [attr.nav-layout]="navLayout"
+    [attr.navbar-type]="toggleStatus ? defaultNavbar : toggleNavbar " [attr.effect-type]="navbarEffect"
+    [attr.header-theme]="headerColorTheme" [attr.collapsed-left-header]="collapsedLeftHeader"
+    [attr.device-type]="deviceType">
+    <div class="flux-header-wrapper clearfix">
+      <div class="flux-brand" [attr.left-header-theme]="leftHeaderColorTheme">
+        <span class="flux-brand-logo">
+          <div class="clavisco-logo"></div>
+        </span>
+        <span class="flux-brand-text">Easy Market App</span>
+      </div>
+      <div class="flux-header-navbar">
+        <div class="flux-left-header clearfix">
+          <div class="sidebarToggle" (click)="changeTheToggleStatus()"><i class="fas fa-bars"></i></div>
+          <div class="left-header-nav clearfix">
+            <ul>
+
+              <!--<li *ngIf="currentUser !== null && noconectado"><a (click)="connect()" style="color: LightGreen;"><i class="fas fa-wifi"></i>&nbsp;<strong>Conectarse</strong> </a> </li>
+			<li *ngIf="currentUser !== null && conectado"><a (click)="disconnect()" style="color: Tomato ;"><i class="fas fa-wifi"></i>&nbsp;<strong>Desconectarse</strong> </a> </li>-->
+            </ul>
+          </div>
+
+        </div>
+        <div class="flux-right-header clearfix">
+          <ul>  
+            
+            <!--
+		  <li *ngIf="currentUser !== null" ><a (click)="online()"><i class="fas fa-angle-double-up"></i></a></li>
+		  <li *ngIf="currentUser !== null" ><a (click)="offline()"><i class="fas fa-angle-double-down"></i></a></li>
+		-->
+            <!-- <li><a href=""><i class="far fa-list-alt"></i></a></li>
+          <li><a href="" class="dropdown-toggle"><i class="fas fa-user-cog"></i> <span *ngIf="deviceType !== 'mobile'" >System Setting</span> </a></li> -->    
+          <li *ngIf="documentInformationSync"><strong id="documentInformationSync" (click)="ViewOffline()" style="color: white; font: regular" title="Sincronizar Documentos pendientes"> {{TextHeaderSync}} </strong>&nbsp;
+          </li>     
+            <li *ngIf="conectado" ><strong  style="color: white;">Estado:</strong> <strong class="ChangeConection" title="Click para cambiar la conexión."  (click)="changeConectionType()" style="color: LightGreen ;"> {{ connectionStatusMessage }}</strong> &nbsp;
+            </li>
+            
+            <li *ngIf="conectadoOffline"> <strong  style="color: white ;" >Estado: </strong> <strong class="ChangeConection" title="Click para cambiar la conexión."  (click)="changeConectionType()" style="color: rgb(250, 190, 79) ;"> {{ connectionStatusMessage }}</strong> &nbsp; </li>
+           
+            <li *ngIf="errorConnection"><strong style="color: white;">Estado:</strong> <strong  style="color: rgb(172, 25, 25) ;">  {{ connectionStatusMessage }}</strong> &nbsp; </li>
+           
+            <li style="color: white;"> <strong> Usuario conectado:
+              <span *ngIf="!isCtrlPressed"> {{ currentUser.UserName }}</span>
+              <span class="mouseOver" *ngIf="isCtrlPressed" ngbPopover="Base de datos: {{bdCode}}" triggers="mouseenter:mouseleave"> {{ currentUser.UserName }}</span>
+            </strong> &nbsp; </li>
+
+            <li style="color: white;"> <strong id="exchangeRate" title="Click para consultar tipo de cambio" (click)="GetExchangeRate()" >
+              <i *ngIf="currencyChange == 0" class="fas fa-exclamation grad pulsate " style="color: rgb(253, 196, 71);" ></i>
+              &nbsp;Tipo de cambio: ₡{{ currencyChange }}</strong> &nbsp; </li>
+            <li *ngIf="currentUser !== null"><a (click)="logout()"><i class="fas fa-power-off"></i></a></li>
+            <li> &nbsp;&nbsp;</li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+</block-ui>

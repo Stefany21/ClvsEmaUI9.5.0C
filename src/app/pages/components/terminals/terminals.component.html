@@ -1,0 +1,161 @@
+<block-ui>
+  <div *ngIf="permisos">
+
+    <ngb-tabset [justify]="currentJustify">
+      <ngb-tab>
+        <ng-template ngbTabTitle><b>Mantenimiento de terminales</b></ng-template>
+        <ng-template ngbTabContent>
+          <div class="row mt-3 pr-3">
+            <button class="btn btn-sm btn-success ml-auto" (click)="raiseTerminalModalCreation()"><i class="fas fa-plus-circle"></i> Agregar Terminal</button>
+          </div>
+          <div class="row p-3">
+            <table style="font-size: 12px;" class="tableAlmacenesExistencias table-sm table-striped table-hover">
+              <thead style="background-color:#3B75B5; color:white;">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nombre de usuario</th>
+                  <th scope="col">Terminal Id</th>
+                  <th scope="col">Moneda</th>
+                  <th scope="col">Monto pago rápido</th>
+                  <th class="text-center" scope="col">Activo</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let terminal of terminals;let i=index;">
+                  <th scope="row">{{i + 1}}</th>
+                  <td>{{terminal.UserName}}</td>
+                  <td>{{terminal.TerminalId}}</td>
+                  <td>{{terminal.Currency == 'USD' ? 'Dólares' : 'Colones'}}</td>
+                  <td>{{terminal.QuickPayAmount | number:'1.2'}}</td>
+                  <td class="text-center"><i class="fas fa-{{terminal.Status? 'check': 'times'}}"></i></td>
+                  <td class="justify-content-center option clasesita">
+                    <i class="fas fa-edit" style="cursor: pointer;" (click)="raiseTerminalModal(terminal.Id)"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle><b>Asignación de terminales </b></ng-template>
+        <ng-template ngbTabContent>
+          <div class="row mt-1">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <h6>Usuario</h6>
+                <select class="form-control form-control-sm" [formControl]="userControl" (change)="OnUserControlChange($event)">
+                  <option *ngFor="let user of users" value="{{user.Id}}">{{user.Email}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <h6>&nbsp;</h6>
+                <button class="btn btn-sm btn-success float-right" (click)="UpdateTerminals()">
+                  <i aria-hidden="true"
+                                class="fa fa-save cursor-hand"></i> Guardar cambios</button>
+              </div>
+              
+            </div>
+          </div>
+          <div class="row mt-1">
+            <div class="col-sm-12">
+              <h6>Terminales</h6>
+              <table style="font-size: 12px;" class="tableAlmacenesExistencias table-sm table-striped table-hover">
+                <thead style="background-color:#3B75B5; color:white;">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Terminal Id</th>
+                    <th scope="col">Moneda</th>
+                    <th class="text-center" scope="col">Asignado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let terminal of FilteredTerminals();let i=index;">
+                    <th scope="row">{{i + 1}}</th>
+                    <td>{{terminal.TerminalId}}</td>
+                    <td>{{terminal.Currency == 'USD' ? 'Dólares' : 'Colones'}}</td>
+                    <td class="text-center"><i class="fas fa-{{IsAssigned(terminal.TerminalId)? 'check': 'times'}}"
+                      style="cursor: pointer;" (click)="AssignTerminal(terminal, IsAssigned(terminal.TerminalId))" ></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+    <!-- Button trigger modal -->
+    <button style="display: none;" id="triggerRaiseTerminalModal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"></button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{terminalModalTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form  [formGroup]="terminalForm">
+              <div class="form-group" style="display: none;">
+                <input formControlName="Id" type="text" class="form-control form-control-sm">
+              </div>
+              <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input #UserName formControlName="UserName" type="text" class="form-control form-control-sm">
+                <p class="text-danger" *ngIf="terminalForm.get('UserName').invalid && !isValidForm">El nombre de usuario es requerido</p>
+              </div>
+              <div class="form-group">
+                <label>Código del terminal</label>
+                <input formControlName="TerminalId" type="text" class="form-control form-control-sm">
+                <p class="text-danger" *ngIf="terminalForm.get('TerminalId').invalid && !isValidForm">El código del terminal es requerido</p>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Moneda</label>
+                <select formControlName="Currency" class="form-control form-control-sm">
+                  <option class="form-control" value="COL">Colones</option>
+                  <option class="form-control" value="USD">Dólares</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Monto pago rápido</label>
+                <input formControlName="QuickPayAmount" type="{{inputType}}" class="form-control form-control-sm"
+                [value]=" isOnWriteMode ? (terminalForm.get('QuickPayAmount').value) : (terminalForm.get('QuickPayAmount').value | number:'1.2-2')" 
+                (click)="ToggleAmountEdition(true, $event); $event.target.select()"
+                (change)="ToggleAmountEdition(false, $event)"
+                (focusout)="ToggleAmountEdition(false, $event)"
+                id="quickPayment">
+                <p class="text-danger" *ngIf="terminalForm.get('QuickPayAmount').invalid && !isValidForm">Monto pago rápido requerido</p>
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input formControlName="Password" type="password" class="form-control form-control-sm">
+                <p class="text-danger" *ngIf="terminalForm.get('Password').invalid && !isValidForm">La contraseña es requerida</p>
+              </div>
+              <div class="form-group">
+                <label>Activo</label>
+                <div class="form-check">
+                  <input formControlName="Status" class="form-check-input" type="checkbox" (click)="toggleStatus()">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-sm"  (click)="saveTerminal()"><i class="fas fa-save"></i> Guardar</button>
+            <button id="hideButtonTrigger" type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+
+</block-ui>

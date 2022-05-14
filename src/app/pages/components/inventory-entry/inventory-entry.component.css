@@ -1,0 +1,258 @@
+.TaxOnly {
+    color: green !important;
+}  
+
+.TaxOnly input {
+    color: green !important;
+}
+
+.TaxOnly select {
+    color: green !important;
+}
+
+.UnitPriceExceeded {
+    color: rgb(211, 77, 0) !important;
+}
+
+.UnitPriceExceeded input {
+    color: rgb(211, 77, 0) !important;
+}
+
+.UnitPriceExceeded select {
+    color: rgb(211, 77, 0) !important;
+}
+  
+.focusLineaDetalle {
+    background-color: #3b75b54d  !important  
+     /* #3B75B5 !important;   */
+     /* 3b75b54d  menos tra */
+     /* 3b75b580 mas osc */
+}
+
+.focusLineaDetalle input {
+    background-color: transparent  !important;
+}
+
+.focusLineaDetalle select {
+    background-color: transparent  !important;     
+} 
+.focusLineaDetalle a {
+    color: #3B75B5 !important;    
+} 
+/*  */
+ .tableFixHead {
+    overflow-y: auto;
+    height: 100px;
+}  
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+} 
+
+.invisible {
+    border: none;
+    background-color: transparent;
+    /*word-break:break-all;*/
+}
+
+.thHeader {
+    background-color: #3B75B5;
+    color: white;
+    font-size: 14px;
+    font-family: "Segoe UI";
+    font-weight: lighter;
+}
+
+body {
+    margin: 0px;
+    font-family: "Open Sans", sans-serif;
+}
+
+#context-menu {
+    position: fixed;
+    z-index: 10000;
+    width: 150px;
+    background: #1b1a1a;
+    border-radius: 5px;
+    transform: scale(0);
+    transform-origin: top left;
+}
+
+#context-menu.active {
+    transform: scale(1);
+    transition: transform 300ms ease-in-out;
+}
+
+#context-menu .item {
+    padding: 8px 10px;
+    font-size: 15px;
+    color: #eee;
+}
+
+#context-menu .item:hover {
+    background: #555;
+}
+
+#context-menu .item i {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+#context-menu hr {
+    margin: 2px 0px;
+    border-color: #555;
+}
+
+.saveOption:hover {
+    font-weight: bold;
+}
+
+.onTitleHover:hover {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+#mtable td {
+    border: 1px solid #dee2e6;
+    padding: 0rem;
+    border-bottom: 0;
+}
+
+#mtable tr:last-child td {
+    border: 1px solid #dee2e6;
+}
+
+#mtable tr:hover td {
+    border-top-color: #000;
+    border-bottom: 1px solid #000;
+}
+
+#mtable tr:hover td:first-child {
+    border-left-color: #000;
+}
+
+#mtable tr:hover td:last-child {
+    border-right-color: #000;
+}
+
+.inputFocused:focus {
+    font-weight: bolder;
+    font-size: 16px;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+}
+
+.detailAmount {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+    display: table;
+    padding: 10px 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    align-items: center;
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/* .cdk-drag-animating {
+    transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+  }  */
+
+.RiseItemPrevie:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.insideinput {
+    position: absolute;
+    right: 25px;
+    top: 35px;
+}
+
+.showData {
+    display: table-cell;
+}
+
+.hiddeData{
+      display: none;
+  }
+.btnColorGris{
+     background-color: #b2b3b545 !important; 
+     /* border: 1px #97979742 solid !important; */
+ }
+ .hiddenComponent {
+    display: none;
+  }
+
+.Rendered{
+    margin-right: 30px !important;
+
+}  
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}
+.XML{
+    /* text-decoration: underline !important;*/
+    background-color: #909393;
+    color: white;
+}
+
+thead th {   
+     position: sticky;
+    top: 0;
+    background-color: #3c75b5;
+}
+
+table th,
+table td {
+    padding: .1em 0.2em;
+    content: ' ';
+}
+
+tr td:last-child {
+    width: 1%;
+    white-space: nowrap;
+}
+  
+/* TABLAS SUBTOTALES */
+.tableSubtotal {
+    width: 100% !important;
+    height: unset !important;
+    /*overflow:hidden;*/
+}
+
+.table-sm td,
+th {
+    padding: 0px !important;
+}
+
+.BtnCreateInv{
+    display: block !important;
+    width: 100% !important;
+    padding: 0.25rem !important;
+    clear: both !important;
+    font-weight: 400 !important;
+    color: #212429 !important;
+    text-align: inherit !important;
+    white-space: nowrap !important;
+    background-color: transparent !important;
+    border: 0 !important;
+}

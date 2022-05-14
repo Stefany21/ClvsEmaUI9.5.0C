@@ -1,0 +1,134 @@
+.justify-content-rigth {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.floatRight {
+    float: right;
+}
+
+.margin2px {
+    margin: 2px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.little-margin {
+    margin-right: 15px;
+}
+
+.checkBoxSm {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+::ng-deep .Modal-Xl .modal-dialog {
+    max-width: 80%;
+    width: 80%;
+}
+
+// tamaño de los textos de la modal de pagos
+.Text22 input,
+.Text22 select,
+.Text22 label {
+    font-size: 22px;
+}
+
+.divButon {
+    position: relative;
+}
+
+.div-container{
+    position:relative;
+  }
+  .topPoscicion{
+    position:absolute;
+    bottom:-75px;
+    right: auto;
+  }
+  .textNoMarginBottom{
+    margin-bottom:0px !important;
+    }
+    
+.tableCreditCardPayment {
+    width: 100% !important;
+    height:100% !important;   
+    display:table;	
+        /*overflow:hidden;	*/
+    color:white;
+      
+}
+.tableCreditCardPayment tr{    	
+	height:20px !important;
+	width:100%;
+    }	
+.tableCreditCardPayment td{    	
+        color:black !important;
+        /*height:20px !important;*/
+}
+	
+.tableCreditCardPaymentHeader { 
+	position: sticky !important; 
+	top: 0 !important; 
+	height:30 !important; 
+	background-color: #3c75b5; 
+	width:100% !important ;
+    display:table;
+    }
+    
+    .mtable {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+    .sticky{    	
+        display:sticky !important;
+        top:0px !important;
+        
+      }
+      
+
+    //***COPIA CAJAS***//
+    .invi {
+        border: none;
+        background-color: transparent;
+        /*word-break:break-all;*/
+    }
+
+    /*Pagination*/
+.page-item{
+    display:none;
+  }
+  .page-item:nth-child(1){
+    display:block;
+  }
+  .page-item:last-child{
+    display:block;
+  }
+
+  /**/
+
+#totalsRow {
+    background-color: #dadee6 !important;
+    font-size: large !important;
+}
+
+.overdue-bill {
+    color: red !important;
+}
+
+.hiddenComponent {
+    display: none;
+  }
+
+.Rendered{
+    margin-right: 30px !important;
+
+}  
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}

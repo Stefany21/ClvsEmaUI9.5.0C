@@ -1,0 +1,11 @@
+{
+    "Provinces": [
+        { "ProvinceId": "1", "ProvinceName": "San José" },
+        { "ProvinceId": "2", "ProvinceName": "Alajuela" },
+        { "ProvinceId": "3", "ProvinceName": "Cartago" },
+        { "ProvinceId": "4", "ProvinceName": "Heredia" },
+        { "ProvinceId": "5", "ProvinceName": "Guanacaste" },
+        { "ProvinceId": "6", "ProvinceName": "Puntarenas" },
+        { "ProvinceId": "7", "ProvinceName": "Limón" }
+    ]
+}

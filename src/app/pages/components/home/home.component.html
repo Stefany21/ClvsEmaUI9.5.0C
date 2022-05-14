@@ -1,0 +1,51 @@
+<!-- <div id="exampleModal" class="modal fade modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="mBody">
+            <iframe width='100%' height='500px' src={{httpRoute}}></iframe>"
+        </div>
+    </div>
+</div> --> 
+
+<ng-template #modalMensaje let-modal >
+	<div style="height: 500px !important;">
+		<iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe> 
+	</div>
+</ng-template>
+
+
+<!-- <img [src]="imagePath" class="logoSize;"> -->
+
+<!--
+<div class="container">
+    <div class="row">
+        <img [src]="imagePath" class="logoSize img">
+    </div>
+</div>
+-->
+
+<!--
+<div style="width: 100%">
+	<div id="subdiv1">
+		<div id="subsubdiv11">
+			<h3>Montos y cantidades facturadas en los últimos 12 meses (USD)</h3>
+			<canvas id="canvas3">{{ chart3 }}</canvas>
+		</div>
+	   <div id="subsubdiv12" >
+			<h3>Montos y cantidades facturadas en los últimos 12 meses (CRC)</h3>
+			<canvas id="canvas2">{{ chart2 }}</canvas>
+		</div>
+	</div>
+	
+	<div id="subdiv2">
+		<div id="subsubdiv21">
+			<h3>Cantidad de facturas por status</h3>
+			<canvas id="canvas1">{{ chart1 }}</canvas>
+		</div>
+	   <div id="subsubdiv22">
+			<h3>Facturas por moneda</h3>
+			<canvas id="canvas4">{{ chart4 }}</canvas>
+		</div>
+	</div>
+</div>
+
+-->

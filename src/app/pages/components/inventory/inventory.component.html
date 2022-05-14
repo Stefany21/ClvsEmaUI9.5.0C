@@ -1,0 +1,76 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="float-right">
+
+                                <a class="btn btn-success btn-sm button-action" (click)="printInventory()">
+                                    <i class="fas fa-truck-moving" aria-hidden="true"></i>&nbsp;Procesar Reporte</a>
+
+                                <!--<input type="submit" form="inventoryForm" id="btnSendInfo" class=" btn btn-primary btn-success fas fa-search" value="Procesar Reporte" />-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form (ngSubmit)="printInventory()" [formGroup]="inventoryReport" id="inventoryForm">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        
+
+                                        <label for="Name">Artículo</label>
+                                        <input type="text" formControlName="Articulo" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm" />
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="Marca">Marca</label>
+                                        <select formControlName="Marca" class="form-control form-control-sm">
+                          <option *ngFor="let item of itemsFirmList" [value]="item.FirmCode">{{item.FirmName}}</option>
+                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="Grupo">Grupo</label>
+                                        <select formControlName="Grupo" class="form-control form-control-sm">
+                          <option *ngFor="let item of itemsGroupList" [value]="item.GroupCode">{{item.GroupName}}</option>
+                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="subGrupo">Sub Grupo</label>
+                                        <input type="text" formControlName="subGrupo" class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <input type="submit" id="btnSendInfo" class=" btn btn-primary" value="Procesar Reporte" />
+                            </div>
+                            <div class="col-sm-10"></div>
+                        </div>
+                        -->
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

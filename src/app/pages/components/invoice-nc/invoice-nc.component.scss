@@ -1,0 +1,215 @@
+
+.Rendered{
+    margin-right: 30px !important;
+
+}       
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}
+
+.hiddenComponent {
+    display: none;
+  }
+
+.invi {
+    border: none;
+    background-color: transparent;
+    /*word-break:break-all;*/
+}
+
+.txtRigth {
+    text-align: right;
+}
+
+.FaHover :hover {
+    cursor: pointer !important;
+    color: darkslategray;
+}
+
+::ng-deep .Modal-Xl .modal-dialog {
+    max-width: 80%;
+    width: 80%;
+}
+
+// tamaño de los textos de la modal de pagos
+.Text22 input,
+.Text22 select,
+.Text22 label {
+    font-size: 22px;
+}
+
+//  .divButon button{
+//     font-size: 18px;
+//     margin-left: 2px;
+//     bottom:0px;
+//     right:0px;
+// }
+.divButon {
+    position: relative;
+}
+
+.div-container {
+    position: relative;
+}
+
+.topPoscicion {
+    position: absolute;
+    bottom: -75px;
+    right: auto;
+}
+
+/*
+////////////////////////////////////////////
+TABLE FIXED HEADER, AND SCROLL IN BODY, BEGIN
+////////////////////////////////////////////
+*/
+
+.textNoMarginBottom{
+    margin-bottom:0px !important;
+  }
+  table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      /* table-layout: fixed; */
+      display: block;
+  
+      height: 34vh;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+  
+    thead th { position: sticky; top: 0; background-color: #3c75b5;  }
+  
+    table th,
+    table td {
+      padding: .1em 0.2em;
+      content: ' ';
+    }
+    tr td:last-child{
+        width:1%;
+        white-space:nowrap;
+    }
+  
+.tableSubtotal {
+    width: 100% !important;
+    height: unset !important;
+    /*overflow:hidden;*/
+}
+
+.tableCreditCardPayment {
+    width: 100% !important;
+    height: 100% !important;
+    display: table;
+    /*overflow:hidden;	*/
+    color: white;
+}
+
+.tableCreditCardPayment td {
+    color: black !important;
+    /*height:20px !important;*/
+}
+
+.sticky {
+    display: sticky !important;
+    top: 0px !important;
+}
+
+.topMinusNegative50 {
+    top: -50px !important;
+}
+
+.tableCreditCardPayment tr {
+    height: 20px !important;
+    width: 100%;
+}
+
+.tableCreditCardPaymentHeader {
+    position: sticky !important;
+    top: 0 !important;
+    height: 30 !important;
+    background-color: #3c75b5;
+    width: 100% !important;
+    display: table;
+}
+
+.tableAlmacenesExistencias {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.tableAlmacenesExistencias tr td:last-child {
+    width: unset !important;
+    white-space: nowrap;
+}
+
+.tableAlmacenesExistenciasHeader {
+    position: sticky !important;
+    color: white;
+    text-align: center;
+    top: 0 !important;
+    height: 30 !important;
+    background-color: #3c75b5;
+    width: 100% !important
+}
+
+.tableAlmacenesExistenciasNumber {
+    text-align: right;
+}
+
+.tableSubtotal tbody {
+    width: 100% !important;
+    display: table;
+}
+
+.tableSubtotal tr td:last-child {
+    width: unset !important;
+    white-space: nowrap;
+}
+
+.tableSubtotal td,
+th {
+    /* border: 1px solid red; */
+    word-break: break-all;
+}
+
+.table-sm td,
+th {
+    padding: 0px !important;
+}
+
+
+/*
+////////////////////////////////////////////
+TABLE FIXED HEADER, AND SCROLL IN BODY, END
+////////////////////////////////////////////
+*/
+
+.btn-Document {
+    float: right !important;
+}
+
+.table-scroll thead {
+    display: block;
+    width: 2300px;
+}
+
+.table-scroll tbody {
+    overflow-y: scroll;
+    display: block;
+    width: 2300px;
+    height: 28vh;
+}
+
+.disabled-content {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.well {
+    display: block;
+    /*height: 33vh;*/
+    overflow-x: scroll;
+    width: 2300px;
+}

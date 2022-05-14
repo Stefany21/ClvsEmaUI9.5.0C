@@ -1,0 +1,79 @@
+<block-ui>
+    <div class="">
+        <div class="row">
+            <!--
+            <div class="col-md-4">
+                <div class="float-right mt-2" role="group">
+                    <input type="submit" id="btnSendBP" 
+                           [disabled]="storeGroup.invalid" 
+                           class=" btn btn-primary separator" value="{{btnSendInfo}}" />            
+
+                    <a class="btn btn-danger btn-md button-action" (click)="cancel()">
+                        Cancelar
+                    </a>                     
+                </div>
+            </div>
+			-->
+            <div class="col-md-12">
+                <div class="float-right ml-1">
+                    <!--<input type="button" (click)="enviarInfo()" class=" btn btn-primary" value="Cancelar" />-->
+                    <a class="btn btn-danger btn-sm button-action" (click)="cancel()">
+                        <i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar</a>
+                </div>
+                <div class="float-right ml-1">
+                    <!--<input type="submit" id="btnSendInfo" class=" btn btn-primary btn-success" value="<i class="fas fa-search" aria-hidden="true"></i> Buscar" />-->
+                    <button class="btn btn-success btn-sm button-action" form="formConf" type="submit"><i class="fas fa-arrow-alt-circle-right"></i>&nbsp;{{ storeId === 0 ? 'Agregar' : 'Modificar' }}</button>
+                    <!-- <a class="btn btn-primary btn-md button-action" (click)="submit()" >
+                        <i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>  -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form novalidate id="formConf" (ngSubmit)="onSubmitCreate()" [formGroup]="storeGroup">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Name">Nombre</label>
+                    <input type="text" formControlName="Name" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': f.Name.errors && f.Name.touched}" autofocus/>
+                    <div *ngIf="f.Name.errors" class="invalid-feedback">
+                        <div *ngIf="f.Name.errors.required">Nombre requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="CompanyName">Compañía</label>
+                    <select class="form-control form-control-sm" formControlName="CompanyName" (change)="ChangeCompany()">
+                          <option  *ngFor="let company of companyList; index as i" value="{{company.Id}}">{{company.DBName}}</option>
+                      </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="StoreName">Nombre SAP</label>
+                    <select class="form-control form-control-sm" formControlName="StoreName" (change)="ChangeCode()">
+                              <option  *ngFor="let store of storeList;" value="{{store.WhsCode}}" >{{store.WhsName}}</option>
+                          </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="StoreCode">Código SAP</label>
+                    <input type="text" formControlName="StoreCode" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="StoreStatus">Activo</label>
+                    <input type="checkbox" class="form-control form-control-sm check" formControlName="StoreStatus" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+</block-ui>

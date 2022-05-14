@@ -1,0 +1,45 @@
+.logoSize {
+    width: 175px;
+    height: 175px;
+}
+
+.img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+#subdiv1 {
+	height: 45%; 
+	vertical-align: top;
+}
+
+#subdiv2{
+	height: 45%; 
+	vertical-align: down;
+	
+}
+#subsubdiv21{
+	width: 45%; 
+	float: left;
+}
+
+#subsubdiv22{
+	width: 45%; 
+	float: right;
+}
+
+#subsubdiv11{
+	width: 45%; 
+	float: left;
+}
+
+#subsubdiv12{
+	width: 45%; 
+	float: right;
+}
+
+#modalMensaje{
+	height: 500px !important;
+}

@@ -1,0 +1,642 @@
+<block-ui>
+    <div *ngIf="permisos">      
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" float-right ml-1">
+                    <a class="btn btn-danger btn-sm button-action" (click)="resetGUI()">
+                        <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                </div>               
+                <div *ngIf="!this.isOnUpdatePurchase" class="float-right ml-1">                   
+                    <div class="dropdown">
+                        <button type="button" [disabled]="hasBeenSend" class="btn btn-success dropdown-toggle btn-sm btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Crear como
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button type="button" class="BtnCreateInv saveOption" (click)="createGoodsRecipt()">Entrada de inventario</button>
+                            <button type="button" class="BtnCreateInv saveOption" (click)="createPurchaseOrder()">Órden de compra</button>
+                        </div>  
+                    </div>
+                </div>      
+                <div *ngIf="!this.isOnUpdatePurchase" class=" float-right ml-1">  
+                    <input #file (change)="UploadFileXML($event.target.files)" class="form-control form-control-sm btn-light shadow-sm btn-st" 
+                                type="file" name="" id="file" placeholder="file" style="display: none !important">
+                    <button type="button" [disabled]="hasBeenSend" title="Cargar XML" style="cursor: pointer;" class="btn XML btn-light btn-sm btn-block button-action" (click)="file.click()" >
+                        Cargar xml</button>    
+                </div>      
+                <div *ngIf="this.isOnUpdatePurchase" class="float-right ml-1">                    
+
+                    <button type="button" [disabled]="hasBeenSend" class="btn btn-success btn-sm btn-block button-action " (click)="updatePurchaseOrder()">
+                        Actualizar órden</button>
+                </div>              
+            </div>
+        </div>    
+
+            <form [formGroup]="headerForm">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <div class="form-group input-group-sm">
+                            <label for="">Cant.</label>
+                            <input id="demoDrop" type="number" formControlName="Quantity" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group input-group-sm">
+                            <label for="" (click)="GetItems()" title="Actualizar lista de items" style="cursor: pointer;" class="onTitleHover">Artículo</label>
+                            <div id="scrollable-dropdown-menu">        
+                                <!-- <input #name formControlName="ItemInfo" #t="ngbTypeahead" (blur)="t.dismissPopup()" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm input-lg" type="text" (selectItem)="addItems($event)" id="ItemCodeManualTrigger"> -->
+ 
+                                <input #name [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm" type="text" (selectItem)="addItems($event)" id="ItemCodeManualTrigger">
+                            </div>       
+                        </div>      
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group input-group-sm">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label for="ShowItemDetail">Consulta</label>
+                            </div>
+                            <label class="switch" ngbPopover="Consulta datos del artículo y sus entradas." placement="right" triggers="mouseenter:mouseleave">
+                                <input type="checkbox" class="" [(ngModel)]="ShowItemDetail"
+                                    [ngModelOptions]="{standalone: true}" (click)="OnClickCheckCons()">
+                                <span class="slider rounded"></span>
+                            </label>
+
+                        </div>  
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group input-group-sm">
+                            <label for="">Almacén</label>
+                            <select class="form-control form-control-sm" formControlName="WareHouse" (change)="onSelectBoxChange($event)">
+                                <option *ngFor="let s of Stores" value="{{s.StoreCode}}">
+                                    {{ s.Name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>   
+                    <div *ngIf="!this.isOnUpdatePurchase" class="col-sm-4">
+                        <div class="form-group input-group-sm">
+                            <ng-template #supplierName let-r="result" let-t="term">
+                                <ngb-highlight [result]="r.FullCardName" [term]="t"></ngb-highlight>
+                            </ng-template>
+                            <label for="typeahead-templatesuppname" (click)="GetSuppliers()" title="Actualizar lista de proveedores" style="cursor: pointer;" class="onTitleHover">Nombre proveedor</label>
+                            <input *ngIf="!this.SugSuplier" type="search" class="form-control form-control-sm" formControlName="Supplier" [ngbTypeahead]="supplierSearchName" [resultTemplate]="supplierName" [inputFormatter]="supplierNameformatter" />
+                            <input disabled *ngIf="this.SugSuplier" type="search" class="form-control form-control-sm" formControlName="Supplier"  />
+                        </div>
+                    </div>
+                    <div *ngIf="this.isOnUpdatePurchase" class="col-sm-4">
+                        <div class="form-group input-group-sm">
+
+                            <label>Nombre proveedor</label>
+                            <input readonly class="form-control" [formControl]="supplierModelDisplay" />
+                        </div>
+                    </div>                    
+                </div>
+            </form>
+           
+            <div *ngIf="udfsOPDN.length > 0" class="row ml-1 pb-0 mb-0">
+                <ul class="list-inline" *ngFor="let udf of udfsOPDN; index as i">
+                    <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                        <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                            <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                                <label>{{udf.Description}}</label>
+                                <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                            </div>
+                            <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                                <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                                <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                    <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                        {{value.Description}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+       
+        <div class="row container-fluid contenidoFacturacion ml-1 mr-1">
+                    <div #scrollMe [scrollTop]="IsXml ? 0 : scrollMe.scrollHeight"  class="tableFixHead col-md-12 pl-0 pr-0" style="height: 50vh; max-height: 50vh; overflow: auto;" >
+                           
+           
+                <ng-template #popTitle>Opciones</ng-template>  
+                <ng-template #popContent>
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="addLine()"><i
+                            class="fa fa-plus"></i> Agregar línea </button>
+
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="removeItem()"><i
+                            class="fa fa-trash" id="deleteButton"></i> Eliminar línea</button>
+                </ng-template>      
+                <table id="mtable" class="table wrapper TableFacturacion invi table-sm  table-bordered">
+                    <thead>              
+ 
+                        <tr>       
+                            <th class="thHeader" style="width: 1%;">&nbsp;#</th>
+                            <th class="thHeader" *ngIf="IsXml" style="width: 15%; min-width: 200px;">Descripción de xml</th>
+                            <th class="thHeader" style="width: 3%;">Código</th>      
+                            <th class="thHeader" style="width: 30%; min-width: 250px;">Descripción</th>
+                            <th class="thHeader" style="width: 14%;">Almacén</th>
+                            <th class="thHeader" style="width: 1%;">Cantidad</th>  
+                            <th class="thHeader" style="width: 10%;">P. unitario</th>
+
+                            <th class="thHeader" style="width: 1%;">Descuento</th>
+                            <th class="thHeader" style="width: 10%;">Impuesto</th>
+                            <th title="Muestra el total de la linea sin el impuesto" class="thHeader" style="width: 5%;">Total línea</th>
+                            <th title="Muestra el total de la linea mas el impuesto" class="thHeader" style="width: 24%;">Total línea + Imp</th>
+                            <th class="thHeader" style="width: 2%;">Bonificado</th>
+                            <th class="thHeader text-center" style="width: 1%;">Opc</th>
+                        </tr>
+                    </thead>      
+                    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="canDrag" #scrollMe  [ngStyle]="{ 'width': '100%' }"  style="overflow-y: scroll;">
+                    <tr *ngFor="let line of lines;let i=index;" cdkDrag cdkDragLockAxis="y" class="p-0" [ngClass]="{'UnitPriceExceeded': line.IsExeeded,'TaxOnly':line.TaxOnly,'focusLineaDetalle':line.IsFocus}">  
+                          
+                        <td scope="row">  
+                            &nbsp;<a *ngIf="IsXml" title="Obtener información del ítem" (click)="RiseItemDetails(i,true)" class="fas fa-info"  style="cursor: pointer;" > &nbsp;</a>
+                            {{ i + 1 }} 
+                                <a *ngIf="line.IsExeeded" style="cursor: pointer;" (click)="OpenModalMaginsExceed(ModalExceededMargins, line)" class="fa fa-info-circle"></a>
+                            </td>
+ 
+                            <td *ngIf="IsXml" class="form-group input-group-sm ml-auto mr-auto" > {{line.ItemNameXml}} </td>  
+ 
+                            <td (click)="!IsXml ? RiseItemDetails(i,true): ChangeFocusIndex(i)" style="cursor: pointer;" class="form-group input-group-sm ml-auto mr-auto">
+                                <strong  class="RiseItemPrevie">{{line.ItemCode }}</strong>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto"> {{line.ItemName}}</td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto first-col">
+                                <select style="background-color:#ecf0f8; color:black; border: none; height: calc(1.2rem + 2px); padding: 0px;" class="form-control form-control-sm" (change)="onSelectBoxLineChange($event, i)" (click)="ResetSearchValues()">
+                                    <option *ngFor="let s of Stores" [selected]="s.StoreCode == line.WareHouse"
+                                        value="{{s.StoreCode}}">
+                                        {{ s.Name }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto">
+                                <input min="0" id="quantity_{{i}}" style="background-color:#ecf0f8; color:black; border: none; height: calc(1.2rem + 2px); padding: 0px;" class="inputFocused form-control text-center form-control-sm" [ngModel]="line.Quantity" (change)="focusOut($event, i, '0')"
+                                    type="number" (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()">
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <input cdkDragDisabled="true" id="unitPrice_{{i}}" style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;" class="inputFocused  form-control text-center form-control-sm" [ngModel]="line.UnitPrice | number:TO_FIXED_PRICE"
+                                    (change)="focusOut($event, i, '1')" type="text" (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()">
+                                <!-- (ngModelChange)="item.value=currencyInputChanged($event)"-->
+                            </td>
+
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <input min="0" id="discount_{{i}}" style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;" class="inputFocused form-control text-center form-control-sm" [ngModel]="line.Discount" (change)="focusOut($event, i, '2')"
+                                    type="number" (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()">
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <select style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;" class="form-control form-control-sm " (change)="onSelectBoxLineChangeTax($event, i)" (click)="ResetSearchValues()">
+                                    <option *ngFor="let t of taxesList; let iT = index"
+                                        [selected]="t.TaxCode == line.TaxCode" [ngValue]="iT">
+                                        {{ t.TaxCode }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <input id="totalLine_{{i}}" style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;" class=" form-control text-center inputFocused" [ngModel]="line.TotalLine | number:TO_FIXED_TOTALLINE" (change)="focusOut($event, i, '3')"
+                                    type="text" (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()">
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto ">
+                                <input id="totalLineWhTax_{{i}}" style="background-color:#ecf0f8; color:black; border: none;  height: calc(1.2rem + 2px); padding: 0px;" class="inputFocused form-control text-center form-control-sm" [ngModel]="line.TotalLineWithTax | number:TO_FIXED_TOTALLINE"
+                                    (change)="focusOut($event, i, '4')" type="text" (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()" (click)="ResetSearchValues()">
+
+
+                            </td>
+
+                            <td class="form-group input-group-sm ml-auto mr-auto text-center">
+                                <input type="checkbox" class="form-control-sm" [(ngModel)]="line.TaxOnly" (click)="line.TaxOnly=!line.TaxOnly;OnclickTaxOnly(line)">
+                            </td>
+                            <td class="form-group input-group-sm ml-auto text-center">
+
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-trash" aria-hidden="true" title="Eliminar línea" (click)="setCurrentIndex(i); removeItem()"></i>  
+                                </li>
+
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-plus" aria-hidden="true" title="Agregar línea" (click)="setCurrentIndex(i); addLine()"></i>
+                                </li>
+
+                            </td>
+
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <input type="text" [(ngModel)]="Comment" class="form-control form-control-sm" placeholder="Observaciones">
+            </div>
+        </div>
+
+        <div class="row mb-4 mt-2 pb-3">
+            <div class="col-md-3">
+                <label style="font-size:18px; text-align: left">&#160;</label>
+                <table class="tableSubtotal table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Sub total</td>
+                            <td class="detailAmount"> {{totalLinesWithDiscount | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Descuentos</td>
+                            <td class="detailAmount">{{DiscountTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td>Impuestos</td>
+                            <td class="detailAmount">{{TaxesTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total dólares</label>
+                <table class="table tableSubtotal table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ USTotal | currency:'USD':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>  
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total colones</label>
+                <table class="table tableSubtotal table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ CRCTotal | number:TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button id="raiseItemModal" style="display: none;" (click)="raiseModalCreation()" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"></button>
+
+    <!--ITEM CREATION START-->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">  
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalLongTitle">{{modalTitleItem}}</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clearInputSeach()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button style="display: none;" #closebuttonCreateItem type="button" data-dismiss="modal" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form [formGroup]="itemForm">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Nombre item</label>
+                                    <input formControlName="ItemName" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Nombre foráneo</label>
+                                    <input formControlName="ForeingName" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Código de barras</label>
+                                    <input id='auxClickBarcode' #barcodeEl formControlName="BarCode" [readonly]="OpenModalComand" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Impuesto</label>
+                                    <select formControlName="TaxCode" class="form-control form-control-sm">
+                                        <option *ngFor="let t of taxesList" value="{{t.TaxCode}}">{{t.TaxCode}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Precio público</label>
+                                    <input formControlName="Price" type="number" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+                        <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                            <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                                <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                                    <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                                        <label>{{udf.Description}}</label>
+                                        <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                    </div>
+                                    <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                                        <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                                        <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                            <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                                {{value.Description}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div> 
+                   
+                </div>              
+                <div class="modal-footer">
+                    <button type="button" style="cursor: pointer;" class="btn btn-light btn-sm btnColorGris" id="closeModal" (click)="saveItem()"><i class="fas fa-check"></i>&nbsp;Guardar</button>
+                    <button type="button" style="cursor: pointer;" class="btn btn-light btn-sm btnColorGris" data-dismiss="modal" (click)="clearInputSeach()"> <i class="fas fa-times"></i> &nbsp;Cancelar</button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--ITEM CREATION END-->
+
+    <button id="raiseModalItemCreation" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".ff"></button>
+
+    <div class="modal fade bd-example-modal-lg ff" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-1x fa-info-circle text-info"></i> No se encontró el código de barras en su aplicación </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <h5 class="text-center">¿ Desea crear un producto nuevo ? </h5>
+                </div>
+                <div class="modal-footer">
+                    <div class="col ">
+                        <button type="button" class="btn btn-danger btn-sm float-right btn-block" (click)="clearInputSeach()" data-dismiss="modal"><i class="fas fa-times"></i> No </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success btn-sm  float-right btn-block" (click)="raiseModalCreation()" data-dismiss="modal"><i class="fas fa-check"></i> Si
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button style="display: none;" id="raiseBarcodesModal" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bcds"></button>
+
+    <div class="modal fade bd-example-modal-lg bcds" id="exampleModalbcds" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelll" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabelll"><i class="fas fa-1x fa-info-circle text-info"></i> Códigos de barra para {{globalName}} </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <form [formGroup]="barcodeForm">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input formControlName="barcodeModal" type="search" class="form-control" placeholder="Código de barra">
+                            </div>
+                            <div class="col-md-6">
+                                <input formControlName="barcodeDescriptionModal" type="search" class="form-control" placeholder="Descripcion del código de barra">
+                            </div>
+                            <div class="col-md-1">
+                                <button (click)="addBarcode()" class="btn btn-success" ngbPopover="Guardar Código" triggers="mouseenter:mouseleave"><i aria-hidden="true"
+                                        class="fa fa-save cursor-hand"></i></button>
+                            </div>
+                            <div class="col-md-1">
+                                <button (click)="clearBarcode()" class="btn btn-info" ngbPopover="Cancelar" triggers="mouseenter:mouseleave"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Código de barra</th>
+                                <th scope="col">Descripcion</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let bc of barcodeList; index as i">
+                                <th scope="row">{{ i + 1 }}</th>
+                                <td>{{ bc.BcdCode }}</td>
+                                <td>{{ bc.BcdName }}</td>
+                                <td><button (click)="updateBarcodeDesctiption(i)" class="btn btn-info btn-small" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Editar descripción"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <div class="col ">
+                        <button type="button" class="btn btn-danger btn-sm float-right btn-block" (click)="clearInputSeach()" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success btn-sm  float-right btn-block" (click)="updateItem()" data-dismiss="modal"><i class="fas fa-check"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- 001 Ventana modal para mostrar el msj de margenes excedidos-->
+
+    <ng-template #ModalExceededMargins let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title">Información</h5>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div>
+                <div class="text">
+                    {{MsgForExceededMargins}}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light btn-sm shadow btn-st" (click)="CloseModal()"><i
+                    class="fa fa-times-circle" aria-hidden="true"></i> Cerrar&nbsp;</button>
+        </div>
+    </ng-template>
+
+
+    <!--Fin modal margenes excedidos-->
+
+
+
+
+
+
+
+
+
+
+
+    <!--Modal para consultar articulos-->
+
+    <button id="raiseModalConsult" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".consulta"></button>
+
+    <div class="modal fade bd-example-modal-xl consulta" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Datos de compra</h2>
+
+                    <button (click)="OnCloseItemDetailModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body p-4" #scrollMe [scrollTop]="scrollMe.scrollHeight" class=" tableFixHead col-md-12" style="height: 50vh; max-height: 50vh; overflow: scroll;">
+
+                    <!--Datos del articulo-->
+                    <div id="ContenedorDatosItem" class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-group input-group-sm">
+                                    <label for=""><strong>Código: </strong>{{ItemDetail.ItemCode}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group input-group-sm">
+                                    <label for=""> <strong>Precio:</strong> {{ItemDetail.LastPurPrc}} </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group input-group-sm">
+                                    <label for=""><strong>Nombre: </strong>{{ItemDetail.ItemName}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group input-group-sm">
+                                    <label for=""><strong>En stock:</strong> {{ItemDetail.OnHand}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group input-group-sm">
+                                    <label for=""> <strong>Disponible: </strong>{{ItemDetail.Available}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group input-group-sm">
+                                    <label for=""><strong>Impuesto: </strong>{{ItemDetail.TaxRate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--Fin datos del articulo-->
+
+
+                    <!--Aqui va la tabla-->
+                    <div id="ContenedorTablaPrevieItem">
+                        <table id="mtablex" class="table table-striped table-sm table-responsive-lg table-bordered">
+                            <thead style="background-color:#3B75B5; color:white; position: relative;">
+                                <tr>
+                                    <th class="thHeader" style="width: 1%;">#</th>
+                                    <th class="thHeader" style="width: 10%;">Fecha</th>
+                                    <th class="thHeader" style="width: 33%;">Proveedor</th>
+                                    <th class="thHeader" style="width: 15%;">Almacén</th>
+                                    <th class="thHeader" style="width: 5%;">Cantidad</th>
+                                    <th class="thHeader" style="width: 10%;">Prec. Compra</th>
+                                    <th class="thHeader" style="width: 10%;">Total de entrada</th>
+                                    <th class="thHeader" style="width: 5%;">Impuesto</th>
+                                    <th class="thHeader" style="width: 1%;">Comentarios</th>
+                                </tr>
+                            </thead>
+                            <tbody [ngStyle]="{ 'width': '100%' }" style="overflow-y: scroll;" #scrollMe [scrollTop]="scrollMe.scrollTop">
+                                <tr *ngFor="let Entrada of ItemDetail.GoodsRecipts;let i=index;" class="p-0">
+                                    <td scope="row ">{{ i + 1 }}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{ Entrada.DocDate | date:'dd-MM-yyyy' }}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{ Entrada.BissnesPartner.CardName }}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{ Entrada.Store.StoreName }}
+                                    </td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{Entrada.Quantity}}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{Entrada.Price}}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{ Entrada.DocTotal }}</td>
+                                    <td class="form-group input-group-sm ml-auto mr-auto ">{{Entrada.TaxCode}}</td>
+                                    <td style="text-align: center;" class="form-group input-group-sm ml-auto mr-auto ">
+                                        <i *ngIf="Entrada.Comment" (click)="OpenModalComent(content,Entrada.Comment)" class="fa fa-info-circle cursor-hand" aria-hidden="true" title="Click para ver comentario: {{Entrada.Comment}}"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="col">
+                        <input type="number" name="" id="GoodReciptNumber" (keyup.enter)="GetGoodReceptsForItemDetail()">
+                    </div>
+                    <div class="col ">
+                        <button type="button" class="btn btn-danger btn-sm float-right btn-block" data-dismiss="modal"><i
+                                class="fas fa-times"></i> Cerrar </button>
+                    </div>
+
+                    <div class="col">
+                        <button (click)="GetGoodReceptsForItemDetail()" type="button" class="btn btn-success btn-sm  float-right btn-block"><i class="fas fa-search"></i>
+                            Consultar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title">Comentario</h5>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div>
+                <div class="text">
+                    {{CommentarioActual}}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light btn-sm shadow btn-st" (click)="CloseModal()"><i
+                    class="fa fa-times-circle" aria-hidden="true"></i> Cerrar&nbsp;</button>
+        </div>
+    </ng-template>
+
+    <!--Fin Modal para consultar articulos-->
+    <div *ngIf="!permisos ">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+</block-ui>

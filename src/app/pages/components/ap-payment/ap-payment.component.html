@@ -1,0 +1,486 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-right">
+                        <a class="btn btn-danger btn-sm button-action ml-1" (click)="CreateNew()">
+                            <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                    </div>
+                    <div [class.disabled-content]="correctInvoice || facturando" class="float-right">
+                        <a class="btn btn-success btn-sm button-action ml-1" (click)="CheckPayBalance(content)">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>&nbsp;Generar pago</a>
+                    </div>
+                    <div *ngIf="correctInvoice" class="float-right">
+                        <a id="imprimirFactura" class="btn btn-primary btn-sm button-action ml-1" (click)="printInvoice()">
+                            <i class="fas fa-print" aria-hidden="true"></i>&nbsp;Imprimir factura</a>
+                    </div>
+                    <div class=" float-right">
+                        <a class="btn btn-primary btn-sm button-action ml-1" (click)="getInvoiceList()">
+                            <i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar facturas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <form [formGroup]="searchForm" id="searchForm">
+                    <div id="" class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="supplier">Proveedor</label>
+                                <input id="supplier" type="text" class="form-control form-control-sm" formControlName="supplier" [ngbTypeahead]="searchBP" />
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="sede">Sede</label>
+                            <select class="form-control form-control-sm" formControlName="sede">
+                                <option *ngFor="let serie of serieList" [value]="serie.Serie">{{serie.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="currency">Moneda</label>
+                            <select class="form-control form-control-sm" formControlName="currency" (change)="changeCurr()">
+                                <option *ngFor="let curr of currencyList" [value]="curr.Id">{{curr.Name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <form [formGroup]="incomingPaymentForm">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="salesMan">Vendedor</label>
+                                <select class="form-control form-control-sm" formControlName="salesMan">
+                                    <option *ngFor="let slpMan of salesManList" [value]="slpMan.SlpCode">
+                                        {{slpMan.SlpName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="comment">Comentario</label>
+                                <input type="text" formControlName="comment" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="pagocuenta">Pago a cuenta</label>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <input class="form-control form-control-sm checkBoxSm" type="checkbox" formControlName="pagocuenta" (click)="activePagocuenta()" />
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control form-control-sm" formControlName="pagocuentavalue" *ngIf="isPagoCuenta" (change)="setPagoCuenta()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="reference" *ngIf="isPagoCuenta">Referencia</label>
+                                <input type="text" formControlName="reference" *ngIf="isPagoCuenta" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+                    <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                        <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                            <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                                <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                                    <label>{{udf.Description}}</label>
+                                    <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                </div>
+                                <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                                    <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                                    <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                        <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                            {{value.Description}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-2 mb-1">
+            <div class="col-lg-12 table-responsive" style="overflow-x: auto; width:100%; height:28vh; overflow:auto;">
+
+                <table id="horver" class="table table-sm table-hover table-bordered">
+                    <thead style="background-color:#3B75B5; color:white;" [ngStyle]="{ 'min-width': tableLength + 'px' }">
+                        <tr>
+                            <th scope="col" class="invi"></th>
+                            <th scope="col" class="invi">Tipo documento</th>
+                            <th scope="col" class="invi">Número documento</th>
+                            <th scope="col" class="invi">Plazos</th>
+                            <th scope="col" class="invi">Moneda</th>
+                            <th scope="col" class="invi">Fecha factura</th>
+                            <th scope="col" class="invi">Vencimiento</th>
+                            <th scope="col" class="invi">Pago</th>
+                            <th scope="col" class="invi">Total</th>
+                            <th scope="col" class="invi">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pay of incomingPaymentList; index as i">
+                            <th scope="row" class="invi">
+                                <input type="checkbox" [checked]="pay.Selected" [(ngModel)]="pay.Selected" (change)="changeSelectedPay(i, pay.Selected, pay.Pago, pay.DocBalance)" class="invi">
+                            </th>
+                            <td class="invi">{{ pay.type }}</td>
+                            <td class="invi">{{ pay.DocNum }}</td>
+                            <td class="invi">{{ pay.InstlmntID }}</td>
+                            <td class="invi">{{ pay.DocCur }}</td>
+                            <td class="invi">{{ pay.Date | date:"dd/MM/yyyy" }}</td>
+                            <td class="invi">{{ pay.DocDueDate | date:"dd/MM/yyyy" }}</td>
+                            <td class="invi">
+                                <input class="form-control form-control-sm invi" type="number" min="0" pattern="\d+" [(ngModel)]="pay.Pago" (change)="setTotals()" [disabled]="!pay.Selected">
+                            </td>
+                            <td class="invi">{{ pay.DocTotal | number:'.2-2'}}</td>
+                            <td class="invi">{{ pay.DocBalance | number:'.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row footMenu border-top">
+            <div class="col-md-3">
+                <div class="table-responsive">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <label style="font-size:18px; text-align: center">Total de pagos en dólares</label>
+                    <input style="font-size:60px; text-align: center" type="text" [formControl]="TotalUSD " class="form-control form-control-sm" [ngModel]="(totalUSD | currency:'USD':'symbol-narrow':'.2-2')" id="total" readonly>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <label style="font-size:18px; text-align: center">Total de pagos en colones</label>
+                    <input style="font-size:60px; text-align: center" type="text" [formControl]="TotalCol " class="form-control form-control-sm" [ngModel]="(totalCOL | currency:'CRC':'symbol-narrow':'.2-2')" id="total" readonly>
+                </div>
+            </div>
+            <div class="col-md-1 btn-group-vertical">
+            </div>
+        </div>
+
+        <ng-template #content let-modal>
+            <div class="modal-body Text22">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ngb-tabset>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Efectivo</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="cashForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <label c for="AccountCash">Cuenta</label>
+                                                                <select class="form-control form-control-sm " formControlName="AccountCash">
+                                                                    <option *ngFor="let acc of accountList"
+                                                                        [value]="acc.Account">{{acc.AccountName}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-9">
+                                                                <div class="form-group">
+                                                                    <label for="TotalCash">Total</label>
+                                                                    <input ctrlKeys (ctrlB)="onCtrlBCash()" onClick="this.select();" type="number" formControlName="TotalCash" class="form-control" (keyup)="addAmountCash()" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="onCtrlBCash()" aria-label="Cancelar">
+                                                                        <i class="fa fa-plus"
+                                                                            aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Tarjeta</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="creditCardForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="CreditCard">Nombre de tarjeta </label>
+                                                                <select class="form-control form-control-sm" formControlName="CreditCard" (change)="getSelectedOptionText($event)">
+                                                                    <option *ngFor="let acc of cardsList"
+                                                                        [value]="acc.CreditCard">{{acc.CardName}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="textNoMarginBottom" for="CardNum">Número de tarjeta</label>
+                                                                    <input type="number" formControlName="CardNum" disabled class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="OwnerIdNum">Número de voucher</label>
+                                                                <input type="text" formControlName="OwnerIdNum" class="form-control form-control-sm" />
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="textNoMarginBottom" for="CardValid">Válido hasta</label>
+                                                                    <input type="text" formControlName="CardValid" disabled class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="CreditSum">Monto</label>
+                                                                <input ctrlKeys (ctrlB)="onCtrlBTarjeta()" onClick="this.select();" type="number" formControlName="CreditSum" class="form-control form-control-sm" />
+                                                            </div>
+
+                                                            <div class="col-sm-3 ">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="onCtrlBTarjeta()" aria-label="Cancelar">
+                                                                        <i class="fa fa-plus"
+                                                                            aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-1 "></div>
+                                                            <div class="col-sm-2 ">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="addAmounCreditCard()" aria-label="Cancelar">
+                                                                        <i class="fa fa-plus"
+                                                                            aria-hidden="true"></i>&nbsp;
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+
+                                                <div class="col-lg-12 table-responsive" style="overflow-x: auto;height: 100px !important">
+                                                    <table class="tableCreditCardPayment table-striped table-sm table-hover">
+                                                        <thead style="position:sticky; top:0px; width:100%">
+                                                            <tr class="tableCreditCardPayment" style="position:sticky; top:0px; width:100%">
+                                                                <th scope="col">Nombre tarjeta</th>
+                                                                <th scope="col">Cuenta</th>
+                                                                <th scope="col">Importe</th>
+                                                                <th scope="col">Opciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="tableCreditCardPayment" *ngFor="let cc of V_CreditCards; index as i">
+                                                                <td class="" scope="row">{{ cc.FormatCode }}</td>
+                                                                <td class="">{{ cc.CreditCard }}</td>
+                                                                <td class="">{{ cc.CreditSum | number:'.2-2'}}</td>
+                                                                <td class=" justify-content-center">
+                                                                    <button type="button" class="btn btn-link btn-xs" (click)="removeCreditCard(i)" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Eliminar">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Transferencia</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="transferForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label for="AccountTransf">Cuenta</label>
+                                                                <select class="form-control form-control-sm" formControlName="AccountTransf">
+                                                                    <option *ngFor="let acc of accountList"
+                                                                        [value]="acc.Account">{{acc.AccountName}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="DateTrans">Fecha de
+                                                                        transferencia</label>
+                                                                    <input type="date" formControlName="DateTrans" class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label for="Ref">Referencia</label>
+                                                                <input type="text" formControlName="Ref" class="form-control form-control-sm" />
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="TransSum">Importe</label>
+                                                                    <input ctrlKeys (ctrlB)="onCtrlBTransferencia()" onClick="this.select();" type="number" formControlName="TransSum" class="form-control form-control-sm" (keyup)="addAmountTransfer()" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-9 ">
+
+                                                            </div>
+                                                            <div class="col-sm-3 topPoscicion">
+                                                                <button class="btn btn-primary" (click)="onCtrlBTransferencia()" aria-label="Cancelar">
+                                                                    <i class="fa fa-plus"
+                                                                        aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                </ngb-tabset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Cuenta</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="currencyPayment" (ngModelChange)="changeCurrency()" [disabled]="ReceivedG > 0 ? true : false">
+                                    <option *ngFor="let curr of currencyList" [value]="curr.Id">{{curr.Name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="divButon">
+                                    <button class="btn btn-success topPoscicion" aria-label="Aceptar" [disabled]="ReceivedG > 0 ? false : true" (click)="CreatePay()">
+                                        <i class="fa fa-check" aria-hidden="true"></i>&nbsp;Aceptar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-3  ">
+                                <div class="divButon">
+                                    <button class="btn btn-danger topPoscicion" (click)="close()" aria-label="Cancelar">
+                                        <i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row topMinusNegative50">
+                            <hr>
+                            <div class="col-md-12">
+                                <div>
+                                    <label class="textNoMarginBottom">Total</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="TotalG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Recibido</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="ReceivedG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Diferencia</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="DifferenceG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Vuelto</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="ChangeG | number:'.2-2'" disabled>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+    </div>
+
+
+    <!--Modal pago realizado con exito-->
+    <button id="triggerAfterPayModal" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lgs">MODAL_AFTER_PAY</button>
+
+    <div class="modal fade bd-example-modal-lg bd-example-modal-lgs" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="container p-3">
+
+                    <!-- <div class="justify-content-right">
+                         <div class="offset-md-9 col-md-3">
+                             <button data-dismiss="modal" type="button" class="btn btn-danger btn-circle">
+                                 <i class="glyphicon glyphicon-remove"></i> X
+                             </button>
+                         </div>
+                     </div> -->
+
+                    <div class="row justify-content-center">
+                        <i style="font-size: 120px; color: yellowgreen;" class="far fa-check-circle"></i>
+                    </div>
+                    <div class="row justify-content-center">
+                        <h3>Pago creado correctamente
+                        </h3>
+                    </div>
+                    <div class="row justify-content-center">
+                        <h5><span style="font-weight: bold;">DocNum:</span> {{returnedDocNum}}</h5>
+                    </div>
+                    <div class="row justify-content-center">
+                        <h5><span style="font-weight: bold;">DocEntry:</span> {{returnedDocEntry}}</h5>
+                    </div>
+                    <!-- <div class="row justify-content-center">
+                          <h5><span style="font-weight: bold;">NumFe:</span> {{returnedNumFE}} </h5>
+                      </div> -->
+
+
+                    <div>
+                        <div class="row justify-content-center">
+                            <h2>Vuelto</h2>
+                        </div>
+                        <div class="row justify-content-center">
+                            <h1>Colones: ₡ {{changeColones | number:'1.2-2'}}</h1>
+                        </div>
+                        <div class="row justify-content-center">
+                            <h1>Dólares: $ {{(changeColones / currencyChange) | number: '1.2-2'}}</h1>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="offset-md-2 col-md-4 ">
+                            <button style="display: none;" id="triggerCloseAuxiliar" data-dismiss="modal"></button>
+                            <button id="triggerCloseAfterPay" type="button" (click)="CreateNew()" class="btn btn-success btn-block" data-dismiss="modal"><i class="fas fa-check"></i>
+                                  Aceptar</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-info ml-auto btn-block" (click)="printInvoice()">
+                                  <i class="fas fa-print"></i> Imprimir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

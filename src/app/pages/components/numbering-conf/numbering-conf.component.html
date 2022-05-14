@@ -1,0 +1,73 @@
+<block-ui> 
+    <div class="row mb-2">
+      <div class="col-md-12">
+          <div class=" float-right ml-1">
+              <a class="btn btn-danger btn-sm button-action" (click)="cancel()" >
+                  <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Cancelar</a>
+          </div>
+          <div  class="float-right ml-1">
+            <button class="btn btn-success btn-sm  button-action" form="numberingForm" type="submit"><i class="fas fa-arrow-alt-circle-right"></i>&nbsp;{{title}}</button>
+          </div>               
+      </div>
+  </div> 
+
+  <form id="numberingForm" (ngSubmit)="onSubmit()" [formGroup]="numberingForm">
+     <div class="row">    
+      <div class="col-md-4">
+        <div class="form-group">
+            <label for="Terminal">Terminal</label>
+            <input type="number" formControlName="Terminal" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': fCM.Terminal.errors && fCM.Terminal.touched }" />
+            <div *ngIf="fCM.Terminal.errors" class="invalid-feedback">
+                <div *ngIf="fCM.Terminal.errors.required">El Terminal es requerido</div>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="Sucursal">Sucursal</label>
+          <input type="number" formControlName="Sucursal" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': fCM.Sucursal.errors && fCM.Sucursal.touched }" />
+          <div *ngIf="fCM.Sucursal.errors" class="invalid-feedback">
+              <div *ngIf="fCM.Sucursal.errors.required">El Terminal es requerido</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+            <label for="NextNumber">NextNumber</label>
+            <input type="number" formControlName="NextNumber" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': fCM.NextNumber.errors && fCM.NextNumber.touched }" />
+            <div *ngIf="fCM.NextNumber.errors" class="invalid-feedback">
+                <div *ngIf="fCM.NextNumber.errors.required">el numero de sucursal es requerido</div>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+              <label for="DocType">Tipo de documento</label>
+              <input type="number" formControlName="DocType" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': fCM.DocType.errors && fCM.DocType.touched }" />
+              <div *ngIf="fCM.DocType.errors" class="invalid-feedback">
+                  <div *ngIf="fCM.DocType.errors.required">el numero de sucursal es requerido</div>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group" style="margin-bottom: 0px;">
+            <label for="active">Numeracion activa</label>
+        </div>
+        <label class="switch">
+                <input type="checkbox" formControlName="active" >
+                <span class="slider round"></span>
+        </label>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+    <div class="row">    
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="Orbservacion">Orbservación</label>
+              <input type="text" formControlName="Orbservacion" class="form-control form-control-sm" />
+          </div>
+      </div>   
+    </div>
+  </form>
+  
+</block-ui>

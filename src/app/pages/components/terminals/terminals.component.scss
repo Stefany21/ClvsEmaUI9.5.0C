@@ -1,0 +1,136 @@
+.invi {
+	border: none;
+	background-color: transparent;
+	/*word-break:break-all;*/
+}
+
+.txtRigth {
+	text-align: right;
+}
+
+.FaHover :hover {
+	cursor: pointer !important;
+	color: darkslategray;
+}
+
+::ng-deep .Modal-Xl .modal-dialog {
+	max-width: 80%;
+	width: 80%;
+}
+// tamaño de los textos de la modal de pagos
+.Text22 input,
+.Text22 select,
+.Text22 label {
+	font-size: 22px;
+}
+
+//  .divButon button{
+//     font-size: 18px;
+//     margin-left: 2px;
+//     bottom:0px;
+//     right:0px;
+// }
+
+.divButon {
+	position: relative;
+}
+
+.div-container {
+	position: relative;
+}
+.topPoscicion {
+	position: absolute;
+	bottom: -75px;
+	right: auto;
+}
+
+/* 
+////////////////////////////////////////////
+TABLE FIXED HEADER, AND SCROLL IN BODY, BEGIN
+////////////////////////////////////////////
+*/
+
+.textNoMarginBottom {
+	margin-bottom: 0px !important;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	/* table-layout: fixed; */
+	display: block;
+	height: 28vh;
+	overflow-y: scroll;
+}
+
+thead th {
+	position: sticky;
+	top: 0;
+	background-color: #3c75b5;
+}
+
+.tableSubtotal {
+	width: 100% !important;
+	height: unset !important;
+	/*overflow:hidden;*/
+}
+
+.tableCreditCardPayment {
+	width: 100% !important;
+	height: 100% !important;
+	display: table;
+	/*overflow:hidden;	*/
+	color: white;
+}
+
+.tableCreditCardPayment td {
+	color: black !important;
+	/*height:20px !important;*/
+}
+
+.sticky {
+	display: sticky !important;
+	top: 0px !important;
+}
+
+.topMinusNegative50 {
+	top: -50px !important;
+}
+
+.tableCreditCardPayment tr {
+	height: 20px !important;
+	width: 100%;
+}
+
+.tableCreditCardPaymentHeader {
+	position: sticky !important;
+	top: 0 !important;
+	height: 30 !important;
+	background-color: #3c75b5;
+	width: 100% !important ;
+	display: table;
+}
+
+.tableAlmacenesExistencias {
+	display: table;
+	height: 100%;
+	width: 100%;
+}
+
+.tableAlmacenesExistencias tr td:last-child {
+	width: unset !important;
+	white-space: nowrap;
+}
+
+.tableAlmacenesExistenciasHeader {
+	position: sticky !important;
+	color: white;
+	text-align: center;
+	top: 0 !important;
+	height: 30 !important;
+	background-color: #3c75b5;
+	width: 100% !important;
+}
+.container i {
+    margin-left: -30px;
+    cursor: pointer;
+}

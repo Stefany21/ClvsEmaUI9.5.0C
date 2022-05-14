@@ -1,0 +1,99 @@
+<block-ui>
+  <div *ngIf="permisos">
+    <div class="row  pr-3">
+      <button class="btn btn-sm btn-success ml-auto" (click)="raiseuserModalCreation()"><i class="fas fa-plus-circle"></i> Agregar usuario</button>
+    </div>
+    <div class="row container-fluid  contenidoFacturacion ml-1 mr-1 pt-3">
+      <div class="col-md-12 pl-0 pr-0">
+      <table class="TableFacturacion invi" id="tbEnabled">
+        <thead>
+          <tr>
+            <th  scope="col"class="thHeader" width="2%">&nbsp;&nbsp;#</th>
+            <th  scope="col"class="thHeader" width="20%">Nombre completo</th>
+            <th  scope="col"class="thHeader" width="20%">Correo eletrónico</th>
+            <th  scope="col"class="thHeader" width="20%">Activo</th>
+            <th  scope="col"class="thHeader" width="1%">Opciones&nbsp;&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody  style="width: 100%;">
+          <tr *ngFor="let user of users;let i=index;"  scope="row" class="invi">
+            <td>&nbsp;{{i + 1}}</td>
+            <td>{{user.FullName}}</td>
+            <td>{{user.Email}}</td>
+            <td ><i class="fas fa-{{user.Active? 'check': 'times'}}"></i></td>           
+            <td>
+              <span style="cursor: pointer" class="far fa-edit cursor-hand" (click)="raiseUserModal(user.Id)"></span>
+          </td>  
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+    <!-- Button trigger modal -->
+    <button style="display: none;" id="triggerRaiseUserModal" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"></button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{userModalTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form  [formGroup]="userForm">
+              <div class="form-group" style="display: none;">
+                <label for="">Correo electrónico</label>
+                <input type="email" class="form-control form-control-sm" aria-describedby="emailHelp" formControlName="Id">
+                <small class="form-text text-muted text-danger">We'll never share your email with anyone else.</small>
+            </div>  
+              <div class="form-group">
+                <label>Nombre</label>
+                <input #UserName formControlName="FullName" type="text" class="form-control form-control-sm">
+                <p class="text-danger" *ngIf="userForm.get('FullName').invalid && !isValidForm">El nombre de usuario es requerido</p>
+              </div>
+              <div class="form-group">
+                <label>Correo electrónico</label>  
+                <input formControlName="Email" type="email" class="form-control form-control-sm">             
+                <p class="text-danger" *ngIf="userForm.get('Email').errors?.email">El formato de Email es:
+                  algo@ejemplo.com</p>
+                <p class="text-danger" *ngIf="userForm.get('Email').invalid && !isValidForm">El correo es requerido</p>
+              </div>
+              <!-- <div class="form-group">
+                <label>Contraseña</label>
+                <input formControlName="PasswordHash" [readonly] = "isUpdating" type="text" class="form-control form-control-sm">
+              </div> -->
+              <div class="form-group">
+                <label for="exampleInputPassword1">Contraseña</label><br>
+                <div class="form-check form-check-inline w-100">
+                    <input type="password" *ngIf="!isPasswordInputReandOnly" readonly class="form-control form-control-sm mr-2" formControlName="PasswordHash">
+                    <input type="password" *ngIf="isPasswordInputReandOnly" class="form-control form-control-sm mr-2 " formControlName="PasswordHash">
+                    <input class="form-check-inputm ml-2" formControlName="UpdatePassword" type="checkbox" style="transform: scale(1.5); cursor: pointer" 
+                    title="Editar contraseña" (click)="ToggleInputPasswordType()">
+                  </div>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" formControlName="Active" style="transform: scale(1.5); cursor: pointer">
+              <label class="form-check-label" for="exampleCheck1">Activo</label>
+          </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-sm"  (click)="saveuser()"><i class="fas fa-save"></i> Guardar</button>
+            <button id="hideButtonTrigger" type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+
+</block-ui>

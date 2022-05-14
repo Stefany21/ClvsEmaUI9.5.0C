@@ -1,0 +1,36 @@
+.invi {
+    border: none;
+    background-color: transparent;
+    /*word-break:break-all;*/
+}
+
+.tableFixHead {
+    overflow-y: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: block;
+    height: 30vh;
+    overflow-x: auto;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+}
+
+/*Pagination*/
+.page-item{
+    display:none;
+  }
+  .page-item:nth-child(1){
+    display:block;
+  }
+  .page-item:last-child{
+    display:block;
+  }
+  .ItemLineStatus {
+    background-color: #ccc;
+    input:disabled, select:disabled {
+  background: #ccc;
+}
+}  

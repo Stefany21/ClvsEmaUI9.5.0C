@@ -1,0 +1,84 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="float-right ml-1">
+                        <a class=" btn btn-success btn-sm button-action " (click)="saveChange() ">
+                            <i class="fa fa-save " aria-hidden="true "></i>&nbsp;Guardar cambios</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-sm-1 "></div>
+            <div class="col-sm-3 ">
+                <label class="control-label " for="UserListName "><strong>Usuario</strong></label>
+                <select class="form-control form-control-sm " id="UserListName " (change)="onChangeDataPerms($event.target.value) ">
+              <option *ngFor="let User of userList " value="{{User.Id}}">{{User.UserName}}</option>
+            </select>
+            </div>
+            <div class="col-sm-8 "></div>
+        </div>
+
+        <!--
+    <form [formGroup]="rdButons ">
+        <div class="row ">
+            <div class="col-sm-1 "></div>
+            <div class="col-sm-2 ">
+                <input type="radio " class="rbQuitar " formControlName="rControlQuitar " (click)="addAll() " value="poner ">Mover Todos
+            </div>
+            <div class="col-sm-3 "></div>
+            <div class="col-sm-2 ">
+                <input type="radio " class="rbQuitar " formControlName="rControlQuitar " (click)="deleteAll() " value="quitar ">Mover Todos
+            </div>
+            <div class="col-sm-4 "></div>
+        </div>
+    </form>
+    -->
+
+        <div class="row margin-t ">
+            <div class="col-sm-1 "></div>
+            <div class="col-sm-5 ">
+                <table class="table " id="tbEnabled ">
+                    <thead class="thead-light ">
+                        <tr>
+                            <th scope="col " width="500em " style="background-color:#3B75B5; color:white; ">Habilitados <span class="green-arrow fa fa-arrow-circle-right white-color-arrow fa-2x " (click)="deleteAll() "></span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="scroll ">
+                        <tr *ngFor="let perm of permListtable ">
+                            <td width="500em " class="hover-green " scope="col " (click)="changeBoolVal(perm) " *ngIf="perm.Active ">{{perm.Description}}&nbsp; <span class="green-arrow fa fa-arrow-circle-right green-color-arrow fa-2x " ngbPopover="Mover
+                        todos "></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-5 ">
+                <table class="table " id="tbdisabled " width="200px ">
+                    <thead class="thead-light ">
+                        <tr>
+                            <th scope="col " width="500em " style="background-color:#3B75B5; color:white; ">Deshabilitados <span class="green-arrow fa fa-arrow-circle-left white-color-arrow fa-2x " (click)="addAll() "></span> </th>
+                        </tr>
+                    </thead>
+                    <tbody class="scroll ">
+                        <tr *ngFor="let perm of permListtable ">
+                            <td width="500em " class="hover-red " scope="col " (click)="changeBoolVal(perm) " *ngIf="!perm.Active "><span class="hover-red green-arrow fa fa-arrow-circle-left red-color-arrow fa-2x "></span>{{perm.Description}}&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-1 "></div>
+
+        </div>
+
+    </div>
+    <div *ngIf="!permisos ">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+
+</block-ui>

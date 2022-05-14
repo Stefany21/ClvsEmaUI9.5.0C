@@ -1,0 +1,79 @@
+<div class="flux-content-section" [attr.nav-layout]="navLayout" [ngStyle]="{'height.px': contentHeight}" [attr.navbar-type]="toggleStatus ? defaultNavbar : toggleNavbar " [attr.effect-type]="navbarEffect" [attr.device-type]="deviceType">
+    <div class="flux-wrapper">
+        <div *ngIf="currentUser !== null" class="row">
+            <div class="col-md-12">
+                <div class="screen-title-section">
+                    <h1 class="screen-title">{{screenTitle}}</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a [routerLink]="['home']">Home</a></li>
+                            <li *ngIf="this.router.url.includes('/store') && this.router.url.includes('/companies')" class="breadcrumb-item" aria-current="page">Administración</li>
+                            <li *ngIf="this.router.url.includes('/store')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['store']">Almacenes</a></li>
+                            <li *ngIf="this.router.url.includes('/companies')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['store']">Compañías</a></li>
+                            <li *ngIf="this.router.url.includes('/companyCRUD')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['companyCRUD']">Mantenimiento compañías</a></li>
+                            <li *ngIf="this.router.url.includes('/users')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['users']">Usuarios</a></li>
+                            <li *ngIf="this.router.url.includes('/AssignsUsers')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['AssignsUsers']">Asignaciones de usuarios</a></li>
+                            <li *ngIf="this.router.url.includes('/userConf')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['userConf']">Mantenimiento usuarios</a></li>
+                            <li *ngIf="this.router.url.includes('/items')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['items']">Artículos</a></li>
+                            <li *ngIf="this.router.url.includes('/purchaseOrder')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['purchaseOrder']">Actualización órden de compra</a></li>
+                            <li *ngIf="this.router.url.includes('/purchaseorderList')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['purchaseorderList']">Actualizar órdenes de compra</a></li>
+                            <li *ngIf="this.router.url.includes('/returnGood')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['returnGood']">Devolución de mercancías</a></li>
+                            <li *ngIf="this.router.url.includes('/goodReceipt')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['goodReceipt']">Entrada de mercancías</a></li>
+                            <li *ngIf="this.router.url.includes('/series')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['series']">Series</a></li>
+                            <li *ngIf="this.router.url.includes('/serieConf')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['serieConf']">Mantenimiento series</a></li>
+                            <li *ngIf="this.router.url.includes('/businessPartner')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['businesspartner']">Socios de negocio</a></li>
+                            <li *ngIf="this.router.url.includes('/perms')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['perms']">Permisos</a></li>
+                            <li *ngIf="this.router.url.includes('/params')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['params']">Parametrizaciones</a></li>
+                            <li *ngIf="this.router.url.includes('/numbering')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['numbering']">Numeraciones</a></li>
+                            <li *ngIf="this.router.url.includes('/incomingPayment')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['incomingPayment']">Pago recibidos</a></li>
+                            <li *ngIf="this.router.url.includes('/outgoingPayment')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['outgoingPayment']">Pago efectuados</a></li>
+                            <li *ngIf="this.router.url.includes('/cancelPay')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['cancelPay']">Anular pagos</a></li>
+                            <li *ngIf="this.router.url.includes('/inventory')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['inventory']">Inventario</a></li>
+                            <li *ngIf="this.router.url.includes('/SOandSQ')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['SOandSQ']">Transformar cotizaciones y órdenes de venta</a></li>
+
+
+                            <li *ngIf="this.router.url.includes('/offline')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['offline']">Offline</a></li>
+                            <li *ngIf="this.router.url.includes('/offline')" class="ml-auto font-weight-bold"><a style="font-weight: bold;">{{offlineInfo}}</a></li>
+
+                            <li *ngIf="this.router.url.includes('/voucherCanceledPrintList')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['voucherCanceledPrintList']">Reimpresiones anulación tarjetas</a></li>
+                            <li *ngIf="this.router.url.includes('/so')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['so/6']">Órdenes de ventas</a></li>
+                            <li *ngIf="this.router.url.includes('/quotation')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['quotation/5']">Cotización</a></li>
+                            <li *ngIf="this.router.url.includes('/info')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['info']">Consulta de artículos</a></li>
+                            <li *ngIf="this.router.url.includes('/creditnote')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['creditnote']">Nota de crédito</a></li>
+                            <li *ngIf="this.router.url.includes('/invo')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['invo/7']">Factura (Contado/Crédito)</a></li>
+                            <li *ngIf="this.router.url.includes('/apinvo')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['apinvo']">Facturación proveedor</a></li>
+                            <li *ngIf="this.router.url.includes('/goodsReceiptInv')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['goodsReceiptInv']">Entrada de inventario</a></li>
+                            <li *ngIf="this.router.url.includes('/goodsIssueInv')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['goodsIssueInv']">Salida de inventario</a></li>
+                            <li *ngIf="this.router.url.includes('/cashflow')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['cashflow']">Movimientos de dinero</a></li>
+                            <li *ngIf="this.router.url.includes('/print')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['print']">Reimpresiones</a></li>
+                            <li *ngIf="this.router.url.includes('/balance')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['balance']">Cierres de caja</a></li>
+                            <li *ngIf="this.router.url.includes('/terminalBalance')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['terminalBalance']">Precierre de tarjetas</a></li>
+                            <li *ngIf="this.router.url.includes('/terminals')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['terminals']">Terminales</a></li>
+                            <li *ngIf="this.router.url.includes('/udfs')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['udfs']">Campos definidos por usuario (UDFs)</a></li>
+                            <li *ngIf="this.router.url.includes('/report')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['report/0']">Imprimir reporte</a></li>
+                            <li *ngIf="this.router.url.includes('/manage-reports')" class="breadcrumb-item active" aria-current="page"><a [routerLink]="['manage-reports']">Administrar reportes</a></li>
+                            <li *ngIf="documentInformation !== ''" class="breadcrumb-item active" aria-current="page"><a>{{documentInformation}}</a></li>
+                            <li *ngIf="(this.router.url =='/invo/7' && ShowMemoryInvoices)">     
+                            <!-- <li *ngIf="(this.router.url =='/invo' && ShowMemoryInvoices)">    -->  
+   
+                                <div class="cont">
+                                    <div *ngFor="let item of InvoicesInMemory; index as i" class="Invoices" [ngClass]="{'IsSelected': item.IsSelected}">
+                                        <a (click)="OnClickInvoice(item)">{{this.docName}} #{{item.Id}}&nbsp;</a><span *ngIf="i+1<InvoicesInMemory.length">|</span>
+                                        <!-- <button type="button" class="close" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button> -->
+                                    </div>
+                                    &nbsp;&nbsp;
+                                    <a style="cursor: pointer;" class="fas fa-plus-circle" title="Agregar otra factura." (click)="OnclickAdd()"></a>
+                                </div>
+
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<app-footer *ngIf="currentUser !== null"></app-footer>

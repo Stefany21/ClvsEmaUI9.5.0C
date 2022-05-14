@@ -1,0 +1,80 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input class="form-control form-control-sm" type="text" [(ngModel)]="searchUser" (keyup)='filterDatatable($event)' placeholder="Escriba aquí para filtrar el resultado" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="float-right ml-1">
+                        <a class="btn btn-success btn-sm button-action" (click)="confPage(0)">
+                            <i class="fa fa-plus cursor-hand" aria-hidden="true"></i>&nbsp;Agregar Almacén</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row container-fluid  contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table class="TableFacturacion invi" id="tbEnabled">
+                    <thead>
+                        <tr>
+                        <th scope="col"class="thHeader" width="20%">&nbsp;&nbsp;Id</th>
+                        <th scope="col" class="thHeader" width="20%">Nombre</th>
+                        <th scope="col" class="thHeader" width="20%">Compañía</th>
+                        <th scope="col" class="thHeader" width="20%">Código SAP</th>
+                        <th scope="col" class="thHeader" width="20%">Nombre SAP</th>
+                        <th scope="col" class="thHeader" width="20%">Activo</th>
+                        <th scope="col" class="thHeader" width="1%">Opciones&nbsp;&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody style="width: 100%;">
+                    <tr scope="row" *ngFor="let store of filteredData" class="invi">
+                        <td>&nbsp;{{store.Id}}</td>
+                        <td>{{store.Name}}</td>
+                        <td>{{store.companyName}}</td>
+                        <td>{{store.StoreCode}}</td>
+                        <td>{{store.StoreName}}</td>
+                       
+                        <td class=""><i class="fas fa-{{store.StoreStatus? 'check': 'times'}}"></i></td>  
+                        <td>
+                            <span style="cursor: pointer" class="far fa-edit cursor-hand" (click)="confPage(store.Id)"></span>
+                        </td>          
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
+        <!-- <ngx-datatable #table [rows]="storesList" [reorderable]="reorderable" [columnMode]="'force'" [draggable]="true">
+
+            <ngx-datatable-column name="ID" prop="Id">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    <strong>{{value}}</strong>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Nombre" prop="Name"></ngx-datatable-column>
+            <ngx-datatable-column name="Compañía" prop="companyName"></ngx-datatable-column>
+            <ngx-datatable-column name="Código SAP" prop="StoreCode">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    <strong>{{value}}</strong>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Nombre SAP" prop="StoreName"></ngx-datatable-column>
+            <ngx-datatable-column name="Activo" prop="StoreStatus">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    <input type="checkbox" [checked]=value [disabled]="true">
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Editar" prop="Id">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    <i class="far fa-edit cursor-hand" (click)="confPage(value)"></i>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable> -->
+
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

@@ -1,0 +1,115 @@
+<block-ui>
+  <div *ngIf="permisos">
+    <div class="row">
+      <div class="col-sm-3 mb-3 pb-3">
+        <h6>Categorías</h6>
+        <ul class="list-group list">
+          <li *ngFor="let category of categories" class="list-group-item" [ngClass]="{'isActive': category.IsSelected}"
+            aria-current="true" (click)="ToggleCategorySelect(category)" style="cursor: pointer;">{{category.Name}}
+            {{category.Description}}</li>
+        </ul>
+      </div>
+      <div class="col-sm-9 mb-3 pb-3">
+        <ul class="list-inline">
+          <li class="list-inline-item float-left">
+            <h6>Definiciones de usuario</h6>
+          </li>
+          <li class="list-inline-item float-right">
+            <button class="btn-sm btn btn-success" (click)="SaveUdfSettings()"><i class="far fa-save"></i>
+              Guardar</button>
+          </li>
+        </ul>
+        <br>
+        <table class="table table-sm mt-1 table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Tipo</th>
+              <th scope="col" class="text-center">Obligatorio</th>
+              <th scope="col" class="text-center">Visible</th>
+              <th scope="col" class="text-center">Activo</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let udf of udfs; index as i">
+              <th scope="row">{{ i + 1}}</th>
+              <td>{{udf.Name}}</td>
+              <td>{{udf.Description}}</td>
+              <td>{{MapDataType(udf.FieldType)}}</td>
+              <td class="text-center">
+                <i class="fas fa-minus" *ngIf="!udf.IsRequired" (click)="ToggleUdfState(udf, 1)"
+                  style="cursor: pointer;"></i>
+                <i class="fas fa-check" *ngIf="udf.IsRequired" (click)="ToggleUdfState(udf, 1)"
+                  style="cursor: pointer;"></i>
+              </td>
+              <td class="text-center">
+                <i class="fas fa-minus" *ngIf="!udf.IsRendered" (click)="ToggleUdfState(udf, 2)"
+                  style="cursor: pointer;"></i>
+                <i class="fas fa-check" *ngIf="udf.IsRendered" (click)="ToggleUdfState(udf, 2)"
+                  style="cursor: pointer;"></i>
+              </td>
+              <td class="text-center">
+                <i class="fas fa-minus" *ngIf="!udf.IsActive" (click)="ToggleUdfState(udf, 3)"
+                  style="cursor: pointer;"></i>
+                <i class="fas fa-check" *ngIf="udf.IsActive" (click)="ToggleUdfState(udf, 3)"
+                  style="cursor: pointer;"></i>
+              </td>
+              <td>
+
+                <div class="btn-group btn-block">
+                  <button disabled *ngIf="!udf.MappedValues" class="btn btn-info btn-sm dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Valores disponibles
+                  </button>
+
+                  <button *ngIf="udf.MappedValues" class="btn btn-info btn-sm btn-block dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Valores disponibles
+                  </button>
+                  <div class="dropdown-menu p-1 w-100">
+                    <label>
+                      <input type="checkbox" style="cursor: pointer;" (click)="ToggleMultiValue(udf.Name, -1)"
+                        [attr.id]="'firt_input_'+udf.Name" /> Seleccionar todo</label>
+                    <div *ngFor="let udfValue of udf.MappedValues">
+                      <label *ngIf="udfValue.IsActive">
+                        <input type="checkbox" style="cursor: pointer;" [attr.id]="'sub_' +udf.Name + udfValue.Value"
+                          checked (click)="ToggleUdfValue(udf.Name, udfValue.Value, $event)" /> {{ udfValue.Value + '-'
+                        + udfValue.Description}}</label>
+
+                      <label *ngIf="!udfValue.IsActive">
+                        <input type="checkbox" style="cursor: pointer;" [attr.id]="'sub_' +udf.Name + udfValue.Value"
+                          (click)="ToggleUdfValue(udf.Name, udfValue.Value, $event)" /> {{ udfValue.Value + '-' +
+                        udfValue.Description}}</label>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between p-2">        
+          <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize"
+          (pageChange)="searchGetUdfs()" [maxSize]="1">
+         </ngb-pagination>
+
+          <select class="custom-select" style="width: auto; height:min-content;" [(ngModel)]="pageSize"  
+            (ngModelChange)="searchGetUdfs()">
+            <option [ngValue]="5">5 udfs por página</option>
+            <option [ngValue]="10">10 udfs por página</option>
+            <option [ngValue]="15">15 udfs por página</option>
+            <option [ngValue]="20">20 udfs por página</option>
+          </select>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+</block-ui>

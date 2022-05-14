@@ -1,0 +1,79 @@
+<block-ui>
+  <div *ngIf="permisos">  
+    <div class="contaier-fluid">
+      <div class="row justify-content-end mb-2">
+        <div class="col-md-2">
+          <button [disabled]="cashflowForm.invalid" type="button" class="btn btn-sm btn-success btn-block"
+            (click)="onClickCashflow()">
+            Guardar cambios
+          </button>
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-sm btn-danger btn-block" (click)="onClickInitPage()">
+            Limpiar campos
+          </button>
+        </div>
+      </div>
+      <form [formGroup]="cashflowForm" class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" class="form-control form-control-sm" formControlName="UserName">
+            <div *ngIf="formControls.UserName.errors" class="invalid-feedback">
+              <div *ngIf="formControls.UserName.errors.required">Este campo es requerido</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Monto</label>
+            <input type="number" class="form-control form-control-sm" formControlName="Amount"
+              [ngClass]="{ 'is-invalid': formControls.Amount.errors && formControls.Amount.touched }" />
+            <div *ngIf="formControls.Amount.errors" class="invalid-feedback">
+              <div *ngIf="formControls.Amount.errors.required">Este campo es requerido</div>
+            </div>
+          </div>
+        </div>  
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Tipo de movimiento</label>
+            <select formControlName="Type" class="form-control form-control-sm"
+              [ngClass]="{ 'is-invalid': formControls.Type.errors && formControls.Type.touched }">
+              <option value="1">Salida</option>
+              <option value="2">Ingreso</option>
+            </select>
+            <div *ngIf="formControls.Type.errors" class="invalid-feedback">
+              <div *ngIf="formControls.Type.errors.required">Este campo es requerido</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Motivo</label>
+            <select formControlName="Reason" class="form-control form-control-sm"
+              [ngClass]="{ 'is-invalid': formControls.Reason.errors && formControls.Reason.touched }">
+              <option *ngFor="let reason of Reasons" [value]="reason.Id">
+                {{reason.Name}}</option>  
+            </select>
+            <div *ngIf="formControls.Reason.errors" class="invalid-feedback">
+              <div *ngIf="formControls.Reason.errors.required">Este campo es requerido</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>Detalles</label>
+            <textarea rows="1" formControlName="Details" class="form-control form-control-sm"
+              maxlength="250"></textarea>
+            <div class="text-right">
+              {{cashflowForm.get('Details').value.length}}/250
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+</div>
+</block-ui>

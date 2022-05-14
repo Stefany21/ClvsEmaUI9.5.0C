@@ -1,0 +1,251 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-right ml-1">
+                        <a class="btn btn-success btn-sm button-action" (click)="SendInfoAll(viewParamListHeader, viewParamListItem, viewParamListTotals, viewParamTitles, viewParamListMenu, viewParamListSubMenu)">
+                            <i class="fa fa-save cursor-hand" aria-hidden="true"></i>&nbsp;Guardar todo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-12">
+            <!-- tabla con las parametrizaciones de los datos maestros -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11" placement="left">
+                        <h5>
+                            <h5 class="fa fa-list-alt"></h5>&nbsp;Datos de cabecera </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="right" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamListHeader)"></span></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 40% !important;">Campo/Etiqueta</th>
+                                    <th scope="col" style="width: 50% !important;">Descripción(texto)</th>
+                                    <th scope="col" style="width: 9% !important;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamListHeader; index as i">
+                                    <td scope="row" style="width: 40% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 50% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                    <td style="width: 9% !important;">
+                                        <input type="checkbox" [checked]="param.Visibility" [(ngModel)]="param.Visibility">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- tabla con las parametrizaciones de campos de tablas de facturacion -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11 titulo">
+                        <h5>
+                            <h5 class="fa fa-table"></h5>&nbsp;Tabla de artículos (Items) </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamListItem)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 12% !important;">Órden</th>
+                                    <th scope="col" style="width: 30% !important;">Columna</th>
+                                    <th scope="col" style="width: 30% !important;">Descripción(texto)</th>
+                                    <th scope="col" style="width: 9% !important;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                    <th scope="col" style="width: 9% !important;"></th>
+                                    <th scope="col" style="width: 9% !important;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamListItem; index as i">
+                                    <th scope="row" style="width: 12% !important;">{{param.Order}}</th>
+                                    <td style="width: 30% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 30% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                    <td style="width: 9% !important;">
+                                        <input type="checkbox" [checked]="param.Visibility" [(ngModel)]="param.Visibility">
+                                    </td>
+                                    <td style="width: 9% !important;" class="resalte_azul" (click)="UpOrder(i)">
+                                        <span class="fa fa-arrow-circle-up"></span>
+                                    </td>
+                                    <td style="width: 9% !important;" class="resalte_rojo" (click)="DownOrder(i)">
+                                        <span class="fa fa-arrow-circle-down"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-12">
+            <!-- tabla con las parametrizaciones de los totales -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11 titulo">
+                        <h5>
+                            <h5 class="fas fa-money-bill"></h5>&nbsp;Datos de totales de facturación </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamListTotals)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 40% !important;">Campo/Etiqueta</th>
+                                    <th scope="col" style="width: 50% !important;">Descripción(texto)</th>
+                                    <th scope="col" style="width: 9% !important;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamListTotals; index as i">
+                                    <td scope="row" style="width: 40% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 50% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                    <td style="width: 9% !important;">
+                                        <input type="checkbox" [checked]="param.Visibility" [(ngModel)]="param.Visibility">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- tabla con las parametrizaciones de los titulos -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11 titulo">
+                        <h5>
+                            <h5 class="fa fa-font"></h5>&nbsp;Títulos de las vistas </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamTitles)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 50% !important;">Campo/Etiqueta</th>
+                                    <th scope="col" style="width: 49% !important;">Descripción(texto)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamTitles; index as i">
+                                    <td scope="row" style="width: 50% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 49% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-12">
+            <!-- tabla con las parametrizaciones del menu principal -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11 titulo">
+                        <h5>
+                            <h5 class="fas fa-desktop"></h5>&nbsp; Menú principal </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamListMenu)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 40% !important;">Campo/Etiqueta</th>
+                                    <th scope="col" style="width: 50% !important;">Descripción(texto)</th>
+                                    <th scope="col" style="width: 9% !important;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamListMenu; index as i">
+                                    <td scope="row" style="width: 40% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 50% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                    <td style="width: 9% !important;">
+                                        <input type="checkbox" [checked]="param.Visibility" [(ngModel)]="param.Visibility">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- tabla con las parametrizaciones del sub menu -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-11 titulo">
+                        <h5>
+                            <h5 class="fas fa-desktop"></h5>&nbsp; Sub menú </h5>
+                    </div>
+                    <div class="col-sm-1 titulo guardar" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Guardar"><span class="fa fa-save" (click)="SendInfoItemsParams(viewParamListSubMenu)"></span></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead style="background-color:#3B75B5; color:white;">
+                                <tr>
+                                    <th scope="col" style="width: 40% !important;">Campo/Etiqueta</th>
+                                    <th scope="col" style="width: 50% !important;">Descripción(texto)</th>
+                                    <th scope="col" style="width: 9% !important;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of viewParamListSubMenu; index as i">
+                                    <td scope="row" style="width: 40% !important;">{{param.Descrip}}</td>
+                                    <td style="width: 50% !important;">
+                                        <input class="invi maxWidth" type="text" [(ngModel)]="param.Text">
+                                    </td>
+                                    <td style="width: 9% !important;">
+                                        <input type="checkbox" [checked]="param.Visibility" [(ngModel)]="param.Visibility">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

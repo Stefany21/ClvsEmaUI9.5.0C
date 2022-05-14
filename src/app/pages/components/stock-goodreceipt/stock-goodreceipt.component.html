@@ -1,0 +1,191 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="row">
+            <div class="col-md-12">
+                <div class=" float-right ml-1">
+                    <a class="btn btn-danger btn-sm button-action" (click)="resetGUI()">
+                        <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                </div>
+                <div class="float-right ml-1">
+                    <a class="btn btn-success btn-sm button-action" id="CreateInvo" (click)="createGoodsRecipt()">
+                        <i class="fas fa-receipt" aria-hidden="true"></i>&nbsp;Crear entrada</a>
+                </div>
+            </div>
+        </div>
+
+        <form [formGroup]="entryForm">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group input-group-sm">
+                        <label for="">Cant.</label>
+                        <input id="demoDrop" type="number" formControlName="Quantity"
+                            class="form-control form-control-sm">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group input-group-sm">
+                        <label for="">Artículo</label>
+                        <div id="scrollable-dropdown-menu">
+                            <input #name [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode"
+                                class="form-control form-control-sm input-lg" type="text"
+                                (selectItem)="addItems($event)" id="ItemCodeManualTrigger">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group input-group-sm">
+                        <label for="">Almacén</label>
+                        <select class="form-control form-control-sm" formControlName="WareHouse" [(ngModel)]="WareHouse"
+                            (change)="onSelectBoxChange($event)">
+                            <option *ngFor="let s of Stores" value="{{s.StoreCode}}">
+                                {{ s.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+            <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                    <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                        <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                            <label>{{udf.Description}}</label>
+                            <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm"
+                                id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                        </div>
+                        <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                            <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                            <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}"
+                                style="display: inline;">
+                                <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                    {{value.Description}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="row container-fluid contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table class="table table-responsive TableFacturacion invi table-sm table-responsive-lg">
+                    <thead>
+                        <tr>
+                            <th class="thHeader" scope="col" style="width: 5%;">&nbsp;&nbsp;#</th>
+                            <th class="thHeader" scope="col" style="width: 10%;">Código</th>
+                            <th class="thHeader" scope="col" style="width: 18%;">Descripción</th>
+                            <th class="thHeader" scope="col" style="width: 1%;">Cantidad</th>
+                            <th class="thHeader" scope="col" style="width: 10%;">P. unitario</th>
+                            <th class="thHeader" scope="col" style="width: 10%;">Total línea</th>
+                            <th class="thHeader" scope="col" style="width: 1%;">Opciones&nbsp;&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="canDrag"
+                        style="width: 100%;">
+                        <tr scope="row" *ngFor="let line of lines;let i=index;" cdkDrag cdkDragLockAxis="y"
+                            class="p-0 invi">
+                            <td>&nbsp;{{ i + 1 }}</td>
+                            <td>{{ line.ItemCode }}</td>
+                            <td>{{ line.ItemName }}</td>
+                            <!-- <td>
+                              <select style="background-color:#ecf0f8; color:black; border: none;" class="form-control form-control-sm" (change)="onSelectBoxLineChange($event, i)">
+                                  <option *ngFor="let s of Stores" [selected]="s.StoreCode == line.WareHouse" [ngValue]="s.StoreCode" >
+                                      {{ s.Name }}
+                                  </option>
+                              </select> 
+                          </td> -->
+                            <td>
+                                <input (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    id="quantity_{{i}}" style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center" [ngModel]="line.Quantity"
+                                    (change)="focusOut($event, i, '0')" type="number" min="0" (ngModelChange)="line.Quantity = $event>=0? $event:0">
+                                <!-- <input (blur)="lostFocus(i, '0')" [ngClass]="{'d-none':isOnEditMode}" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center" (click)="toggleEdition(i, '0')" value="{{line.Quantity}}">
+                              <input (blur)="lostEditFocus()" #quantities [ngClass]="{'d-none':!isOnEditMode}" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center" (keyup)="onKeyUp(i,$event, '0')" value="{{line.Quantity}}" type="text">
+                          -->
+                            </td>
+                            <!-- (focusout)="onFocusOutEvent($event)" -->
+                            <td>
+                                <input (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    id="unitPrice_{{i}}" style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center"
+                                    [ngModel]="line.UnitPrice | number:TO_FIXED_PRICE"
+                                    (change)="focusOut($event, i, '1')" type="text" min="0" (ngModelChange)="line.UnitPrice = $event>=0? $event:0">
+                                <!-- (ngModelChange)="item.value=currencyInputChanged($event)" -->
+                                <!-- <input (click)="toggleEdition(i, '0')" (blur)="lostFocus(i, '1')" [ngClass]="{'d-none':isOnEditMode}" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center " value="{{line.UnitPrice | number:'.2-2'}}">
+                              <input (blur)="lostEditFocus()" #unitPrices [ngClass]="{'d-none':!isOnEditMode}" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center " (keyup)="onKeyUp(i,$event, '1') " value="{{line.UnitPrice}}" type="text"> -->
+                            </td>
+                            <!-- <td>
+                              <input style="background-color:#ecf0f8; color:black; border: none;" class="  form-control text-center " (keyup)="onKeyUp(i,$event, '2') " value="{{line.Discount}}">
+                          </td> -->
+                            <!-- <td>
+                              <select style="background-color:#ecf0f8; color:black; border: none;" class="form-control form-control-sm" (change)="onSelectBoxLineChangeTax($event, i)">
+                                  <option *ngFor="let t of taxesList; let iT = index" [selected]="t.TaxCode == line.TaxCode" [ngValue]="iT" >
+                                      {{ t.TaxCode }}
+                                  </option>
+                              </select>
+                          </td> -->
+                          
+                            <td>
+                                <input (mouseenter)="onMouseEnterColumn()" (mouseleave)="onMouseLeaveColumn()"
+                                    id="totalLine_{{i}}" style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="inputFocused form-control text-center"
+                                    [ngModel]="line.TotalLine | number:TO_FIXED_TOTALLINE"
+                                    (change)="focusOut($event, i, '3')" type="text" min="0" (ngModelChange)="line.TotalLine = $event>=0? $event:0" >
+                                <!-- (ngModelChange)="item.value=currencyInputChanged($event)" -->
+                                <!-- <input (click)="toggleEdition(i, '0')" (blur)="lostFocus(i, '2')" [ngClass]="{'d-none':isOnEditMode}" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center " (click)="toggleEdition('2') " value="{{ (line.UnitPrice * line.Quantity ) | number:'.2-2'}}">
+                              <input (blur)="lostEditFocus()" #totalLine *ngIf="isOnEditMode" style="background-color:#ecf0f8; color:black; border: none;" class=" form-control text-center " (keyup)="onKeyUp(i,$event, '4') " value="{{ (line.UnitPrice * line.Quantity )}}"> -->
+                            </td>
+                            <td class="form-group input-group-sm ml-auto text-center" style="padding: 0px;">
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-trash" aria-hidden="true" title="Eliminar línea"
+                                        (click)="setCurrentIndex(i); removeItem()"></i>
+                                </li>
+
+                                <li class="list-inline-item cursor-hand">
+                                    <i class="fa fa-plus" aria-hidden="true" title="Agregar línea"
+                                        (click)="setCurrentIndex(i); addLine()"></i>
+                                </li>
+                            </td>
+                            <!-- <td><button
+                                    style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="btn btn-link btn-xs" ngbpopover="Eliminar" placement="left"
+                                    triggers="mouseenter:mouseleave" (click)="removeItem(i)" type="button"><i
+                                        class="fa fa-trash"></i></button></td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-3 pb-3">
+            <div class="col-sm-9 pb-3">
+                <input type="text" [(ngModel)]="Comment" class="form-control form-control-sm"
+                    placeholder="Observaciones">
+            </div>
+            <div class="col-sm-2 text-right pb-3">
+                <h5 class="ml-auto mr-3 mt-1">Total {{ CRCTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT
+                    }}
+                </h5>
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="!permisos ">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+    <ng-template #popTitle>Opciones</ng-template>
+    <ng-template #popContent>
+        <button class="btn btn-sm btn-light btn-block text-left" (click)="addLine()"><i class="fa fa-plus"></i> Agregar
+            línea </button>
+        <button class="btn btn-sm btn-light btn-block text-left" (click)="upLine()"><i class="fa fa-arrow-up mr-auto"
+                aria-hidden="true"></i> Subir línea</button>
+        <button class="btn btn-sm btn-light btn-block text-left" (click)="downLine()"><i class="fa fa-arrow-down"></i>
+            Bajar línea</button>
+        <button class="btn btn-sm btn-light btn-block text-left" (click)="removeItem()"><i class="fa fa-trash"
+                id="deleteButton"></i> Eliminar línea</button>
+    </ng-template>
+
+</block-ui>

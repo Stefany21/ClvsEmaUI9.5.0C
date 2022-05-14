@@ -1,0 +1,311 @@
+<block-ui>
+  <div *ngIf="permisos">
+      <div class="row">
+          <div class="col-sm-12">
+              <form [formGroup]="searchForm">
+                  <div class="row">
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label for="Suplier">Empleado de ventas</label>
+                              <input id="Suplier" type="text" class="form-control form-control-sm"
+                                  formControlName="slpCode" [ngbTypeahead]="searchSLP" />
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label for="FechaIni">Fecha inicial</label>
+                              <input type="date" formControlName="fini" class="form-control form-control-sm" />
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label for="FechaFin">Fecha final</label>
+                              <input type="date" formControlName="ffin" class="form-control form-control-sm" />
+                          </div>
+                      </div>
+
+                      <div class="col-sm-2">
+                          <div class="form-group">
+                              <label>&nbsp;</label>
+                              <a class="btn btn-primary form-control form-control-sm btn-sm button-action"
+                                  (click)="search()">
+                                  <i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>
+                          </div>
+
+                      </div>
+                      <div class="col-sm-2">
+                          <div class="form-group">
+                              <label>&nbsp;</label>
+                              <a class="btn btn-danger form-control  form-control-sm btn-sm button-action"
+                                  (click)="CreateNew()">
+                                  <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                          </div>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label for="Suplier">Cliente</label>
+                              <input id="Suplier" type="text" class="form-control form-control-sm"
+                                  formControlName="cardCode" [ngbTypeahead]="searchBP" />
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label for="FechaFin">Tipo documento</label>
+                              <br>
+                              <div class="form-check form-check-inline mt-1">
+                                  <input id="inlineRadio1" class="form-check-input" type="radio" value="SO"
+                                      formControlName="doctype" (click)="changeDocumentType('SO')"
+                                      style="transform:scale(1.5);">
+                                  <label class="form-check-label" for="inlineRadio1">Órden Venta</label>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                  <input id="inlineRadio2" class="form-check-input" type="radio" value="SQ"
+                                      formControlName="doctype" (click)="changeDocumentType('SQ')"
+                                      style="transform:scale(1.5);">
+                                  <label class="form-check-label" for="inlineRadio2">Cotización</label>
+                              </div>
+                              <!-- <label style="mr-1">
+                                  <input type="radio" value="SO" formControlName="doctype">
+                                    <span>Orden Venta</span>
+                                </label>
+                                <label>
+                                  <input type="radio" value="SQ" formControlName="doctype">
+                                    <span>Proforma</span>
+                                </label> -->
+                              <!-- <select (change)="changeDocumentType()" formControlName="doctype"
+                                  class="form-control form-control-sm">
+                                  <option value="SO" selected>Orden de venta</option>
+                                  <option value="SQ">Proforma</option>
+                              </select> -->
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label>DocNum</label>
+                              <input type="text" class="form-control form-control-sm" formControlName="docNum" />
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label>Estado documento</label>
+                              <select formControlName="docStatus" class="form-control form-control-sm">
+                                  <option value="O" selected>Abierto</option>
+                                  <option value="C">Cerrado</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+
+
+              </form>
+          </div>
+      </div>
+
+      <div class="row">
+          <div class="col-sm-12">
+              <table class="table inv table-sm table-hover table-bordered" id="tbEnabled">
+                  <thead>
+                      <tr>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw" class="invi">
+                              Num. Doc</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw" class="invi">
+                              Cliente</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">
+                              Fecha</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">
+                              Total</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="150vw" class="invi">
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody class="scroll">
+                      <tr *ngFor="let so of saleOrders">
+                          <td scope="col" width="400vw" class="invi">{{so.DocNum}}</td>
+                          <td scope="col" width="400vw" class="invi">{{so.CardCode + ' ' + so.CardName}}</td>
+                          <td scope="col" width="250vw" class="invi">{{so.DocDate |date:'dd/MM/yyyy'}}</td>
+                          <td scope="col" width="250vw" class="invi">{{so.DocTotal | number:'.2-2'}}</td>
+                          <td scope="col" width="150vw" class="invi">
+                              <ul class="list-inline">
+                                  <li class="list-inline-item" style="font-size: 18px;"
+                                      (click)="preview(so.DocEntry, 0)"><i
+                                          class="fas fa-align-center cursor-hand m-auto" title="Previsualizar"></i>
+                                  </li>
+                                  <li class="list-inline-item"
+                                      (click)="edit(so.DocEntry, 0, so.DocCurrency, so.CardCode, so.SalesPersonCode)"><i
+                                          class="far fa-edit cursor-hand" title="Editar" style="font-size: 18px;"></i>
+                                  </li>
+                                  <li class="list-inline-item"
+                                        (click)="copyTo(so.DocEntry, so.DocCurrency, so.CardCode, so.SalesPersonCode)"
+                                        title="Copiar a facturación" style="font-size: 18px;"><i
+                                            class="far fa-copy cursor-hand"></i></li>
+                              </ul>
+                          </td>
+                      </tr>
+                      <tr *ngFor="let sq of saleQuotations">
+                          <td scope="col" width="400vw" class="invi">{{sq.DocNum}}</td>
+                          <td scope="col" width="400vw" class="invi">{{sq.CardCode + ' ' + sq.CardName}}</td>
+                          <td scope="col" width="250vw" class="invi">{{sq.DocDate |date:'dd/MM/yyyy'}}</td>
+                          <td scope="col" width="250vw" class="invi">{{sq.DocTotal | number:'.2-2'}}</td>
+                          <td scope="col" width="150vw" class="invi">
+                              <ul class="list-inline">
+                                  <li class="list-inline-item ml-1 mr-1" (click)="printQuotation(sq.DocEntry)"
+                                      title="Imprimir" style="font-size: 18px;"><i
+                                          class="fas fa-print cursor-hand m-auto"></i>
+                                  </li>
+                                  <li class="list-inline-item ml-1 mr-1" (click)="preview(sq.DocEntry, 1)"
+                                      title="Previsualizar" style="font-size: 18px;"><i
+                                          class="fas fa-align-center cursor-hand m-auto"></i>
+                                  </li>
+                                  <li class="list-inline-item ml-1 mr-1"
+                                      (click)="edit(sq.DocEntry, 1, sq.DocCurrency, sq.CardCode, sq.SalesPersonCode)"
+                                      title="Editar" style="font-size: 18px;"><i class="far fa-edit cursor-hand"></i>
+                                  </li>
+                                  <li class="list-inline-item"
+                                      (click)="copyTo(sq.DocEntry, sq.DocCurrency, sq.CardCode, sq.SalesPersonCode)"
+                                      title="Copiar a órden de venta" style="font-size: 18px;"><i
+                                          class="far fa-copy cursor-hand"></i></li>
+                              </ul>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <div class="d-flex justify-content-between p-2">
+                  <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize"
+                      (pageChange)="search()" [maxSize]="1">
+
+                      <ng-template ngbPaginationPrevious>Ant.</ng-template>
+                      <ng-template ngbPaginationNext>Sig.</ng-template>
+                  </ngb-pagination>
+                  <select class="custom-select" [(ngModel)]="pageSize" style="width: auto; height:min-content;"
+                      (change)="search()">
+                      <option [ngValue]="5">5 Órdenes por página</option>
+                      <option [ngValue]="10">10 Órdenes por página</option>
+                      <option [ngValue]="15">15 Órdenes por página</option>
+                      <option [ngValue]="20">20 Órdenes por página</option>
+                  </select>
+
+              </div>
+          </div>
+      </div>
+
+  </div>
+
+  <!-- Large modal -->
+  <button id="previewTrigger" type="button" class="btn btn-primary" data-toggle="modal"
+      data-target=".bd-example-modal-lg" style="display: none;"></button>
+
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Previsualización del documento</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form [formGroup]="previewForm">
+                      <fieldset disabled>
+                          <div class="row">
+                              <div class="col">
+                                  <div class="form-group">
+                                      <label>Nombre del cliente</label>
+                                      <input formControlName="CardName" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label>Fecha de creación</label>
+                                      <input formControlName="DocDate" type="date"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label>Número del documento</label>
+                                      <input formControlName="DocNum" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-group">
+                                      <label for="disabledTextInput">Empleado de ventas</label>
+                                      <input formControlName="SalesMan" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="disabledTextInput">Total del documento</label>
+                                      <input formControlName="DocTotal" type="text"
+                                          class="form-control form-control-sm"
+                                          [value]="previewForm.get('DocTotal').value | number:'1.2-2'">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row tableFixHead">
+
+                              <table class="table inv table-sm table-hover table-bordered" id="tbEnabled">
+                                  <thead>
+                                      <tr>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw"
+                                              class="invi">
+                                              Producto</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Cant.</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Precio</th>
+                                              <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                                class="invi">
+                                                Descuento</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Impuesto</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="150vw"
+                                              class="invi">
+                                              Total línea</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody class="scroll" *ngIf="saleQuotation" [ngStyle]="{ 'width': '100%' }"
+                                      #scrollMe [scrollTop]="scrollMe.scrollTop">
+                                      <tr *ngFor="let line of saleQuotation.DocumentLines">
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="400vw" class="invi">{{line.ItemCode}} -
+                                              {{line.ItemName}}</td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.Quantity}}</td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.UnitPrice | number:'2.2'}}
+                                          </td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.DiscountPercent}}</td>
+                                            <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.TaxCode}}</td>
+                                            <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">
+                                                {{(((line.UnitPrice * line.Quantity) - ((line.UnitPrice * line.Quantity) * line.DiscountPercent / 100)) + ((line.UnitPrice * line.Quantity) - ((line.UnitPrice * line.Quantity) * line.DiscountPercent / 100)) * line.TaxRate / 100) | number:'2.2'}}
+                                            </td>
+                                      </tr>
+                                  </tbody>
+                                  <tbody class="scroll" *ngIf="saleOrder">
+                                      <tr *ngFor="let line of saleOrder.DocumentLines">
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="400vw" class="invi">{{line.ItemCode}} -
+                                              {{line.ItemName}}</td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.Quantity}}</td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'"  scope="col" width="250vw" class="invi">{{line.UnitPrice | number:'2.2'}}
+                                          </td>
+                                          <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.DiscountPercent}}</td>
+                                            <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">{{line.TaxCode}}</td>
+                                            <td [class.ItemLineStatus]="line.LineStatus === 'C'" scope="col" width="250vw" class="invi">
+                                                {{(((line.UnitPrice * line.Quantity) - ((line.UnitPrice * line.Quantity) * line.DiscountPercent / 100)) + ((line.UnitPrice * line.Quantity) - ((line.UnitPrice * line.Quantity) * line.DiscountPercent / 100)) * line.TaxRate / 100) | number:'2.2'}}
+                                            </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </fieldset>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i
+                          class="fas fa-times"></i> Cerrar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div *ngIf="!permisos">
+      <h2>No se tienen permisos para acceder a esta pagina</h2>
+  </div>
+</block-ui>

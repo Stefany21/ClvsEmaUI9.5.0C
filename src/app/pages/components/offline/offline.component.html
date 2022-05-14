@@ -1,0 +1,277 @@
+<block-ui>
+  <div *ngIf="permisos">
+      <div class="row">
+          <div class="col-sm-12">
+              <form [formGroup]="searchForm">
+                  <div class="row">
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label for="FechaIni">Fecha inicial</label>
+                              <input type="date" formControlName="fini" class="form-control form-control-sm" />
+                          </div>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label for="FechaFin">Fecha final</label>
+                              <input type="date" formControlName="ffin" class="form-control form-control-sm" />
+                          </div>
+                      </div>
+
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label>Estado documento</label>
+                              <select formControlName="docStatus" class="form-control form-control-sm">
+                                  <option value="">Todos</option>
+                                  <option value="ERROR_ON_SYNCUP">Con errores</option>
+                                  <option value="PENDING_TO_SYNUP">Pendientes</option>
+                                  <option value="SYNCHRONIZED">Sincronizados</option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="col-sm-1">
+                          <div class="form-group">
+                              <label>&nbsp;</label>
+                              <a class="btn btn-primary form-control form-control-sm btn-sm button-action"
+                                  (click)="search()">
+                                  <i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>
+                          </div>
+
+                      </div>
+
+
+                      <div class="col-sm-1 offset-sm-3">
+                          <div class="form-group">
+                              <label for="ignoreWeight">&nbsp;</label>
+                              <button (click)="DownloadData()" ngbPopover="Descargar información"
+                                  triggers="mouseenter:mouseleave" type="button"
+                                  class="btn form-control form-control-sm btn-sm btn-info" style="color:aliceblue"><i
+                                      class="fas fa-cloud-download-alt"></i></button>
+                          </div>
+                      </div>
+                      <div class="col-sm-1 ">
+                          <div class="form-group">
+                              <label for="ignoreWeight">&nbsp;</label>
+                              <button (click)="SyncUp()" ngbPopover="Subir información"
+                                  triggers="mouseenter:mouseleave" type="button"
+                                  class="btn form-control form-control-sm btn-sm btn-info" style="color:aliceblue"><i
+                                      class="fas fa-cloud-upload-alt"></i></button>
+                          </div>
+                      </div>
+
+                  </div>
+
+
+              </form>
+          </div>
+      </div>
+
+      <div class="row">
+          <div class="col-sm-12">
+              <table class="table inv table-sm table-hover table-bordered" id="tbEnabled">
+                  <thead>
+                      <tr>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="50vw"
+                              class="invi text-center">
+                              <input type="checkbox" style="border: 0px; width: 40%; height: 2em;"
+                                  (click)="toggleSelects()" title="Indica si los documentos seran sincronizados"
+                                  id="mainToggle">
+                          </th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="200vw" class="invi">
+                              No.</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw" class="invi">
+                              Fecha creación</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw" class="invi">
+                              Estado documento</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">
+                              Tipo documento</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">
+                              Fecha sinc.</th>
+                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">
+                              Opciones</th>
+                      </tr>
+                  </thead>
+                  <tbody class="scroll">
+                      <tr *ngFor="let document of documents | slice: (page-1) * pageSize : page * pageSize; index as i">
+                          <td scope="col" width="50vw" class="invi text-center">
+                              <input type="checkbox" style="border: 0px; width: 100%; height: 1.5em;"
+                                  title="Indica si el documento será sincronizado"
+                                  [disabled]="document.DocumentStatus === 'SYNCHRONIZED'" id="cb{{document.Id}}"
+                                  (click)="setForget(document.Id)" [checked]="document.IsOnSyncUp">
+                          </td>
+                          <td scope="col" width="200vw" class="invi">{{GetDocumentIndex(document.Id)}}</td>
+                          <td scope="col" width="400vw" class="invi">{{document.CreationDate | date:'short'}}</td>
+                          <td scope="col" width="250vw" class="invi"  [ngClass]="document.DocumentStatus === 'ERROR_ON_SYNCUP' ? 'regBg':''">{{ parsedStatus(document.DocumentStatus) }}</td>
+                          <td scope="col" width="250vw" class="invi">{{document.DocumentType}}</td>
+                          <td scope="col" width="250vw" class="invi">{{document.SyncDate | date:'short'}}</td>
+                          <td scope="col" width="100vw" class="invi">
+                              <ul class="list-inline">
+                                  <li class="list-inline-item" style="font-size: 18px;"
+                                      (click)="preview(document.Id)"><i class="fas fa-align-center cursor-hand m-auto"
+                                          title="Previsualizar"></i>
+                                  </li>
+
+                                  <li *ngIf="document.DocumentStatus === 'ERROR_ON_SYNCUP'" class="list-inline-item"
+                                      style="font-size: 18px;" (click)="showErrorDetail(document.Id)"><i
+                                          class="fas fa-exclamation cursor-hand m-auto" title="Ver error"></i>
+                                  </li>
+                              </ul>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <div class="d-flex justify-content-between p-2">
+                  <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" [maxSize]="1">
+                      <ng-template ngbPaginationPrevious>Ant.</ng-template>
+                      <ng-template ngbPaginationNext>Sig.</ng-template>
+                  </ngb-pagination>
+                  <select class="custom-select" [(ngModel)]="pageSize" style="width: auto; height:min-content;"
+                      (change)="search()">
+                      <option [ngValue]="5">5 Órdenes por página</option>
+                      <option [ngValue]="10">10 Órdenes por página</option>
+                      <option [ngValue]="15">15 Órdenes por página</option>
+                      <option [ngValue]="20">20 Órdenes por página</option>
+                  </select>
+
+              </div>
+          </div>
+      </div>
+
+  </div>
+
+  <!-- Large modal -->
+  <button id="previewTrigger" type="button" class="btn btn-primary" data-toggle="modal"
+      data-target=".bd-example-modal-lg" style="display: none;"></button>
+
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Previsualización del documento</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form [formGroup]="previewForm">
+                      <fieldset disabled>
+                          <div class="row">
+                              <div class="col">
+                                  <div class="form-group">
+                                      <label>Nombre del cliente</label>
+                                      <input formControlName="CardName" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label>Fecha de creación</label>
+                                      <input formControlName="DocDate" type="date"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label>Documento número</label>
+                                      <input formControlName="DocNum" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                              </div>
+                              <div class="col">
+                                  <div class="form-group">
+                                      <label for="disabledTextInput">Empleado de ventas</label>
+                                      <input formControlName="SalesMan" type="text"
+                                          class="form-control form-control-sm">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="disabledTextInput">Total del documento</label>
+                                      <input formControlName="DocTotal" type="text"
+                                          class="form-control form-control-sm"
+                                          [value]="previewForm.get('DocTotal').value | number:'1.2-2'">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row tableFixHead">
+
+                              <table class="table inv table-sm table-hover table-bordered" id="tbEnabled">
+                                  <thead>
+                                      <tr>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw"
+                                              class="invi">
+                                              Producto</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Cant.</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Precio</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Descuento</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw"
+                                              class="invi">
+                                              Impuesto</th>
+                                          <th style="background-color:#3B75B5; color:white;" scope="col" width="150vw"
+                                              class="invi">
+                                              Total línea</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody class="scroll" *ngIf="model" [ngStyle]="{ 'width': '100%' }" #scrollMe
+                                      [scrollTop]="scrollMe.scrollTop">
+                                      <tr *ngFor="let line of model.Invoice.InvoiceLinesList">
+                                          <td scope="col" width="400vw" class="invi">{{line.ItemCode}} -
+                                              {{line.ItemName}}</td>
+                                          <td scope="col" width="250vw" class="invi">{{line.Quantity}}</td>
+                                          <td scope="col" width="250vw" class="invi">{{line.UnitPrice | number:'2.2'}}
+                                          </td>
+                                          <td scope="col" width="250vw" class="invi">{{line.Discount}}</td>
+                                          <td scope="col" width="250vw" class="invi">{{line.TaxCode}}</td>
+                                          <td scope="col" width="250vw" class="invi">
+                                              {{GetTotalLine(line)}}
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </fieldset>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i
+                          class="fas fa-times"></i> Cerrar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Large modal -->
+  <button id="errorTrigger" type="button" class="btn btn-primary" data-toggle="modal"
+      data-target=".bd-example-modal-lgg" style="display: none;"></button>
+
+  <div class="modal fade bd-example-modal-lg bd-example-modal-lgg" tabindex="-1" role="dialog" aria-labelledby=""
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Respuesta del servidor</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <h5 class="modal-title">Intentos de sincronización: {{syncUpAttemps}}</h5>
+                  <br>
+                  <h5 class="modal-title">Código:</h5>
+                  <h6>{{codeError}}</h6>
+                  <br>
+                  <h5 class="modal-title">Detalle error:</h5>
+                  <h6>{{detailError}}</h6>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i
+                          class="fas fa-times"></i> Cerrar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div *ngIf="!permisos">
+      <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+</block-ui>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Easy Market Application ChangLog</title>
+</head>
+
+<body style="padding: 90px">
+    <h1>CHANGELOG UI EASY MARKET APPLICATION</h1>
+    <section style="max-height: 50vh; overflow-y: auto;">
+   
+        <details style="padding: 30px">
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.1.8</summary>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_OF_v2.0.0</li>
+                    <li>API_ON_v2.0.0</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>SUPER LT</dd>
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>
+                            <li>Correción mal calculo del precio del ítem al agregar lineas al inicio del documento</li>
+                            <li>Homologación vista datos compras, D&D, SCANNER, Decimales dinamicos</li>
+                            <li>Configuración de márgenes a nivel de vista para entrada mercadería, orden de compra</li>
+                            <li>Reimpresiones voucher de anulación Transacciones Pinpad</li>
+                        </ul>
+                    </dd>
+                </dl>
+            </details>
+        </details>
+        <details style="padding: 30px">
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.2.0</summary>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_OF_v2.0.0</li>
+                    <li>API_ON_v2.2.0</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>SUPER LT</dd>
+                    <dt><b>PRODUCTION</b></dt>
+                    <dd>SUPER LT</dd>
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>
+                            <li>Generación de llave primaria en tabla de usuarios </li>
+                            <li>Validaciones en formulario Socios de Negocios</li>
+                            <li>Limpiar y corregir donde aplique mensajes de error y logs correctos</li>
+                            <li>Calculo de lineas afectacion directa de recalculo y afectacion por orden de líneas</li>
+                            <li>Redondeo en transacciones </li>
+                            <li>Consulta por disponibilidad de ítem por cada vez que se agregue en facturación</li>
+                            <li>Flujo para reintentar el pago en caso de haber fallado en facturación.</li>
+                            <li>Ajuste de inventario desde facturación:</li>
+                            <ul>
+                                <li>Permiso por usuario para realizar ajuste</li>
+                                <li>El precio de costo para el ajuste sugiere el AvgPrice</li>
+                                <li>validación de desviación del precio por BD para dejar o no hacer el ajuste de
+                                    inventario</li>
+                            </ul>
+
+                            <li>Multi factura:</li>
+                            <ul>
+                                <li>Al darle al botón de + y si existe una factura en blanco la carga en lugar de crear
+                                    una nueva</li>
+                                <li>Al venir de orden de venta no muestra multifactura</li>
+                                <li>Eliminación del local storage de las facturas en memoria al darle logout</li>
+                            </ul>
+
+                        </ul>
+                    </dd>
+                </dl>
+            </details>
+        </details>
+        <details style="padding: 30px">
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.3.0</summary>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_OF_v2.0.1</li>
+                    <li>API_ON_v2.3.0</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>SUPER LT</dd>
+                    <dt><b>PRODUCTION</b></dt>
+                    <dd>SUPER LT</dd>
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>
+                            <li>Homologar flujo scanner en Orden de venta, cotización, NC, Factura proveedor</li>
+                            <li>Hacer limpieza de datos al iniciar sesión</li>
+                            <li>Configuración de udfs en e/s inventario, e/s mercadería, edición orden de compra, NC,
+                                factura proveedor, pagos efectuados/recibidos.</li>
+                            <li>Comando ctrl+f9 crear ítem en entrada mercadería</li>
+                            <li>Corregir flujo que obtiene ultimo correo de documentos.</li>
+                            <li>Corregir tablas de mantenimientos y demás para despliegue de información (Compañías,
+                                series, almacenes)</li>
+                            <li>Actualizar ítems desde label ítems entrada mercadería</li>
+                            <li> Comando crear ítems en entrada mercadería</li>
+                            <li> Nombres de objetos de bd en tabla DBObjectNames</li>
+                            <li>estandarización nombre de objetos</li>
+                            <li> Flujo incorrecto de selección de conexión hana/sql</li>
+                            <li>Calculo solo impuestos en facturación/Entrada mercadería/orden de compra.</li>
+                            <li>Aplicación no controla almacenes al consultar precio medio del ítem.</li>
+                            <li> Parametrizaciones en BD</li>
+                            <li>Key para Cardcode Proveedor por defecto</li>
+                            <li>Key Nombre de compañía</li>
+                            <li>Entrada mercadería el modelo del api espera un descuento entero, pero si le llega un
+                                descuento con decimales no lo puede mapear</li>
+                            <li>Implementar widget de atlassian en pruebas</li>
+                            <li>Configurar ventana de confirmación de salida en electrón</li>
+                            <li>Modal de pagos orientado a Componente</li>
+                            <li>Configuración SecurityProtocol TLS</li>
+                            <li>Obtener terminales desde login, almacenado en el LocalStorage</li>
+                            <li>Cierre de caja, registro de entradas del dia</li>
+                            <li>Valores en reimpresión total, hora</li>
+                            <li>Paginación en vista de udfs dinámicos</li>
+                            <li>Crud vista datos maestros artículos</li>
+                            <li>Cambio estructura del menú de EMA</li>
+                            <li>Validaciones cantidades negativas en documentos de ventas y compras</li>
+                            <li>Bloquear la edición de almacén a nivel de línea</li>
+                            <li>Bonificación de ítems en facturación y Entrada mercadería</li>
+
+
+                        </ul>
+                    </dd>
+                </dl>
+            </details>
+        </details>
+        <details style="padding: 30px">
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.4.0</summary>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_OF_v2.0.2</li>
+                    <li>API_ON_v2.4.0</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>SUPER LT</dd>
+                    <dt><b>PRODUCTION</b></dt>
+                    <dd>SUPER LT</dd>
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>
+                            <li>Vista movimientos de dinero</li>
+                            <li>Consulta total tarjetas pinpad incluidas en cierre de tarjeta</li>
+                            <li>Agregar descripción en tabla nombre de objetos</li>
+                            <li>Facturación, cotización, orden de venta, pagos recibidos mediante service layer</li>
+                            <li>Creación entrada mercadería desde XML</li>
+                            <li>Cierre de caja con pinpad</li>
+                            <li>No se recalcula total de stock por linea en edición, copiar documentos</li>
+                            <li>No se esta aplicando impuesto en el dato maestro</li>
+                            <li>Creación objetos setting desde aplicación</li>
+                            <li>Cambio Cod.Imp en orden de venta, facturación mapea mal</li>
+                            <li>Offline cambios de Alejandro TLS</li>
+                            
+                        </ul>
+                    </dd>
+                </dl>
+            </details>
+        </details>
+        <details style="padding: 30px"> 
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.5.0</summary>
+ 
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_ON_V2.5.0</li>
+                    <li>API_OF_v2.0.2</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>Super La Tormenta</dd>    
+                    <dt><b>PRODUCTION</b></dt>
+                    <dd>Super La Tormenta</dd>                                 
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">                 
+                    
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>                            
+                            <li>Documento base para ventas</li>
+                            <li>Permisos de acceso a vistas pendientes, Permiso lista precio, cambio almacén documento de ventas.</li>
+                            <li>Comportamiento de sap con respecto a líneas cerradas al crear-editar documento</li>
+                            <li>La validación de precio de compra mayor al precio de venta no contempla listas de precios</li>
+                            <li>Error en generación de id de los documentos</li>
+                            <li>Quitar código de socio de negocios del web config y pasarlo a la consola</li>
+                            <li>Opción en EMA para configurar direcciones de offline y/o pinpad</li>
+                            <li>homologación componente pagos en factura proveedor</li>
+                            <li>Reportería con mensajes correctos</li>
+                            <li>Varios documentos devolvían DocEntry en lugar de DocNum</li>
+                            <li>Unificar versión final EMA Cr Marinr</li> 
+                            <ul>
+                            <li>Implementación de moneda por lista de precios </li> 
+                            <li>Solo va a existir un total en el documento</li> 
+                            <li>Implementar todas las funcionalidades de ema en hana</li> 
+                            <li>En la modal de pago deben de hacer las conversiones respectivas según moneda seleccionada de pago</li> 
+                            <li>El pinpad sufrió un cambio respecto al manejo de la arquitectura de este, ahora se debe de usar este proyecto para consumir dichos servicios.</li> 
+                            <li>Validacion para notificar cuando un artículo viene sin el campo U_IVA desde sap ya que daba un error al factuara</li> 
+                      
+                        </ul>
+                        <li>Mapeo correcto del campo descuento, inpuesto en entrada de mercaderia desde xml</li>
+                        <li>Fecha valida hasta de modal de pago configurado desde compañías.</li>
+                        <li>Se implementa el nuevo api para obtener la info del padrón</li>
+                        <li>Validación cambio de nombre al cliente de contado, Se mapea desde la vista el valor del QryGroup, se agregan validación en el UI se utiliza el QryGroup1 y se llama en sap Cliente Contado 
+                        </li>
+                        <li>Validación Cantidades, precio, impuesto, descuento permiten números inferiores a 0 en docs</li>
+                        </ul>
+                             
+                         
+                    </dd>              
+                </dl>
+            </details>
+        </details>
+        <details style="padding: 30px"> 
+            <summary title="Release date 12-08-2021" style="cursor: pointer;">VERSION_2.6.0</summary>
+ 
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Targets</summary>
+                <ol style="cursor: default;">
+                    <li>API_ON_V2.6.0</li>
+                    <li>API_OF_v2.0.2</li>
+                </ol>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Companies</summary>
+                <dl style="margin-left: 30px; cursor: default;">
+                    <dt><b>TESTING</b></dt>
+                    <dd>Super La Tormenta</dd>    
+                    <dd>Disumed</dd>    
+                    <dt><b>PRODUCTION</b></dt>
+                    <dd>Super La Tormenta</dd>                                 
+                </dl>
+            </details>
+
+            <details style="margin-left:  30px; margin-top: 10px; cursor: pointer;">
+                <summary>Log</summary>
+                <dl style="margin-left: 30px; cursor: default;">                 
+                    
+                    <dt><b>REQUERIMENT</b></dt>
+                    <dd>
+                        <ul>                            
+                            <li>Homologacion de scaner a todos los documentos</li>
+                            <li>Al agregar UDFs se elimina la selección de los anteriores.</li>
+                            <li>Existe la posibilidad de tambien sugerir el proveedor en la carga de xml</li>
+                            <li>Se agrega al sp de obtener info del items,  el ItemClass de la tabla OITB, se agrega validación en vista artículos que código de barras sea requerido  cuando los ítems son de tipo Material, En documento base de ventas en las validaciones de stock excluye a los ítems que son de tipo Servicio</li>
+                            <li>Almacén por defecto esta usando slpcode por defecto.</li>
+                            <li>Bandera botón pinpad</li>
+                            <li>Descuento xml no contempla cantidad</li>
+                            <li>Agregar 2 reportes a consola de facturas</li>
+                            <li>Bandera evitar 2peticion scanner en documentos de ventas</li>
+                            <li>Mapeo de DocRate en modelo de pagos cuando moneda sea diferente al documento</li>                           
+                        <li>Quitar validación stock ofertas.</li>
+                        <li>Numero de referencia en nota crédito</li>
+                        <li>Un total documentos en vista pagos recibidos, nc</li>
+                       </ul>
+                             
+                         
+                    </dd>              
+                </dl>
+            </details>
+        </details>
+    </section>
+</body>
+
+</html>

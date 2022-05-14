@@ -1,0 +1,83 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="float-right ml-1">
+                    <!--<input type="submit" id="btnSendInfo" class=" btn btn-primary btn-success" value="<i class="fas fa-search" aria-hidden="true"></i> Buscar" />-->
+                    <button class="btn btn-primary btn-sm button-action" form="buscar" type="submit"><i class="fas fa-search"></i>&nbsp;Buscar</button>
+                    <!-- <a class="btn btn-primary btn-md button-action" (click)="submit()" >
+					<i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>  -->
+                </div>
+            </div>
+        </div>
+        <form (ngSubmit)="getInvList()" id="buscar" [formGroup]="InvCopy">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="slpCode">Usuario</label>
+                        <select class="form-control form-control-sm" formControlName="slpCode">
+                            <option  *ngFor="let user of userList" [value]="user.SlpCode"> {{user.SlpCode + ' ' +user.SlpName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="DocEntry">Documento # </label>
+                        <input type="number" formControlName="DocEntry" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="FechaIni">Fecha inicial</label>
+                        <input type="date" formControlName="FechaIni" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="FechaFin">Fecha final</label>
+                        <input type="date" formControlName="FechaFin" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="InvType">Tipo</label>
+                        <select class="form-control form-control-sm" formControlName="InvType">
+                    <option  *ngFor="let type of reportType" [value]="type.Id">{{type.Name}}</option>
+                </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row container-fluid  contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table class="TableFacturacion invi" id="tbEnabled">
+                    <thead>
+                        <tr>
+                            <th width="20%" class="thHeader" scope="col">&nbsp;&nbsp;Documento</th>
+                            <th width="20%" class="thHeader" scope="col">Estado </th>
+                            <th width="25%" class="thHeader" scope="col">Fecha </th>
+                            <th width="25%" class="thHeader" scope="col">Total</th>
+                            <th width="35%" class="thHeader" scope="col">Cliente </th>
+                            <th width="1%" class="thHeader" scope="col">Opciones&nbsp;&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody style="width: 100%;">
+                        <tr scope="row" *ngFor="let inv of invList" class="invi">
+                            <td>&nbsp;{{inv.DocNum}}</td>
+                            <td>{{inv.DocStatus}}</td>
+                            <td>{{inv.DocDate}}</td>
+                            <td>{{inv.DocCur==='COL'?'₡':'$'}}  {{inv.DocTotal}}</td>
+                            <td>{{inv.CardName}}</td>
+                            <td>
+                                <span style="cursor: pointer" class="fa fa-print icono" (click)="printARInvoice(inv)"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

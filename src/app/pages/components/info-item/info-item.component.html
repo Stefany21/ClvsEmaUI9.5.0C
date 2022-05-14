@@ -1,0 +1,89 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-right ml-1">
+                        <!--
+                    <a class="btn btn-success btn-md button-action" (click)="printInventory()" >
+                        <i class="fa fa-plus cursor-hand" aria-hidden="true"></i>&nbsp;Procesar Reporte</a>     
+                    <input type="submit" (click)="GetItemPrice()" class=" btn btn-primary btn-success" value="Buscar" />
+                    -->
+                        <a class="btn btn-primary btn-sm button-action" (click)="GetItemPrice()">
+                            <i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ItemCode">Artículo</label>
+                    <input type="text" [formControl]="ItemCode" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="Lista">Listas de precios</label>
+                <select [formControl]="Lista" class="form-control form-control-sm">
+            <option *ngFor="let pList of PriceList" [value]="pList.ListNum" >{{pList.ListName}}</option>
+        </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="ItemCode">Precio I.V.I</label>
+                    <input type="text" style="text-align:right" [ngModel]="(PriceItem | currency:'USD':'symbol-narrow':'.2-2')" (ngModelChange)="PriceItem = $event" class="form-control form-control-sm" disabled/>
+           
+                </div>
+            </div> 
+        </div>
+        <!-- <div class="row mb-4">  
+            <div class="col-md-2">
+                <label for="PriceItem"><h6>Precio I.V.I</h6></label>
+                <input type="text" style="text-align:right" [ngModel]="(PriceItem | currency:'USD':'symbol-narrow':'.2-2')" (ngModelChange)="PriceItem = $event" class="form-control form-control-sm" disabled/>
+            </div>            
+        </div> -->   
+        <!-- <div class="row">
+            <div class="col-md-3">
+                <label for="PriceItem"><h6>Detalle de existencias</h6></label>
+            </div>
+            <div class="col-md-9"></div>
+        </div> -->
+
+        <div class="row container-fluid  contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table class="table table-responsive TableFacturacion invi table-sm table-responsive-lg">
+                    <thead>                      
+                        <tr>
+                            <th scope="col" class="thHeader" width="30%">&nbsp;&nbsp;Almacén</th>
+                            <th scope="col" class="thHeader" width="30%">Stock</th>
+                            <th scope="col" class="thHeader" width="25%">Comprometido</th>
+                            <th scope="col" class="thHeader" width="20%">Solicitado</th>
+                            <th scope="col" class="thHeader" width="20%">Disponible &nbsp;&nbsp;</th>  
+                        </tr>
+                    </thead>
+                    <tbody style="width: 100%;">
+                        <tr scope="row" *ngFor="let avaItem of WHAvailableItemList; index as i;" class="invi">
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text" value="{{ avaItem.WhsCode }} - {{ avaItem.WhsName }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text" value="{{ avaItem.OnHand }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text" value="{{ avaItem.IsCommited }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text" value="{{ avaItem.OnOrder }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text" value="{{ avaItem.Disponible }}" [disabled]="true">
+                            </td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

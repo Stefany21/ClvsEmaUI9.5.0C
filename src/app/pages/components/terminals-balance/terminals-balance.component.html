@@ -1,0 +1,84 @@
+<block-ui>
+  <div *ngIf="permisos">
+    <div class="row pl-3 pr-3">
+      <div class="col-sm-8">
+        <form  [formGroup]="terminalForm" >
+          <div class="form-row">
+          <div class="form-group col-md-4">
+            <label>Desde</label>
+            <input type="date" formControlName="From"  class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-md-4">
+            <label>Hasta</label>
+            <input type="date" formControlName="To" class="form-control form-control-sm" />
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="exampleFormControlSelect1">Terminales</label>
+            <select formControlName="TerminalId" class="form-control form-control-sm">
+              <option class="form-control" *ngFor="let terminal of terminals" value="{{terminal.Id}}">{{terminal.UserName}} - {{terminal.TerminalId}}</option>
+            </select>
+          </div>
+        </div>
+        </form>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="exampleFormControlSelect1">&nbsp;</label>
+            <select [formControl]="requestTypeForm" class="form-control form-control-sm">
+              <option class="form-control" value="0">Pre cierre</option>
+              <option class="form-control" value="1">Cierre</option>
+            </select>
+            <!-- <label>&nbsp;</label>
+            <button class="form-control form-control-sm btn-primary" (click)="PreBalance()"><i class="fas fa-receipt"></i> Pre-Cierre</button> -->
+          </div>
+          <div class="form-group col-md-4">
+            <label>&nbsp;</label>
+            <button class="form-control form-control-sm btn-info" (click)="getRequest()"><i class="fas fa-search"></i> Consultar</button>
+          </div>
+          <div class="form-group col-md-4">
+            <label>&nbsp;</label>
+            <button class="form-control form-control-sm btn-success" (click)="generate()"><i class="fas fa-poll-h"></i> Generar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  <div class="row p-3" style="overflow-y: auto;">
+    <table style="font-size: 12px;  width: 100%;" class="tableAlmacenesExistencias table-sm table-hover">
+      <thead style="background-color:#3B75B5; color:white;">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Interno</th>
+          <th scope="col">Terminal</th>
+          <th scope="col">Transacción</th>
+          <th scope="col">Fecha Creación</th>
+          <th scope="col">Número autorización</th>
+          <th scope="col">Número referencia</th>
+          <th scope="col">Factura</th>
+          <th scope="col" class="text-right">Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let commitedTransaction of commitedTransactions;let i=index;" class="p-0"
+        [ngClass]="commitedTransaction.BlurredBackground == 'Y' ? 'mBlurredBackground':''" [id]="'tr_'+commitedTransaction.Id">
+          <th scope="col">{{(i + 1)}}</th>
+          <th scope="col">{{commitedTransaction.ACQ === -1 ? '': commitedTransaction.ACQ}}</th>
+          <th scope="col">{{commitedTransaction.TerminalCode}}</th>
+          <th scope="col">{{commitedTransaction.TransactionType}}</th>
+          <th scope="col">{{commitedTransaction.CreationDate}}</th>
+          <th scope="col">{{commitedTransaction.AuthorizationNumber}}</th>
+          <th scope="col">{{commitedTransaction.ReferenceNumber}}</th>
+          <th scope="col" [ngClass]="commitedTransaction.ACQ === -1 ? 'font-weight-bold':''">{{commitedTransaction.InvoiceNumber}}</th>
+          <th scope="col" class="text-right">{{commitedTransaction.SalesAmount | number:'1.2-2'}}</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+</block-ui>

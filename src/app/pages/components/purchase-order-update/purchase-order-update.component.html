@@ -1,0 +1,410 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="form-group input-group-sm">
+                        <label for="">Cant.</label>
+                        <input type="number" [(ngModel)]="Quantity" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+
+                    <div class="form-group input-group-sm">
+                        <label for="">Artículo</label>
+
+                        <div id="scrollable-dropdown-menu">
+                            <input #input1 #t="ngbTypeahead" (blur)="t.dismissPopup()" id='inputPro'
+                                [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode"
+                                class="form-control form-control-sm" type="search" (selectItem)="addItems($event)"
+                                placeholder="Escriba aquí para buscar un item">
+                        </div>
+                        
+                    </div>
+
+
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group input-group-sm">
+                        <label for="">Almacén</label>
+                        <select class="form-control form-control-sm" [(ngModel)]="WareHouse"
+                            (change)="onSelectBoxChange($event)">
+                            <option *ngFor="let s of Stores" [ngValue]="s.StoreCode">
+                                {{ s.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group input-group-sm">
+                        <ng-template #supplierName let-r="result" let-t="term">
+                            <ngb-highlight [result]="r.CardName" [term]="t"></ngb-highlight>
+                        </ng-template>
+                        <label for="typeahead-templatesuppname">Nombre del proveedor:</label>
+                        <input readonly class="form-control" [formControl]="supplierModelDisplay" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>&nbsp;</label>
+                            <div class="dropdown">
+                                <button id="{{DOCNUM}}" [disabled]="hasBeenSend"
+                                    class="btn btn-success btn-sm btn-block" (click)="updatePurchaseOrder()"><i
+                                        aria-hidden="true" class="fas fa-check"></i> Actualizar</button>
+                            </div>
+                            <!-- <label>&#160;</label>
+                            <button [disabled]="hasBeenSend" class="btn btn-success btn-sm btn-block" (click)="createGoodsRecipt()"><i
+                                    aria-hidden="true" class="fas fa-receipt"></i> Crear entrada</button> -->
+                        </div>
+                        <div class="form-group col-md-6">
+
+                            <label for="exampleInputEmail1">&#160;</label>
+                            <button class="btn btn-danger btn-sm btn-block" (click)="resetGUI()"><i aria-hidden="true"
+                                    class="fas fa-trash"></i> Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- #scrollable -->
+
+            <div #scrollMe [scrollTop]="scrollMe.scrollHeight" class=" tableFixHead col-md-12"
+                style="height: 50vh; max-height: 50vh; overflow: scroll;">
+
+
+                <ng-template #popTitle>Opciones</ng-template>
+                <ng-template #popContent>
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="addLine()"><i
+                            class="fa fa-plus"></i> Agregar línea </button>
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="upLine()"><i
+                            class="fa fa-arrow-up mr-auto" aria-hidden="true"></i> Subir línea</button>
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="downLine()"><i
+                            class="fa fa-arrow-down"></i> Bajar línea</button>
+                    <button class="btn btn-sm btn-light btn-block text-left" (click)="removeItem()"><i
+                            class="fa fa-trash" id="deleteButton"></i> Eliminar línea</button>
+                </ng-template>
+
+                <table class="table table-sm table-responsive-lg table-bordered">
+                    <thead style="background-color:#3B75B5; color:white; position: relative;">
+                        <tr>
+                            <th class="thHeader" style="width: 5%;">#</th>
+                            <th class="thHeader" style="width: 10%;">Código</th>
+                            <th class="thHeader" style="width: 30%;">Descripción</th>
+                            <th class="thHeader" style="width: 18%;">Almacén</th>
+                            <th class="thHeader" style="width: 1%;">Cantidad</th>
+                            <th class="thHeader" style="width: 10%;">P. unitario</th>
+                            <th class="thHeader" style="width: 1%;">Descuento</th>
+                            <th class="thHeader" style="width: 10%;">Impuesto</th>
+                            <th class="thHeader" style="width: 10%;">Total línea</th>
+                            <th class="thHeader text-center" style="width: 1%;">Opc</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'width': '100%' }" style="overflow-y: scroll;" #scrollMe
+                        [scrollTop]="scrollMe.scrollTop">
+                        <tr *ngFor="let line of lines;let i=index;" class="p-0">
+                            <th scope="row ">{{ i + 1 }}</th>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">{{
+                                line.ItemCode }}</td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">{{
+                                line.ItemName }}</td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">
+                                <select style="background-color:#ecf0f8; color:black; border: none;"
+                                    class="form-control form-control-sm" (change)="onSelectBoxLineChange($event, i)"
+                                    (click)="ItemInfo.reset()">
+                                    <option *ngFor="let s of Stores" [selected]="s.StoreCode == line.WareHouse"
+                                        [ngValue]="s.StoreCode">
+                                        {{ s.Name }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto" style="padding: 0px;">
+                                <input id="quantity_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    class=" form-control text-center form-control-sm" [ngModel]="line.Quantity"
+                                    (change)="focusOut($event, i, '0')" type="number" (click)="ItemInfo.reset()">
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">
+                                <input id="unitPrice_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    class=" form-control text-center form-control-sm"
+                                    [ngModel]="line.UnitPrice  | number:TO_FIXED_PRICE"
+                                    (change)="focusOut($event, i, '1')" type="text" (click)="ItemInfo.reset()">
+                                <!-- (ngModelChange)="item.value=currencyInputChanged($event)"-->
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">
+                                <input id="discount_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    class=" form-control text-center form-control-sm" [ngModel]="line.Discount"
+                                    (change)="focusOut($event, i, '2')" type="number" (click)="ItemInfo.reset()">
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">
+                                <select style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    class="form-control form-control-sm" (change)="onSelectBoxLineChangeTax($event, i)"
+                                    (click)="ItemInfo.reset()">
+                                    <option *ngFor="let t of taxesList; let iT = index"
+                                        [selected]="t.TaxCode == line.TaxCode" [ngValue]="iT">
+                                        {{ t.TaxCode }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="form-group input-group-sm ml-auto mr-auto " style="padding: 0px;">
+                                <input id="totalLine_{{i}}"
+                                    style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    class=" form-control text-center"
+                                    [ngModel]="line.TotalLine | number: TO_FIXED_TOTALLINE"
+                                    (change)="focusOut($event, i, '3')" type="text" (click)="ItemInfo.reset()">
+                            </td>
+                            <td class="form-group input-group-sm ml-auto text-center" style="padding: 0px;">
+                                <button container="body" (click)="setCurrentIndex(i)" type="button"
+                                    class="btn mt-1 mb-auto"
+                                    style="background-color:#ecf0f8; color:black; border: none; padding: 0px;"
+                                    placement="left" [ngbPopover]="popContent" [popoverTitle]="popTitle">
+                                    <i class="fa fa-cogs mt-1"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <input type="text" [(ngModel)]="Comment" class="form-control" placeholder="Comentario">
+            </div>
+        </div>
+        <div class="row mb-3 mt-2">
+            <div class="col-md-3">
+                <label style="font-size:18px; text-align: left">&#160;</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Sub total</td>
+                            <td>C</td>
+                            <td> {{totalLinesWithDiscount | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                        <tr>
+                            <td>Descuentos</td>
+                            <td>C</td>
+                            <td>{{DiscountTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                        <tr>
+                            <td>Impuestos</td>
+                            <td>C</td>
+                            <td>{{TaxesTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total dólares</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ USTotal | currency:'USD':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <label style="font-size:18px; text-align: left">Total colones</label>
+                <table class="table table-sm table-responsive-lg table-bordered shadow-sm table-condensed table-sm">
+                    <tbody>
+                        <tr style="font-size:50px; text-align: left">
+                            <td>{{ CRCTotal | currency:'CRC':'symbol-narrow':TO_FIXED_TOTALDOCUMENT}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button id="raiseItemModal" style="display: none;" (click)="raiseModalCreation()" type="button"
+        class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+
+    <!--ITEM CREATION START-->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">{{modalTitleItem}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        (click)="clearInputSeach()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form [formGroup]="itemForm">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Nombre item</label>
+                                    <input formControlName="ItemName" type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Nombre foráneo(Opcional)</label>
+                                    <input formControlName="ForeingName" type="text"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Código de barras</label>
+                                    <input id='auxClickBarcode' #barcodeEl formControlName="BarCode" readonly
+                                        type="text" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Impuesto</label>
+                                    <select formControlName="TaxCode" class="form-control form-control-sm">
+                                        <option *ngFor="let t of taxesList" value="{{t.TaxCode}}">{{t.TaxCode}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Precio público</label>
+                                    <input formControlName="Price" type="number" class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        (click)="clearInputSeach()">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        (click)="saveItem()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--ITEM CREATION END-->
+
+    <button id="raiseModalItemCreation" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal"
+        data-target=".ff"></button>
+
+    <div class="modal fade bd-example-modal-lg ff" id="exampleModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-1x fa-info-circle text-info"></i> No
+                        se encontró el código de barras en su aplicación </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <h5 class="text-center">¿ Desea crear un producto nuevo ? </h5>
+                </div>
+                <div class="modal-footer">
+                    <div class="col ">
+                        <button type="button" class="btn btn-danger btn-sm float-right btn-block"
+                            (click)="clearInputSeach()" data-dismiss="modal"><i class="fas fa-times"></i> No </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success btn-sm  float-right btn-block"
+                            (click)="raiseModalCreation()" data-dismiss="modal"><i class="fas fa-check"></i> Si
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button style="display: none;" id="raiseBarcodesModal" type="button" class="btn btn-primary" data-toggle="modal"
+        data-target=".bcds"></button>
+
+    <div class="modal fade bd-example-modal-lg bcds" id="exampleModalbcds" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabelll" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabelll"><i class="fas fa-1x fa-info-circle text-info"></i>
+                        Códigos de barra para {{globalName}} </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <form [formGroup]="barcodeForm">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input formControlName="barcodeModal" type="search" class="form-control"
+                                    placeholder="Código de barra">
+                            </div>
+                            <div class="col-md-6">
+                                <input formControlName="barcodeDescriptionModal" type="search" class="form-control"
+                                    placeholder="Descripcion del código de barra">
+                            </div>
+                            <div class="col-md-1">
+                                <button (click)="addBarcode()" class="btn btn-success" ngbPopover="Guardar Código"
+                                    triggers="mouseenter:mouseleave"><i aria-hidden="true"
+                                        class="fa fa-save cursor-hand"></i></button>
+                            </div>
+                            <div class="col-md-1">
+                                <button (click)="clearBarcode()" class="btn btn-info" ngbPopover="Cancelar"
+                                    triggers="mouseenter:mouseleave"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Código de barra</th>
+                                <th scope="col">Descripcion</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let bc of barcodeList; index as i">
+                                <th scope="row">{{ i + 1 }}</th>
+                                <td>{{ bc.BcdCode }}</td>
+                                <td>{{ bc.BcdName }}</td>
+                                <td><button (click)="updateBarcodeDesctiption(i)" class="btn btn-info btn-small"
+                                        placement="left" triggers="mouseenter:mouseleave"
+                                        ngbPopover="Editar descripción"><i class="fas fa-edit"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <div class="col ">
+                        <button type="button" class="btn btn-danger btn-sm float-right btn-block"
+                            (click)="clearInputSeach()" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-success btn-sm  float-right btn-block"
+                            (click)="updateItem()" data-dismiss="modal"><i class="fas fa-check"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!permisos ">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+</block-ui>

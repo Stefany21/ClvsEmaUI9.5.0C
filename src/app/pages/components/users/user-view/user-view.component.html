@@ -1,0 +1,147 @@
+<block-ui>
+    <div class="row">
+        <div class="col-sm-8"> 
+            <h2 >Información de usuario</h2> 
+        </div>
+		<div class="col-md-4">
+			<div class="btn-group float-right mt-2" role="group" style="margin: 3px">
+				<!--<input type="button" (click)="enviarInfo()" class=" btn btn-primary" value="Cancelar" />-->
+				<a class="btn btn-success btn-md button-action" (click)="confPage()" >
+					<i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>&nbsp;Editar</a> 
+			</div>
+			
+			
+			<div class="btn-group float-right mt-2" role="group" style="margin: 3px">
+				<!--<input type="button" (click)="enviarInfo()" class=" btn btn-primary" value="Cancelar" />-->
+				<a class="btn btn-danger btn-md button-action" (click)="cancel()" >
+					<i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar</a> 
+			</div>
+		</div>
+        
+    </div>
+    <div>
+    <form novalidate id="formComp" (ngSubmit)="onSubmitCreate()" [formGroup]="userGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="control-label" for="cUserName">Usuarios</label>
+                    <select class="form-control form-control-sm"  formControlName="cUserName" >
+                        <option  *ngFor="let User of userList; index as i" value="{{User.Id}}">{{User.UserName}}</option> 
+                    </select>
+                </div> 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cSAPUser">Usuario SAP</label>
+                        <input type="text" formControlName="cSAPUser" class="form-control"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                        <div class="form-group">
+                        <label for="CompanyId">Compañía</label>    
+                        <select class="form-control form-control-sm"  formControlName="CompanyId">
+                            <option  *ngFor="let company of companyList; index as i" value="{{company.Id}}">{{company.DBName}}</option>
+                        </select>
+                    </div>
+                </div> 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SAPPass">Contraseña de SAP</label>
+                        <input type="password" formControlName="SAPPass" class="form-control"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="StoreId">Almacén</label>    
+                        <select class="form-control form-control-sm"  formControlName="StoreId">
+                            <option  *ngFor="let Store of storesList; index as i" value="{{Store.Id}}">{{Store.StoreName}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="minDiscount">Descuento</label>
+                        <input type="number" formControlName="minDiscount" min="0" max="100" class="form-control form-control-sm"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SlpCode">Código de vendedor</label>
+                        <select formControlName="SlpCode" class="form-control form-control-sm">
+                            <option *ngFor="let spList of SalesPersonList" [value]="spList.SlpCode" >{{spList.SlpCode}} - {{spList.SlpName}}</option>
+                        </select>
+                        <!-- <input type="number" formControlName="SlpCode" class="form-control"/> -->
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="CenterCost">Centro de Costos</label>
+                        <input type="number" formControlName="CenterCost" class="form-control form-control-sm"/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="PriceListDef">Lista de precios</label>
+                        <select formControlName="PriceListDef" class="form-control form-control-sm">
+                            <option *ngFor="let pList of PriceList" [value]="pList.ListNum" >{{pList.ListName}}</option>
+                        </select>
+                        <!-- <input type="number" formControlName="PriceListDef" class="form-control"/> -->
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label for="Active">Activo</label>
+                        <input type="checkbox" class="form-control form-control-sm check" formControlName="Active"/>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="SuperUser">Súper Usuario</label>
+                        <input type="checkbox" class="form-control form-control-sm check" formControlName="SuperUser"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="InvSerie">Serie de facturación</label>
+                        <select class="form-control form-control-sm" formControlName="InvSerie">
+                            <option  *ngFor="let serie of InvSerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="IPaySerie">Serie de Pago</label>
+                        <select class="form-control form-control-sm" formControlName="IPaySerie">
+                            <option  *ngFor="let serie of IpaySerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="QuoSerie">Serie de Cotización</label>
+                        <select class="form-control form-control-sm" formControlName="QuoSerie">
+                            <option  *ngFor="let serie of QuoSerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+			<!--
+            <div class="row">
+                <div class="col-sm-1">
+                    <input type="submit"   class=" btn btn-primary" value="Volver" />
+                </div>
+                <div class="col-sm-1">
+                    <input type="button" (click)="confPage()"  class=" btn btn-primary" value="Editar" />
+                </div>
+                <div class="col-sm-10"></div>
+            </div>
+			-->
+        </form>
+    </div>    
+</block-ui>

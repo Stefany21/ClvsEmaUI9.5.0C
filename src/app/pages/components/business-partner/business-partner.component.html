@@ -1,0 +1,211 @@
+<block-ui>
+
+  <div *ngIf="permisos">
+    <div class="">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input #customername [formControl]="ItemBusinessPartner" (selectItem)="showCustomer($event)"
+              class="form-control form-control-sm" type="text" [ngbTypeahead]="search"
+              placeholder="Digite nombre cliente a buscar" />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="float-right ml-1">
+            <button class="btn btn-danger btn-sm button-action" (click)="BorrarCampos()" type="button">
+              <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar Campos</button>
+          </div>
+          <div class="float-right ml-1">  
+            <button class="btn btn-success btn-sm button-action" (click)="Actualizar()" type="button"
+              >
+              <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>&nbsp;{{titleButton}}</button>
+          </div>
+        </div>
+      </div>
+  
+      <form id="formCust" [formGroup]="businesspartnerForm">
+        <div class="row">
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="CardType">Tipo socio de negocio</label>
+              <select class="form-control form-control-sm" formControlName="CardType">
+                <option value="">Seleccione tipo socio de negocio</option>
+                <option *ngFor="let idType of identificationBusinessPartnerList" [value]="idType.SapType">
+                  {{idType.Name}}</option>
+
+              </select>
+              <div *ngIf="ced.CardType.errors" class="invalid-feedback">
+                <div *ngIf="ced.CardType.errors">El tipo de documento es
+                  requerido.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group" *ngIf="isUpdating">
+              <label>Id Conexión</label>
+              <input formControlName="CardCode" readonly type="text" class="form-control" id="exampleInputEmail1"
+                aria-describedby="emailHelp" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="U_TipoIdentificacion">Identificación</label>
+              <select class="form-control form-control-sm" (click)="identificationTypeChange($event.target.value)"
+                formControlName="U_TipoIdentificacion"
+                [ngClass]="{ 'is-invalid': ced.U_TipoIdentificacion.errors && ced.U_TipoIdentificacion.touched}">
+                <option value="">Seleccione tipo identificación</option>
+                <option *ngFor="let idType of identificationTypeList" [value]="idType.Id">{{idType.Name}}</option>
+              </select>
+              <div *ngIf="ced.U_TipoIdentificacion.errors" class="invalid-feedback">
+                <div *ngIf="ced.U_TipoIdentificacion.errors">El tipo de documento es
+                  requerido.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="LicTradNum">Número cédula</label>
+              <input type="text" appOnlyNumber formControlName="LicTradNum" class="form-control form-control-sm"
+                (blur)="queryCustomerLic()"
+                [ngClass]="{ 'is-invalid': ced.LicTradNum.errors && ced.LicTradNum.touched }" />
+              <div *ngIf="ced.LicTradNum.errors" class="invalid-feedback">
+                <div *ngIf="ced.LicTradNum.errors.minlength">Cant. de dígitos
+                  correcta: CF: 9, CJ: 10, DIMEX: 11 - 12, NITE: 10 </div>
+                <div *ngIf="ced.LicTradNum.errors.maxlength">Cant. de dígitos
+                  correcta: CF: 9, CJ: 10, DIMEX: 11 - 12, NITE: 10 </div>
+                <div *ngIf="ced.LicTradNum.errors.required">Este campo es
+                  requerido</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="CardName">Nombre cliente</label>
+              <input type="text" formControlName="CardName" class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': ced.CardName.errors && ced.CardName.touched }" />
+              <div *ngIf="ced.CardName.errors" class="invalid-feedback">
+
+                <div *ngIf="ced.CardName.errors.required">Este campo es requerido </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="E_Mail">Email</label>
+              <input type="email" formControlName="E_Mail" class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': ced.E_Mail.errors && ced.E_Mail.touched }" />
+               
+                <div *ngIf="ced.E_Mail.errors" class="invalid-feedback">
+
+                <div *ngIf="ced.E_Mail.errors?.email">El formato de Email es:
+                  algo@ejemplo.com </div>
+                <div *ngIf="ced.E_Mail.errors?.required">Este campo es requerido </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="Phone1">Número teléfono</label>
+              <input type="text" formControlName="Phone1" class="form-control form-control-sm" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="U_provincia">Provincia</label>
+              <select formControlName="U_provincia" class="form-control form-control-sm"
+                (change)="getCantons($event.target.value)" id="U_provincia">
+                <option *ngFor="let prov of provinceList" [value]="prov.ProvinceId">
+                  {{prov.ProvinceName | titlecase}}</option>
+              </select>
+
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="U_canton">Cantón</label>
+              <select formControlName="U_canton" class="form-control form-control-sm"
+                (change)="getDistrics($event.target.value)" id="U_Canton">
+                <option *ngFor="let cant of cantonList" [value]="cant.CantonId">
+                  {{cant.CantonName | titlecase}}</option>
+
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="U_distrito">Distrito</label>
+              <select formControlName="U_distrito" class="form-control form-control-sm"
+                (change)="getNeighborhood($event.target.value)" id="U_distrito">
+                <option *ngFor="let dis of districtList" [value]="dis.DistrictId">
+                  {{dis.DistrictName | titlecase}}</option>
+              </select>
+
+            </div>
+          </div>
+
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="U_barrio">Barrio </label>
+              <select class="form-control form-control-sm" formControlName="U_barrio"
+                (change)="setNeighborhoodName($event.target.value)" id="U_barrio">
+                <option *ngFor="let nei of neighborhoodList" [value]="nei.NeighborhoodId">
+                  {{nei.NeighborhoodName | titlecase}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="U_direccion">Dirección </label>  
+              <input type="text" formControlName="U_direccion" class="form-control form-control-sm"/>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="row" *ngIf="udfs.length > 0">
+        <div class="col-sm-3" *ngFor="let udf of udfs; index as i">
+
+          <div class="form-group form-group-sm" *ngIf="!udf.MappedValues">
+            <label>{{udf.Description}}</label>
+            <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}">
+          </div>
+
+          <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+            <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+            <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}">
+              <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">{{value.Description}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+  </div>
+
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+
+</block-ui>

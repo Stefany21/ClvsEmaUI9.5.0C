@@ -1,0 +1,320 @@
+<block-ui>
+  <div *ngIf="permisos" class="container-fluid">
+    <ngb-tabset [destroyOnHide]="false" (tabChange)="onTabChange($event)" #tabset>
+      <ngb-tab id="tabList">
+        <ng-template ngbTabTitle>Lista de reportes</ng-template>
+        <ng-template ngbTabContent>
+          <div class="row mt-2">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Reporte</th>
+                      <th scope="col">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let report of reports; index as i">
+                      <td scope="col">{{ report.DisplayName }}</td>
+                      <td scope="col">
+                        <div class="btn-group" role="group">
+                          <button type="button" class="btn btn-sm btn-link" title="Descargar"
+                            (click)="onClickPrintReport(report.Id)">
+                            Descargar Reporte
+                          </button>
+                          <button type="button" class="btn btn-sm btn-link" title="Editar"
+                            (click)="onClickEditReport(report)">
+                            Editar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab id="tabCrud">
+        <ng-template ngbTabTitle>
+          Creación y edición
+        </ng-template>
+        <ng-template ngbTabContent>
+          <div class="row mt-2">
+            <div class="col-12">
+              <form class="row" [formGroup]="reportForm">
+                <div class="col-sm-4">
+                  <div class="form-group row">
+                    <label for="Name" class="col-md-4 col-6 col-form-label">Nombre reporte</label>
+                    <div class="col-md-8 col-6">
+                      <input type="text" formControlName="DisplayName" class="form-control form-control-sm" [ngClass]="{
+                          'is-invalid':
+                            reportFormControls.DisplayName.errors &&
+                            reportFormControls.DisplayName.touched
+                        }" />
+                      <div *ngIf="reportFormControls.DisplayName.errors" class="invalid-feedback">
+                        <div *ngIf="reportFormControls.DisplayName.errors.required">
+                          Este campo es requerido
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-6 col-form-label">Archivo</label>
+                    <div class="col-md-8 col-6">
+                      <div class="input-group input-group-sm">
+                        <input style="display: none" type="file" (change)="onReportSelected($event)" #inputSearchReport
+                          accept=".rpt" />
+                        <input type="text" class="form-control form-control-sm" aria-describedby="btnSearchReport"
+                          formControlName="Name" readonly />
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-sm btn-light" title="Descargar archivo"
+                            (click)="onClickDownloadFile()">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn btn-sm btn-light" id="btnSearchReport" title="Cargar archivo"
+                            (click)="inputSearchReport.click()">
+                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-6 col-form-label">Usuario BD</label>
+                    <div class="col-md-8 col-6">
+                      <select class="form-control form-control-sm" formControlName="ReportUserId">
+                        <option [value]="user.Id" *ngFor="let user of reportUsers">
+                          {{ user.Username }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="row justify-content-end">
+                <div class="col-sm-4">
+                  <div class="row">
+                    <div class="col-sm-8 offset-sm-4">
+                      <button class="btn btn-sm btn-block btn-success" [disabled]="reportForm.invalid"
+                        (click)="onClickSaveChanges()">
+                        Guardar cambios
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="row">
+                <div class="col-12">
+                  <form class="row" [formGroup]="parameterForm">
+                    <div class="col-md-4">
+                      <div class="form-group row">
+                        <label class="col-4 col-form-label">Parámetro</label>
+                        <div class="col-8">
+                          <input type="text" class="form-control form-control-sm" formControlName="Name" [ngClass]="{
+                              'is-invalid':
+                                parameterFormControls.Name.errors &&
+                                parameterFormControls.Name.touched
+                            }" />
+                          <div *ngIf="parameterFormControls.Name.errors" class="invalid-feedback">
+                            <div *ngIf="parameterFormControls.Name.errors.required">
+                              Este campo es requerido
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-6 col-form-label">Tipo de parámetro</label>
+                        <div class="col-md-8 col-6">
+                          <select class="form-control form-control-sm" formControlName="Type" (change)="
+                              onParameterTypeChange($event, modalParameterOptions)
+                            ">
+                            <option value="1">Alfanumérico</option>
+                            <option value="2">Numérico</option>
+                            <option value="3">Fecha</option>
+                            <option value="4">Check</option>
+                            <option value="5">Opción multliple</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-6 col-form-label">Requerido</label>
+                        <div class="col-md-8 col-6">
+                          <select class="form-control form-control-sm" formControlName="Required">
+                            <option value="S">Si</option>
+                            <option value="N">No</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <div class="col-12">
+                      <div class="row justify-content-end"> -->
+                    <div class="col-md-4">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-6 col-form-label">Nombre</label>
+                        <div class="col-md-8 col-6">
+                          <input type="text" class="form-control form-control-sm" formControlName="DisplayName"
+                            [ngClass]="{
+                            'is-invalid':
+                              parameterFormControls.DisplayName.errors &&
+                              parameterFormControls.DisplayName.touched
+                            }">
+                          <div *ngIf="parameterFormControls.DisplayName.errors" class="invalid-feedback">
+                            <div *ngIf="parameterFormControls.DisplayName.errors.required">
+                              Este campo es requerido
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col-sm-8 offset-sm-4">
+                          <button class="btn btn-sm btn-light btn-block" [disabled]="parameterForm.invalid"
+                            (click)="onClickAddParameter()">
+                            Agregar
+                          </button>
+                        </div>
+                        <!-- </div>
+                        </div> -->
+                      </div>
+                    </div>
+                  </form>
+                  <div class="row" *ngIf="
+                      parameterSubgroup1.length === 0 &&
+                      parameterSubgroup2.length === 0 &&
+                      parameterSubgroup3.length === 0 &&
+                      parameterSubgroup4.length === 0
+                    ">
+                    <div class="col-12">
+                      <p class="text-muted">Aún no se han agregado parámetros...</p>
+                    </div>
+                  </div>
+                  <div class="row" cdkDropListGroup *ngIf="
+                      parameterSubgroup1.length > 0 ||
+                      parameterSubgroup2.length > 0 ||
+                      parameterSubgroup3.length > 0 ||
+                      parameterSubgroup4.length > 0
+                    " id="dragDropContainer">
+                    <div class="col-3 p-1 my-1" *ngFor="let paramList of paramaterListGroup" cdkDropList
+                      [cdkDropListData]="paramList" (cdkDropListDropped)="onItemDropped($event)">
+                      <div class="container-fluid col-header">
+                        <div class="row my-1 draggable-item" *ngFor="let param of paramList; index as i" cdkDrag>
+                          <div class="draggable-item-placeholder my-1 rounded" *cdkDragPlaceholder></div>
+                          <div class="col-12 border rounded shadow-sm">
+                            <div class="row">
+                              <div class="col-10 drag">
+                                <h5>
+                                  {{ param.DisplayName }}
+                                  <span class="text-danger" *ngIf="param.Required">
+                                    *</span>
+                                </h5>
+                                <p>{{ getParameterType(param.Type) }}</p>
+                              </div>
+                              <div class="col-2 text-center">
+                                <button type="button" class="btn" title="Eliminar"
+                                  [ngClass]="{ 'my-3': param.Type !== 5 }" (click)="onClickDeleteParam(paramList, i)">
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn" title="Lista de opciones" *ngIf="param.Type === 5"
+                                  (click)="
+                                    onClickParameterOptions(
+                                      param,
+                                      modalParameterOptions
+                                    )
+                                  ">
+                                  <i class="fa fa-list-ol" aria-hidden="true"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+</div>
+  <ng-template #modalParameterOptions let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Opciones válidas</h4>
+    </div>
+    <div class="modal-body p-0">
+      <div class="container-fluid mt-2">
+        <form class="row" [formGroup]="parameterValueForm">
+          <div class="col-sm-5">
+            <div class="form-group row">
+              <label class="col-form-label col-3">Nombre</label>
+              <div class="col-9">
+                <input type="text" formControlName="Key" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <div class="form-group row">
+              <label class="col-form-label col-3">Valor</label>
+              <div class="col-9">
+                <input type="text" formControlName="Value" class="form-control form-control-sm" />
+              </div>
+            </div>
+          </div>
+          <div class="col text-center">
+            <button class="btn btn-sm" (click)="onClickAddParameterValidValue()"
+              [disabled]="parameterValueForm.invalid">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="container-fluid">
+        <div class="row" *ngIf="parameterOptionsModal.length === 0">
+          <div class="col-12">
+            Aún no se han agregado opciones válidas para el parámetro...
+          </div>
+        </div>
+        <div class="row" *ngFor="let validValue of parameterOptionsModal; index as i">
+          <div class="container-fluid">
+            <div class="input-group mb-2">
+              <input type="text" class="form-control form-control-sm" [value]="validValue.Key + ': ' + validValue.Value"
+                disabled />
+              <div class="input-group-append">
+                <button class="btn btn-sm btn-light" type="button" (click)="onClickDeleteValidValue(i)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+    <div class="modal-footer">
+      <div class="container-fluid">
+        <div class="row justify-content-end">
+          <button class="btn btn-sm btn-light mx-1" (click)="dismissModal(true)">
+            Volver
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+</block-ui>

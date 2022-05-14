@@ -1,0 +1,52 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input class="form-control form-control-sm" type="text"  [(ngModel)]="searchUser"  (keyup)='filterDatatable($event)' placeholder="Escriba aquí para filtrar el resultado" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="float-right ml-1">
+                        <a class="btn btn-success btn-sm button-action" (click)="createCompany(0)">
+                            <i class="fa fa-plus cursor-hand" aria-hidden="true"></i>&nbsp;Agregar Compañía</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row container-fluid  contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table class="TableFacturacion invi" id="tbEnabled">
+                    <thead>
+                        <tr>
+                        <th scope="col"class="thHeader" width="20%">&nbsp;&nbsp;Servidor de conexión</th>
+                        <th scope="col" class="thHeader" width="20%">Nombre compañía</th>
+                        <th scope="col" class="thHeader" width="20%">Base de datos</th>                        
+                        <th scope="col" class="thHeader" width="20%">Activo</th>    
+                        <th scope="col" class="thHeader" width="1%">Opciones&nbsp;&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody style="width: 100%;">
+                    <tr scope="row" *ngFor="let comp of filteredData" class="invi">
+                        <td>&nbsp;{{comp.Server}}</td>
+                        <td>{{comp.DBName}}</td>
+                        <td>{{comp.DBCode}}</td>
+                        <td class=""><i class="fas fa-{{comp.Active? 'check': 'times'}}"></i></td>  
+                     
+                       
+                
+                        <td>
+                            <span style="cursor: pointer" class="far fa-edit cursor-hand" (click)="editCompany(comp.Id)"></span>
+                        </td>          
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
+    
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

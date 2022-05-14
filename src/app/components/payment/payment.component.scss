@@ -1,0 +1,68 @@
+.divButon {
+    position: relative;
+}
+
+.topPoscicion {
+    position: absolute;
+    bottom: -55px;
+    right: auto;
+}
+
+.textNoMarginBottom {
+    margin-bottom: 0px !important;
+}
+
+.tableCreditCardPayment {
+    width: 100% !important;
+    height: 100% !important;
+    display: table;
+    color: white;
+}
+  
+.tableCreditCardPayment td {
+    color: black !important;
+    /*height:20px !important;*/
+}
+.tableCreditCardPayment tr {
+    height: 20px !important;
+    width: 100%;
+}
+.mtable {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    /* table-layout: fixed; */
+    display: block;
+    height: 34vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #3c75b5;
+}
+
+table th,
+table td {
+    padding: .1em 0.2em;
+    content: ' ';
+}
+
+.tableTarjeta {
+    position: sticky;
+    top: 5px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: lighter;
+    background-color: rgb(51, 122, 204);
+}
+
+.Text22 input,
+.Text22 select,
+.Text22 label {
+    font-size: 22px;
+}

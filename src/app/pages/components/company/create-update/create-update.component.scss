@@ -1,0 +1,35 @@
+.right{
+float: right;
+}
+
+.inline-button{
+    position: relative !important;
+    top: 31px !important;
+}
+    
+.tableFixHead { overflow: auto; height: 60vh; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+/* Just common table stuff. Really. */
+table  { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 16px; }
+th     { background:#fff; }
+
+.inputline {
+    transform: scale(0.5) !important;
+  }  
+
+
+  .thSettings { 
+    background-color: #474747;
+    color: white;
+    font-size: 14px;
+    font-family: "Segoe UI";
+    font-weight: lighter;
+}
+
+.isActive {
+  background: #c9cbce;
+  color: white;
+}
+

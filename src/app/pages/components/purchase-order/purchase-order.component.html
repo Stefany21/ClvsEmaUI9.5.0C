@@ -1,0 +1,93 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <!-- <div class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-right ml-1">
+                        <button class="btn btn-primary btn-sm button-action" (click)="getPurchaseorderList" type="button"><i class="fas fa-search"></i>&nbsp;Buscar Orden</button>
+
+                    </div>
+                     <div class="float-right ml-1">
+                        <a class="btn btn-danger btn-sm button-action" (click)="enviarInfo()">
+                            <i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar Pago</a>
+                    </div> 
+                </div>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-sm-12">
+                <form [formGroup]="InfogetPurchase">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Suplier">Proveedor</label>
+                                <input id="Suplier" type="text" class="form-control form-control-sm" formControlName="Suplier" [ngbTypeahead]="searchBP" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="FechaIni">Fecha inicial</label>
+                                <input type="date" formControlName="FechaIni" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="FechaFin">Fecha final</label>
+                                <input type="date" formControlName="FechaFin" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <a class="btn btn-primary form-control form-control-sm btn-sm button-action" (click)="getPurchaseorderList();fromGoodReceipt=false">
+                                    <i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar órden</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table inv table-sm table-hover table-bordered" id="tbEnabled">
+                    <thead>
+                        <tr>
+                            <th style="background-color:#3B75B5; color:white;" scope="col" width="400vw" class="invi">Proveedor</th>
+                            <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">Número órden</th>
+                            <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">Fecha órden</th>
+                            <th style="background-color:#3B75B5; color:white;" scope="col" width="250vw" class="invi">Total órden</th>
+                            <th style="background-color:#3B75B5; color:white;" scope="col" width="150vw" class="invi">Editar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="scroll">
+                        <tr *ngFor="let po of poList">
+                            <td scope="col" width="400vw" class="invi">{{po.BusinessPartner.CardName}}</td>
+                            <td scope="col" width="250vw" class="invi">{{po.DocNum}}</td>
+                            <td scope="col" width="250vw" class="invi">{{po.DocDate |date:'dd/MM/yyyy'}}</td>
+                            <td scope="col" width="250vw" class="invi">{{po.DocTotal | number:'.2-2'}}</td>
+                            <td scope="col" width="150vw" class="invi"><i class="far fa-edit cursor-hand" (click)="editPurchaseOrder(po.DocNum)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="getPurchaseorderList()">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto; height:min-content;" [(ngModel)]="pageSize" (ngModelChange)="getPurchaseorderList()">
+                      <option [ngValue]="2">2 Órdenes por página</option>
+                      <option [ngValue]="4">4 Órdenes por página</option>
+                      <option [ngValue]="6">6 Órdenes por página</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

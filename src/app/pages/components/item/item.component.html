@@ -1,0 +1,293 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="row">
+            <div class="col-md-12">
+                <ngb-tabset class="tabset1" [destroyOnHide]="false" (tabChange)="onTabChange($event)">
+                    <ngb-tab id="edition_item_tab">
+                        <ng-template ngbTabTitle>
+                            <span *ngIf="!isUpdating">{{editTitle}}</span><b *ngIf="isUpdating">{{editTitle}}</b>
+                        </ng-template>
+                    </ngb-tab>
+                    <ngb-tab id="creation_item_tab">
+                        <ng-template ngbTabTitle><span *ngIf="isUpdating">{{createTitle}}</span><b
+                                *ngIf="!isUpdating">{{createTitle}}</b></ng-template>
+                    </ngb-tab>
+                </ngb-tabset>
+            </div>
+        </div>
+        <br>
+        <div class="row mb-3">
+            <div class="col-md-8" *ngIf="isOnUpdateTab">
+                <div class="">
+                    <input [formControl]="ItemInfo" [ngbTypeahead]="searchItemCode" class="form-control form-control-sm"
+                        type="text" (selectItem)="addItems($event)" placeholder="Escriba aquí para buscar un item">
+                </div>
+            </div>
+            <div class="col-md-8" *ngIf="!isOnUpdateTab">
+            </div>
+
+            <div class="col-md-2">
+                <button [disabled]="isReading" type="button" class="btn btn-success btn-sm form-control form-control-sm"
+                    (click)="saveItem()"><i _ngcontent-c10="" class="fas fa-save"></i>
+                    Guardar</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm form-control form-control-sm"
+                    (click)="initVariables()"><i _ngcontent-c10="" aria-hidden="true" class="fas fa-trash"></i>
+                    Limpiar campos</button>
+            </div>
+        </div>
+
+        <form [formGroup]="itemForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4" *ngIf="isUpdating">
+
+                            <div class="form-group">
+                                <label for="">Código del item</label>
+                                <input formControlName="code" readonly type="text" class="form-control form-control-sm"
+                                    aria-describedby="emailHelp" placeholder="">
+                            </div>
+                        </div>
+                        <div class="{{isUpdating ? 'col-md-8': 'col-md-12'}}">
+                            <div class="form-group">
+                                <label for="">Nombre item</label>
+                                <input formControlName="name" type="text" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Nombre foráneo</label>
+                                <input formControlName="firmName" type="text" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="col" *ngIf="this.isUpdating">  
+                            <div class="form-group">
+                                <label>Clase ítem</label>                               
+                              <select disabled formControlName="itemClass" class="form-control form-control-sm">
+                                <option value="1">Servicio</option>
+                                <option value="2">Material</option>
+                              </select>
+                                <!-- <input formControlName="itemClass" type="number" class="form-control form-control-sm"> -->
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label>Estado Item</label>
+                                <select formControlName="frozen" class="form-control form-control-sm">
+                                    <option>Activo</option>
+                                    <option>Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- llama a la modal este boton
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for=""> Códigos de barra</label>
+                                <button type="button" (click)="open(content)"
+                                    class="btn btn-success form-control form-control-sm"><i aria-hidden="true"
+                                        class="fa  fa-barcode cursor-hand"></i></button>
+                            </div>
+                        </div>-->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for=""> Códigos de barra</label>
+                                <button *ngIf="itemFound" type="button" (click)="open(content)" class="btn btn-success form-control form-control-sm"><i aria-hidden="true"
+                                        class="fa  fa-barcode cursor-hand"></i></button>
+                                <button *ngIf="!itemFound" disabled type="button" (click)="open(content)" class="btn btn-success form-control form-control-sm"><i aria-hidden="true"
+                                        class="fa  fa-barcode cursor-hand"></i></button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Lista de precios</label>
+                                <select (change)="updateIndex($event.target.value)" formControlName="unitPriceSelectBox"
+                                    class="form-control form-control-sm">
+                                    <option *ngFor="let p of priceListOld; index as i" value="{{i}}">{{p.ListName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">  
+                            <div class="form-group">   
+                                <label for="">Precio unitario</label>
+                                <input *ngIf="isAllowedPriceListChange" (keyup)="updatePrice($event,'0')" formControlName="unitPrice" type="number"
+                                    class="form-control form-control-sm">
+                                <input disabled *ngIf="!isAllowedPriceListChange" (keyup)="updatePrice($event,'0')" formControlName="unitPrice" type="number"
+                                    class="form-control form-control-sm">
+                            </div>
+                        </div>   
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>P. unitario con impuesto</label>
+                                <input *ngIf="isAllowedPriceListChange" (keyup)="updatePrice($event, '1')" formControlName="unitPriceWithTax" type="number" class="form-control form-control-sm">
+                                <input disabled *ngIf="!isAllowedPriceListChange" (keyup)="updatePrice($event, '1')" formControlName="unitPriceWithTax" type="number" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Impuesto</label>
+                                <select *ngIf="(!this.isUpdating || (isChangeTax && this.isUpdating))" formControlName="tax" class="form-control form-control-sm" (change)="onChangeTax($event.target.value)">
+                                    <option *ngFor="let t of taxesList" value="{{t.TaxCode}}">{{t.TaxCode}}</option>
+                                </select>
+                                <select disabled *ngIf="!isChangeTax && this.isUpdating" formControlName="tax" class="form-control form-control-sm" type="text" >
+                                    <option *ngFor="let t of taxesList" value="{{t.TaxCode}}">{{t.TaxCode}}</option>
+                                </select>
+                            </div>
+                        </div>                     
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+        <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+            <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                    <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                        <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                            <label>{{udf.Description}}</label>
+                            <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                        </div>
+                        <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                            <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                            <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                                <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                    {{value.Description}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+
+    <!--modal actualizar item 
+
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Códigos de barra</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="barcodeForm">
+                <div class="row">
+                    <div class="col-md-5">
+                        <input formControlName="barcodeModal" type="text" class="form-control"
+                            placeholder="Código de barra">
+                    </div>
+                    <div class="col-md-5">
+                        <input formControlName="barcodeDescriptionModal" type="text" class="form-control"
+                            placeholder="Descripcion del código de barra">
+                    </div>
+                    <div class="col-md-1">
+                        <button (click)="addBarcode()" class="btn btn-success" ngbPopover="Guardar Código"
+                            triggers="mouseenter:mouseleave"><i _ngcontent-c16="" aria-hidden="true"
+                                class="fa fa-save cursor-hand"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button (click)="clearBarcode()" class="btn btn-info" ngbPopover="Cancelar"
+                            triggers="mouseenter:mouseleave">X</button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Código de barra</th>
+                        <th scope="col">Descripcion</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let bc of barcodeList; index as i">
+                        <th scope="row">{{ i + 1 }}</th>
+                        <td>{{ bc.BcdCode }}</td>
+                        <td>{{ bc.BcdName }}</td>
+                        <td>
+                        <button (click)="updateBarcodeDesctiption(i)" class="btn btn-info btn-small"><i
+                             _ngcontent-c8="" _ngcontent-c10="" class="fas fa-edit"></i></button></td>
+                        <td><button  class="btn btn-info" ngbPopover="Limpiar"
+                                    triggers="mouseenter:mouseleave" (click)="clearListCode()">Limpiar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" (click)="modal.close('Save click')">Cerrar</button>
+        </div>
+    </ng-template>-->
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Códigos de barra</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="barcodeForm">
+                <div class="row">
+                    <div class="col-md-5" style="display: none;"> 
+                        <input type="number" [(ngModel)]="indexup" [ngModelOptions]="{standalone: true}" class="form-control form-control-sm" >                    
+                    </div>
+                    <div class="col-md-5">
+                        <input [readonly]="IsonUpdate"  formControlName="barcodeModal" type="text" class="form-control" placeholder="Código de barra">
+                    </div>
+                    <div class="col-md-5">
+                        <input formControlName="barcodeDescriptionModal" type="text" class="form-control" placeholder="Descripcion del código de barra">
+                    </div>
+                    <div class="col-md-1">
+                        <button (click)="addBarcode(indexup)" class="btn btn-success" ngbPopover="Guardar Código" triggers="mouseenter:mouseleave"><i _ngcontent-c16="" aria-hidden="true"
+                                class="fa fa-save cursor-hand"></i></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button (click)="clearBarcode()" class="btn btn-info" ngbPopover="Cancelar" triggers="mouseenter:mouseleave"><i class="fas fa-times-circle"></i></button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Código de barra</th>
+                        <th scope="col">Descripcion</th>
+                        <th></th>
+                        <th *ngIf="!isOnUpdateTab"></th>
+                    </tr>
+                </thead> 
+                <tbody>
+                    <tr *ngFor="let bc of barcodeList; index as i">
+                        <th scope="row">{{ i + 1 }}</th>  
+                        <td>{{ bc.BcdCode }}</td>
+                        <td>{{ bc.BcdName }}</td>
+                        <td><button (click)="updateBarcodeDesctiption(i)" placement="right" ngbTooltip="Editar descripción" class="btn btn-info btn-small"><i
+                                    _ngcontent-c8="" _ngcontent-c10="" class="fas fa-edit"></i></button></td>
+                        <td *ngIf="bc.BcdEntry < 0">
+                            <button placement="right" ngbTooltip="Eliminar" (click)="deleteBarcode(i)" class="btn-danger btn"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" (click)="modal.close('Save click')">Cerrar</button>
+        </div>
+    </ng-template>
+
+
+</block-ui>

@@ -1,0 +1,55 @@
+.cont{
+    position: relative; 
+}
+
+.btnBoot{
+    position: relative; 
+    bottom: -26px; 
+    width: 100px;
+    background-color:#3B75B5;
+    margin-bottom: 5px;
+}
+// tamaño de los textos de la modal de doc
+.Text22 input, .Text22 select, .Text22 label{
+    font-size: 15px;
+}
+::ng-deep .Modal-Xl .modal-dialog { 
+    max-width: 80%;
+    width: 80%;
+  
+}
+.justify-content-rigth {
+    margin-left: auto;
+    margin-right: 0;
+}
+#colc .col-lg-12 .row{
+    //margin-bottom: 30px;
+   // background-color: #eef1ed;
+    //border: 1px solid #E2E3E8;
+    //padding: 10px;
+    margin: 5px;
+    //height: 3px;
+}
+#colc .col-lg-12 .row .col-sm-1{
+    //margin-bottom: 30px;
+  //  background-color: #eef1ed;
+    //border: 1px solid #E2E3E8;
+    //padding: 10px;
+    //margin: 5px;
+    //height: 3px;
+}
+#colc #cc {
+    background-color: red;
+}
+
+a.hover:hover {
+    text-decoration: underline;
+}
+.topPoscicion{
+    position:absolute;
+    bottom:-75px;
+    right: auto;
+}
+.divButon{ 
+    position:relative;
+}

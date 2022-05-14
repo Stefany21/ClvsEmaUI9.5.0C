@@ -1,0 +1,211 @@
+<block-ui>
+    <div class="row">
+
+        <div class="col-sm-4" style="display: none;">
+            <h2 *ngIf="userId > 0">Modificar Asignación de Usuario</h2>
+            <h2 *ngIf="userId == 0">Asignar Usuario a Compañía</h2>
+        </div>
+        <!--<div class="col-sm-1"></div>-->
+        <div class="col-md-12">
+            <div class="float-right ml-1">
+                <!--<input type="button" (click)="enviarInfo()" class=" btn btn-primary" value="Cancelar" />-->
+                <a class="btn btn-danger btn-sm button-action" (click)="cancel()">
+                    <i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar</a>
+            </div>
+            <div class="float-right ml-1">
+                <!--<input type="submit" id="btnSendInfo" class=" btn btn-primary btn-success" value="<i class="fas fa-search" aria-hidden="true"></i> Buscar" />-->
+                <button class="btn btn-success btn-sm button-action" form="formComp" type="submit"><i class="fas fa-arrow-alt-circle-right"></i>&nbsp;{{btnSendInfo}}</button>
+                <!-- <a class="btn btn-primary btn-md button-action" (click)="submit()" >
+					<i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>  -->
+            </div>
+        </div>
+    </div>
+    <div>
+        <form novalidate id="formComp" (ngSubmit)="onSubmitCreate()" [formGroup]="userGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="control-label" for="cUserName">Usuarios</label>
+                    <select class="form-control form-control-sm" formControlName="cUserName">
+                        <option  *ngFor="let User of userList; index as i" value="{{User.Id}}">{{User.UserName}}</option> 
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="CompanyId">Compañía</label>
+                        <select class="form-control form-control-sm" formControlName="CompanyId" (change)="onCompanyChange()">
+                            <option  *ngFor="let company of companyList; index as i" value="{{company.Id}}">{{company.DBName}}</option>
+                        </select>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="row">
+                 <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cSAPUser">Usuario SAP</label>
+                        <input type="text" formControlName="cSAPUser" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': f.cSAPUser.errors && f.cSAPUser.touched }" />
+                        <div *ngIf="f.cSAPUser.errors" class="invalid-feedback">
+                            <div *ngIf="f.cSAPUser.errors.required">Usuario SAP requerido</div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SAPPass">Contraseña de SAP</label>
+                        <input type="password" formControlName="SAPPass" class="form-control form-control-sm" oncopy="return false" [ngClass]="{ 'is-invalid': f.SAPPass.errors && f.SAPPass.touched}" />
+                        <div *ngIf="f.SAPPass.errors" class="invalid-feedback">
+                            <div *ngIf="f.SAPPass.errors.required">Contraseña de SAP requerida</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="StoreId">Almacén</label>
+                        <select class="form-control form-control-sm" formControlName="StoreId">
+                            <option  *ngFor="let Store of storesList; index as i" value="{{Store.Id}}">{{Store.StoreName}}</option> 
+                        </select>
+                    </div>  
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="minDiscount">Descuento</label>
+                        <input type="number" formControlName="minDiscount" min="0" max="100" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': f.minDiscount.errors && f.minDiscount.touched}" />
+                        <div *ngIf="f.minDiscount.errors" class="invalid-feedback">
+                            <div *ngIf="f.minDiscount.errors.required">Descuento requerido deve ser mayor a 0 y menor a 100</div>
+                            <div *ngIf="f.minDiscount.errors.max">El monto deve ser menor a 100 </div>
+                            <div *ngIf="f.minDiscount.errors.min">El monto deve ser mayor o igual a 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SlpCode">Código de vendedor</label>
+                        <select formControlName="SlpCode" class="form-control form-control-sm">
+                            <option *ngFor="let spList of SalesPersonList" [value]="spList.SlpCode" >{{spList.SlpCode}} - {{spList.SlpName}}</option>
+                        </select>
+                        <!-- <input type="number" formControlName="SlpCode" class="form-control" [ngClass]="{ 'is-invalid': f.SlpCode.errors && f.SlpCode.touched }" /> -->
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="CenterCost">Centro de costos</label>
+                        <input type="number" formControlName="CenterCost" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="PriceListDef">Lista de precios</label>
+                        <select formControlName="PriceListDef" class="form-control form-control-sm">
+                            <option *ngFor="let pList of PriceList" [value]="pList.ListNum" >{{pList.ListName}}</option>
+                        </select>
+                        <div *ngIf="f.PriceListDef.errors" class="invalid-feedback">
+                            <div *ngIf="f.PriceListDef.errors.required">Lista de precios requerida</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Active">Activo</label>
+                        <input type="checkbox" class="form-control form-control-sm check" formControlName="Active" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="SuperUser">Súper Usuario</label>
+                        <input type="checkbox" class="form-control form-control-sm check" formControlName="SuperUser" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="InvSerie">Serie de facturación</label>
+                        <select class="form-control form-control-sm" formControlName="InvSerie">
+                            <option  *ngFor="let serie of InvSerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="IPaySerie">Serie de pago</label>
+                        <select class="form-control form-control-sm" formControlName="IPaySerie">
+                            <option  *ngFor="let serie of IpaySerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="QuoSerie">Serie de cotización</label>
+                        <select class="form-control form-control-sm" formControlName="QuoSerie">
+                            <option  *ngFor="let serie of QuoSerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Serie de órden de venta</label>
+                        <select class="form-control form-control-sm" formControlName="SOSerie">
+                            <option  *ngFor="let serie of SOSerieList; index as i" value="{{serie.Id}}">{{serie.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Serie de cliente</label>
+                        <select class="form-control form-control-sm" formControlName="CustomerSerie">
+                            <option  *ngFor="let customer of CustomerSerieList; index as i" value="{{customer.Id}}">{{customer.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Serie de proveedor</label>
+                        <select class="form-control form-control-sm" formControlName="SupplierSerie">
+                            <option  *ngFor="let supplier of SupplierSerieList; index as i" value="{{supplier.Id}}">{{supplier.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Series de nota de crédito</label>
+                        <select class="form-control form-control-sm" formControlName="NcSerie">
+                            <option  *ngFor="let nc of ncSerieList; index as i" value="{{nc.Id}}">{{nc.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Serie de factura proveedor</label>
+                        <select class="form-control form-control-sm" formControlName="ApInvoiceSerie">
+                            <option  *ngFor="let ApInvo of ApInvoiceSerieList; index as i" value="{{ApInvo.Id}}">{{ApInvo.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SOSerie">Serie de pago proveedor</label>
+                        <select class="form-control form-control-sm" formControlName="ApPaymentSerie">
+                            <option  *ngFor="let ApPayment of ApPaymentSerieList; index as i" value="{{ApPayment.Id}}">{{ApPayment.Name}}</option> 
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="row">
+                <div class="col-sm-1">
+                    <input type="submit" id="btnSendBP" [disabled]="userGroup.invalid" class=" btn btn-primary" value="{{btnSendInfo}}" />
+                </div>
+                <div class="col-sm-11"></div>
+            </div>
+			-->
+        </form>
+    </div>
+</block-ui>

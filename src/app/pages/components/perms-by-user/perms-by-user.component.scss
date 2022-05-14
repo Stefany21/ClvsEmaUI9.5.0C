@@ -1,0 +1,56 @@
+
+
+thead, tbody { display: block; }
+tbody {
+    height: 55vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+tr, th {
+    cursor: pointer;
+}
+
+
+
+#btnSuccess{
+    position: relative;
+    bottom: 0;
+}
+
+.hover-green:hover{
+  color:green;
+}
+
+.hover-red:hover{
+  color:red;
+}
+
+.green-arrow{
+    float:right;
+}
+
+.margin-t{
+    margin-top:1em;
+}
+
+.red-color-arrow{
+    color:red !important;
+}
+
+.green-color-arrow{
+    color:green !important;
+}
+
+.white-color-arrow{
+    color:white !important;
+}
+
+.hover-green-arrow:hover{
+    color:green;
+}
+
+.hover-red-arrow:hover{
+    color:red;
+}

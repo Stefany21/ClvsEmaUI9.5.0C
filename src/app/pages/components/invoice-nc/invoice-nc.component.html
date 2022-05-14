@@ -1,0 +1,867 @@
+<block-ui>
+    <div *ngIf="permisos">
+        <div class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-right ml-1">
+                        <a class="btn btn-danger btn-sm button-action" (click)="CreateNew()">
+                            <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;Limpiar campos</a>
+                    </div>
+                    <div [class.disabled-content]="correctInvoice || facturando" class="float-right ml-1">
+                        <a class="btn btn-success btn-sm button-action" (click)="onSubmit(payContent)">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>&nbsp;Generar NC</a>
+                    </div>
+
+                    <div *ngIf="correctInvoice" class="float-right ml-1">
+                        <a id="imprimirFactura" class="btn btn-primary btn-sm button-action" (click)="printInvoice()">
+                            <i class="fas fa-print" aria-hidden="true"></i>&nbsp;Imprimir factura</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="invForm">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <label>Cant. </label>
+                                    <input id="helperClick" [formControl]="Cant" class="form-control form-control-sm"
+                                        type="number" (selectItem)="cantChange()">
+                                </div>
+                                <div [class.disabled-content]="correctInvoice || facturando" class="col-sm-3">
+                                    <label>Artículo</label>
+                                    <div id="scrollable-dropdown-menu">
+                                        <input #name [formControl]="ItemInfo" id="ItemCodeManualTrigger"
+                                            [ngbTypeahead]="searchItemCode" class="form-control form-control-sm"
+                                            type="text" (selectItem)="addItems($event)">
+                                    </div>
+
+                                </div>
+                                <div [style.display]="txtCardCode.Visibility ? 'block' : 'none'"
+                                    class="form-group col-md-2">
+                                    <label
+                                        [style.display]="lbCardCode.Visibility ? 'block' : 'none'">{{lbCardCode.Text}}</label>
+                                    <input id="clienteId" type="text" formControlName="cardCode"
+                                        class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.cardCode.errors }"
+                                        [ngbTypeahead]="searchBPCode" (ngModelChange)="changeCode($event)" />
+                                    <div *ngIf="submitted && f.cardCode.errors" class="invalid-feedback">
+                                        <div *ngIf="f.cardCode.errors.required">El código de cliente es requerido</div>
+                                    </div>
+                                </div>
+                                <div [style.display]="txtCardName.Visibility ? 'block' : 'none'"
+                                    class="form-group col-md-3">
+                                    <label
+                                        [style.display]="lbCardName.Visibility ? 'block' : 'none'">{{lbCardName.Text}}</label>
+                                    <input type="text" formControlName="cardName" class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.cardName.errors }"
+                                        [ngbTypeahead]="searchBPName" (ngModelChange)="changeDescription($event)" />
+                                    <div *ngIf="submitted && f.cardName.errors" class="invalid-feedback">
+                                        <div *ngIf="f.cardName.errors.required">El nombre de cliente es requerido</div>
+                                    </div>
+                                </div>
+                                <!-- <div [class.disabled-content]="hasLines"
+                                    [style.display]="txtCurrency.Visibility ? 'block' : 'none'"
+                                    class="form-group col-md-3">
+                                    <label
+                                        [style.display]="lbCurrency.Visibility ? 'block' : 'none'">{{lbCurrency.Text}}</label>
+                                    <select (change)="SetCurr()" formControlName="currency"
+                                        class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.currency.errors }">
+                                        <option *ngFor="let curr of currencyList" [value]="curr.Id">{{curr.Name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && f.currency.errors" class="invalid-feedback">
+                                        <div *ngIf="f.currency.errors.required">La moneda es requerida</div>
+                                    </div>
+                                </div> -->
+                                <div [style.display]="txtPayTerms.Visibility ? 'block' : 'none'"
+                                    class="form-group col-md-3">
+                                    <label
+                                        [style.display]="lbPayTerms.Visibility ? 'block' : 'none'">{{lbPayTerms.Text}}</label>
+                                    <!-- <select formControlName="PayTerms" class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.PayTerms.errors }">
+                                        <option *ngFor="let pTerms of PayTermsList" [value]="pTerms.GroupNum.toString()"
+                                            [selected]="(pTerms.GroupNum.toString()===defaultGroupNum.toString() ? true :false)">
+                                            {{pTerms.PymntGroup}}</option>
+                                    </select> -->
+                                    <select formControlName="PayTerms" class="form-control form-control-sm"
+                                    [ngClass]="{ 'is-invalid': submitted && f.PayTerms.errors }">
+                                    <option *ngFor="let pTerms of PayTermsList" [value]="pTerms.GroupNum">
+                                        {{pTerms.PymntGroup}}</option>
+                                </select>
+                                    <div *ngIf="submitted && f.PayTerms.errors" class="invalid-feedback">
+                                        <div *ngIf="f.PayTerms.errors.required"></div>
+                                    </div>
+                                </div>
+                                <div [class.disabled-content]="hasLines"
+                                    [style.display]="txtPriceList.Visibility ? 'block' : 'none'"
+                                    class="form-group col-md-3">
+                                    <label
+                                        [style.display]="lbPriceList.Visibility ? 'block' : 'none'">{{lbPriceList.Text}}</label>
+                                    <select (change)="ClearItemList()" formControlName="PriceList"
+                                        class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.PriceList.errors }">
+                                        <option *ngFor="let pList of PriceList" [value]="pList.ListNum"
+                                            [selected]="(pList.ListNum.toString()===defaultListNum.toString() ? true :false)">
+                                            {{pList.ListName}}</option>
+                                    </select>
+                                    <div *ngIf="submitted && f.PriceList.errors" class="invalid-feedback">
+                                        <div *ngIf="f.PriceList.errors.required"></div>
+                                    </div>
+                                </div>
+                                <div [style.display]="txtSLP.Visibility ? 'block' : 'none'" class="form-group col-md-3">
+                                    <label [style.display]="lbSLP.Visibility ? 'block' : 'none'">{{lbSLP.Text}}</label>
+                                    <select id="comboBox" formControlName="SlpList" class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.SlpList.errors }">
+                                        <option *ngFor="let pList of SlpsList" [value]="pList.SlpCode"
+                                            [selected]="(pList.SlpCode===defaultSlpCode.toString())">
+                                            {{pList.SlpCode + ' ' +pList.SlpName}}</option>
+                                    </select>
+                                    <div *ngIf="submitted && f.SlpList.errors" class="invalid-feedback">
+                                        <div *ngIf="f.SlpList.errors.required"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label>Tipo de pago</label>
+                                    <select formControlName="paymentType" (ngModelChange)="getBPFEData()"
+                                        class="form-control form-control-sm">
+                                        <option *ngFor="let o of paymentTypes" [value]="o.id"
+                                            [selected]="(o.name.toString()===defaultContado)">
+                                            {{o.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Número de referencia</label>
+                                    <input type="text" formControlName="NumAtCard" class="form-control form-control-sm" />
+                                </div>
+                                <div class="form-group col-md-1" style="text-align: center">
+                                    <label [style.display]="lbSLP.Visibility ? 'block' : 'none'">Campos FE </label>
+                                    <span class="FaHover" data-toggle="collapse" data-target="#collapseDiv"
+                                        aria-expanded="true" aria-controls="collapseDiv"
+                                        style="font-size: 28px;color:#007DBA;" placement="left"
+                                        triggers="mouseenter:mouseleave" ngbPopover="Mostrar campos FE">
+                                        <i class="fas fa-edit"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-1">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="accordion" id="accordionExample">
+                    <div class="card z-depth-0 bordered">
+                        <div id="collapseDiv" class="collapse" aria-labelledby="headingOne"
+                            data-parent="#accordionExample">
+                            <div class="card-body">
+                                <form [formGroup]="feForm">
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="IdType">Identificación</label>
+                                                <select class="form-control form-control-sm"
+                                                    (click)="identificationTypeChange($event.target.value)"
+                                                    formControlName="IdType"
+                                                    [ngClass]="{ 'is-invalid': fe.IdType.errors && fe.IdType.touched }">
+                                                    <option *ngFor="let idType of identificationTypeList"
+                                                        [value]="idType.Id">{{idType.Name}}</option>
+                                                </select>
+                                                <div *ngIf="fe.IdType.errors" class="invalid-feedback">
+                                                    <div *ngIf="fe.IdType.errors.required">El tipo de documento es
+                                                        requerido.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="Identification">Número</label>
+                                                <input appOnlyNumber formControlName="Identification"
+                                                    class="form-control form-control-sm" type="text"
+                                                    (blur)="queryFEData2()"
+                                                    [ngClass]="{ 'is-invalid': fe.Identification.errors && fe.Identification.touched }" />
+                                                <div *ngIf="fe.Identification.errors" class="invalid-feedback">
+                                                    <div *ngIf="fe.Identification.errors.minlength">Cant. de digitos
+                                                        correcta: CF: 9, CJ: 10, DIMEX: 11 - 12, NITE: 10 </div>
+                                                    <div *ngIf="fe.Identification.errors.maxlength">Cant. de digitos
+                                                        correcta: CF: 9, CJ: 10, DIMEX: 11 - 12, NITE: 10 </div>
+                                                    <div *ngIf="fe.Identification.errors.required">Este campo es
+                                                        requerido
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="Email">E-mail</label>
+                                                <input formControlName="Email" class="form-control form-control-sm"
+                                                    type="text"
+                                                    [ngClass]="{ 'is-invalid': fe.Email.errors && fe.Email.touched }" />
+                                                <div *ngIf="fe.Email.errors" class="invalid-feedback">
+                                                    <div *ngIf="fe.Email.errors.pattern">El formato de Email es:
+                                                        algo@ejemplo.com </div>
+                                                    <div *ngIf="fe.Email.errors.required">Este campo es requerido </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- <div class="col-md-2">
+                                          <div class="form-group">
+                                              <label for="Provincia">Provincia</label>
+                                              <select class="form-control form-control-sm" formControlName="Provincia" (change)="getCantons($event.target.value)" [ngClass]="{ 'is-invalid': fe.Provincia.errors && fe.Provincia.touched }">
+                                                  <option *ngFor="let prov of provinceList" [value]="prov.ProvinceId">
+                                                      {{prov.ProvinceName | capitalizado}}</option>
+                                              </select>
+                                              <div *ngIf="fe.Provincia.errors" class="invalid-feedback">
+                                                  <div *ngIf="fe.Provincia.errors.required">La provincia es requerida.
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                              <label for="Canton">Cantón</label>
+                                              <select class="form-control form-control-sm" formControlName="Canton" (change)="getDistrics($event.target.value)" [ngClass]="{ 'is-invalid': fe.Canton.errors && fe.Canton.touched }">
+                                                  <option *ngFor="let cant of cantonList" [value]="cant.CantonId">
+                                                      {{cant.CantonName | capitalizado}}</option>
+                                              </select>
+                                              <div *ngIf="fe.Canton.errors" class="invalid-feedback">
+                                                  <div *ngIf="fe.Canton.errors.required">El cantón es requerido.</div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                              <label for="Distrito">Distrito</label>
+                                              <select class="form-control form-control-sm" formControlName="Distrito" (change)="getNeighborhood($event.target.value)" [ngClass]="{ 'is-invalid': fe.Distrito.errors && fe.Distrito.touched }">
+                                                  <option *ngFor="let dis of districtList" [value]="dis.DistrictId">
+                                                      {{dis.DistrictName | capitalizado}}</option>
+                                              </select>
+                                              <div *ngIf="fe.Distrito.errors" class="invalid-feedback">
+                                                  <div *ngIf="fe.Distrito.errors.required">El distrito es requerido.
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                              <label for="Barrio">Barrio</label>
+                                              <select class="form-control form-control-sm" formControlName="Barrio" (change)="setNeighborhoodName($event.target.value)">
+                                                  <option *ngFor="let nei of neighborhoodList"
+                                                      [value]="nei.NeighborhoodId">
+                                                      {{nei.NeighborhoodName | capitalizado}}</option>
+                                              </select>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-8">
+                                          <div class="form-group">
+                                              <label for="Direccion">Dirección</label>
+                                              <input formControlName="Direccion" class="form-control form-control-sm" type="text" [ngClass]="{ 'is-invalid': fe.Direccion.errors && fe.Direccion.touched }" />
+                                              <div *ngIf="fe.Direccion.errors" class="invalid-feedback">
+                                                  <div *ngIf="fe.Direccion.errors.required">La direccion es requerida.
+                                                  </div>
+                                                  <div *ngIf="fe.Direccion.errors.maxlength">Maximo de caracteres 250
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div> -->
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="udfs.length > 0" class="row ml-1 pb-0 mb-0">
+            <ul class="list-inline" *ngFor="let udf of udfs; index as i">
+                <li class="list-inline-item" [class.NoRendered]="!udf.IsRendered" [class.Rendered]="udf.IsRendered">
+                    <div [ngClass]="{'hiddenComponent' : !udf.IsRendered}">
+                        <div class="form-group form-group-sm secund" *ngIf="!udf.MappedValues">
+                            <label>{{udf.Description}}</label>
+                            <input type="{{MapDataType(udf.FieldType)}}" class="form-control form-control-sm"
+                                id="dynamicRender_{{udf.Name}}" style="display: inline;">
+                        </div>
+                        <div class="form-group form-group-sm" *ngIf="udf.MappedValues">
+                            <label for="exampleFormControlSelect1">{{udf.Description}}</label>
+                            <select class="form-control form-control-sm" id="dynamicRender_{{udf.Name}}"
+                                style="display: inline;">
+                                <option *ngFor="let value of udf.MappedValues" value="{{value.Value}}">
+                                    {{value.Description}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="row container-fluid contenidoFacturacion ml-1 mr-1">
+            <div class="col-md-12 pl-0 pr-0">
+                <table id="horver" class="table table-responsive TableFacturacion invi table-sm table-responsive-lg">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="thHeader" style="width: 1%;">&nbsp;&nbsp;<span>#</span></th>
+                            <th *ngFor="let item of viewParamList"
+                                [ngStyle]="{ 'min-width': MapWidth[item.Name] + 'px' }" class="thHeader">
+                                <span *ngIf="item.Visibility">&nbsp;&nbsp;{{item.Text}}</span>
+                            </th>
+                            <th scope="col" class="option thHeader"><span>Opc</span></th>
+                        </tr>
+                    </thead>
+                    <tbody #scrollMe [scrollTop]="scrollMe.scrollTop" [ngStyle]="{ 'width': '100%' }">
+                        <tr *ngIf="itemsList.length === 0">
+                            <td></td>
+                            <td scope="col" *ngFor="let param of viewParamList"
+                                [ngStyle]="{ 'min-width': MapWidth[param.Name] + 'px' }">
+                                <input class="form-control form-control-sm invi" />
+                            </td>
+                            <td scope="col" class="option"><span>{{ '' }} </span></td>
+                        </tr>
+                        <tr *ngFor="let item of itemsList.slice().reverse(); index as i">
+                            <td scope="row" style="width: 1%;" class="LineaFacturacion tdbody"
+                                [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'">&nbsp;{{ i + 1 }}
+                            </td>
+                            <td *ngFor="let param of viewParamList" class="LineaFacturacion">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi"
+                                    *ngIf=" param.Visibility && param.Name == 'ItemCode'" type="text"
+                                    [(ngModel)]="item.CodeName" readonly>
+                                <input [class.text-danger]="item.Quantity === 0" [readonly]="!priceEditable"
+                                    [class.mOrange]="item.LinTot == 0 && item.Quantity !== 0"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf="(param.Visibility && param.Name == 'UnitPrice')" [ngModel]="(item.UnitPrice)"
+                                    (ngModelChange)="item.UnitPrice = $event>=0?$event:0" (change)="LineTotalCalculate(i, $event)">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf=" param.Visibility && param.Name == 'Marca'" [(ngModel)]="item.Marca"
+                                    [disabled]="true">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf=" param.Visibility && param.Name == 'ItemName'" [(ngModel)]="item.ItemName"
+                                    [disabled]="true">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="number"
+                                    *ngIf=" param.Visibility && param.Name == 'U_SugPrice'"
+                                    [(ngModel)]="item.U_SugPrice" hidden>
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="number"
+                                    *ngIf=" param.Visibility && param.Name == 'Quantity'" [(ngModel)]="item.Quantity"
+                                    (change)="LineTotalCalculateExt(i)" min="0" (ngModelChange) = "item.Quantity = $event>=0? $event:0" >
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="number"
+                                    *ngIf=" param.Visibility && param.Name == 'Discount'" [(ngModel)]="item.Discount"
+                                    (change)="LineTotalCalculateExt(i)" min="0" (ngModelChange) = "item.Discount = $event>=0? $event:0"  >
+                                <select [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    (change)="changeTaxCode(i, item)" class="form-control form-control-sm invi"
+                                    type="text" *ngIf=" param.Visibility && param.Name == 'TaxCode'"
+                                    [(ngModel)]="item.TaxCode">
+                                    <option *ngFor="let tList of taxesList" [value]="tList.TaxCode">{{tList.TaxCode}}
+                                    </option>
+                                </select>
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="number"
+                                    *ngIf=" param.Visibility && param.Name == 'TaxRate'" [(ngModel)]="item.TaxRate"
+                                    [disabled]="true">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf=" param.Visibility && param.Name == 'LinTot'"
+                                    [ngModel]="(item.LinTot | number:'.2-2')" (ngModelChange)="item.LinTot = $event"
+                                    [disabled]="true">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf=" param.Visibility && param.Name == 'WhsCode'" [(ngModel)]="item.WhsCode">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf="param.Visibility && param.Name == 'WhsName'" [(ngModel)]="item.WhsName"
+                                    (dblclick)="GetWHAvailableItem($event, content, item.Item, i)">
+                                <input [class.text-danger]="item.Quantity === 0 && item.InvntItem==='Y'"
+                                    class="form-control form-control-sm invi" type="text"
+                                    *ngIf=" param.Visibility && param.Name == 'Serie'" [(ngModel)]="item.Serie"
+                                    [disabled]="true">
+                            </td>
+                            <td class="justify-content-center option clasesita" class="LineaFacturacion">
+                                <button type="button" class="btn btn-link btn-xs" (click)="removeItem(item)"
+                                    placement="left" triggers="mouseenter:mouseleave" ngbPopover="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row footMenu container-fluid py-3 ml-0 mt-2 pb-4">
+            <div class="col-md-4">
+                <div class="table-responsive">
+                    <table class="tableSubtotal table-bordered  table-hover table-condensed table-sm" style="overflow-y:hidden; margin-top:35px;">
+                        <tbody style="font-weight: bold; font-size: 16px;">
+                            <tr class="tableSubtotal" [style.display]="txtTotalExe.Visibility ? 'inherit' : 'none'">
+                                <td width="60%">
+                                    <label [style.display]="lbTotalExe.Visibility ? 'inherit' : 'none'" for="TotalWithoutTax">{{lbTotalExe.Text}}</label>
+                                </td>
+                                <td width="5%">
+                                    <label [style.display]="lbTotalExe.Visibility ? 'inherit' : 'none'">{{ GetSymbol() }}</label>
+                                </td>
+                                <td width="35%">
+                                    <input style="font-weight: bold; font-size: 16px;" [disabled]="true" type="text" class="form-control invi form-control-sm txtRigth" #TotalWithoutTax required [ngModel]="(totalWithoutTax| number:TO_FIXED_TOTALDOCUMENT)" [ngModelOptions]="{standalone: true}">
+                                </td>
+                            </tr>
+                            <tr class="tableSubtotal" [style.display]="txtDiscount.Visibility ? 'inherit' : 'none'">
+                                <td width="60%">
+                                    <label [style.display]="lbDiscount.Visibility ? 'inherit' : 'none'" for="Discount">{{lbDiscount.Text}}</label>
+                                </td>
+                                <td width="5%">
+                                    <label [style.display]="lbTotalExe.Visibility ? 'inherit' : 'none'">{{ GetSymbol() }}</label>
+                                </td>
+                                <td width="35%">
+                                    <input style="font-weight: bold; font-size: 16px;" [disabled]="true" type="text" class="form-control form-control-sm invi txtRigth" #Discount required [ngModel]="(discount| number:TO_FIXED_TOTALDOCUMENT)" [ngModelOptions]="{standalone: true}">
+                                </td>
+                            </tr>
+                            <tr class="tableSubtotal" [style.display]="txtTaxes.Visibility ? 'inherit' : 'none'">
+                                <td width="60%">
+                                    <label [style.display]="lbTaxes.Visibility ? 'inherit' : 'none'" for="Tax">{{lbTaxes.Text}}</label>
+                                </td>
+                                <td width="5%">
+                                    <label [style.display]="lbTotalExe.Visibility ? 'inherit' : 'none'">{{ GetSymbol() }}</label>
+                                </td>
+                                <td width="35%" >
+                                    <input style="font-weight: bold; font-size: 16px;" [disabled]="true" type="text" class="form-control form-control-sm invi txtRigth" #Tax required [ngModel]="(tax| number:TO_FIXED_TOTALDOCUMENT)" [ngModelOptions]="{standalone: true}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4 offset-md-4">
+                <div>
+                    <label style="font-size:18px; text-align: center; font-weight: bold">TOTAL</label>
+                    <input style="font-size:60px; text-align: center" type="text" [formControl]="TotalCol " class="form-control form-control-sm" [ngModel]="(total | currency:GetCurrencySymbol():'symbol-narrow':TO_FIXED_TOTALDOCUMENT)" id="total" readonly>
+                </div>
+            </div>
+
+        </div>
+        <!-- Modal para items segun la serie-->
+        <ng-template #content let-modal>
+            <div class="modal-header">
+                <h4 style="font-size: 15px;" class="modal-title" id="modal-basic-title">Detalle de existencias por
+                    almacén
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table style="font-size: 15px;" class="tableAlmacenesExistencias table-sm table-striped table-hover">
+                    <thead class="tableAlmacenesExistenciasHeader">
+                        <tr>
+                            <th scope="col">Almacén</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Comprometido</th>
+                            <th scope="col">Solicitado</th>
+                            <th scope="col">Disponible</th>
+                            <!-- <th scope="col" class="justify-content-center">Opciones</th> -->
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let avaItem of WHAvailableItemList; index as i;">
+                        <tr (dblclick)="avaItemSelected($event, avaItem, i)"
+                            (click)="avaItemSelected($event, avaItem, i)">
+                            <td>
+                                <input class="form-control form-control-sm invi" type="text"
+                                    value="{{ avaItem.WhsCode }} - {{ avaItem.WhsName }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="tableAlmacenesExistenciasNumber form-control form-control-sm invi"
+                                    type="text" value="{{ avaItem.OnHand }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="tableAlmacenesExistenciasNumber form-control form-control-sm invi"
+                                    type="text" value="{{ avaItem.IsCommited }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="tableAlmacenesExistenciasNumber form-control form-control-sm invi"
+                                    type="text" value="{{ avaItem.OnOrder }}" [disabled]="true">
+                            </td>
+                            <td>
+                                <input class="tableAlmacenesExistenciasNumber form-control form-control-sm invi"
+                                    type="text" value="{{ avaItem.Disponible }}" [disabled]="true">
+                            </td>
+                        </tr>
+                        <tr *ngIf="i === expandedIndex">
+                            <td colspan="5">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="120px">Placa / Chasis</th>
+                                            <th width="75px">Color</th>
+                                            <th width="60px">Año</th>
+                                            <th width="120px">Ubicacion</th>
+                                            <th width="90px">F Arribo</th>
+                                            <th width="60px">Cant.</th>
+                                            <th width="60px">Comp.</th>
+                                            <th width="60px">Disp.</th>
+                                            <th>Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tableScroll">
+                                        <tr *ngFor="let series of seriesList; index as i;"
+                                            (click)="selectSerie(series, avaItem)">
+                                            <td scope="row" width="120px">{{ series.PlacaChasis }}</td>
+                                            <td width="75px">{{ series.Color }}</td>
+                                            <td width="60px">{{ series.Annio }}</td>
+                                            <td width="120px">{{ series.Ubicacion }}</td>
+                                            <td width="90px">{{ series.InDate | date:"dd/MM/yyyy" }}</td>
+                                            <td width="60px" style="text-align:center;">{{ series.Quantity }}</td>
+                                            <td width="60px" style="text-align:center;">{{ series.Comprometido }}</td>
+                                            <td width="60px" style="text-align:center;">{{ series.Disponible }}</td>
+                                            <td style="text-align:right;">{{ series.Precio }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </ng-template>
+
+        <ng-template #changeContent let-modal>
+            <div class="modal-header" (keydown)="testKeydown($event)">
+                <h2 class="modal-title" id="modal-basic-title">Vuelto</h2>
+                <button type="button" class="btn btn-danger close" aria-label="Close"
+                    (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 *ngIf="userCurrency === 'COL'">Colones: ₡{{changeColones}}</h5>
+                <h5 *ngIf="userCurrency === 'USD'">Dólares: ${{changeDolares}}</h5>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </ng-template>
+        <!--Modal pago realizado con exito-->
+        <button id="triggerAfterPayModal" style="display: none;" type="button" class="btn btn-primary"
+            data-toggle="modal" data-target=".bd-example-modal-lgs">MODAL_AFTER_PAY</button>
+
+        <div class="modal fade bd-example-modal-lg bd-example-modal-lgs" tabindex="-1" role="dialog"
+            aria-labelledby="myLargeModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="container p-3">
+
+                        <!-- <div class="justify-content-right">
+                      <div class="offset-md-9 col-md-3">
+                          <button data-dismiss="modal" type="button" class="btn btn-danger btn-circle">
+                              <i class="glyphicon glyphicon-remove"></i> X
+                          </button>
+                      </div>
+                  </div> -->
+
+                        <div class="row justify-content-center">
+                            <i style="font-size: 120px; color: yellowgreen;" class="far fa-check-circle"></i>
+                        </div>
+                        <div class="row justify-content-center">
+                            <h3> {{NameActionDocument}}
+                            </h3>
+                        </div>
+                        <div class="row justify-content-center">
+                            <h5><span style="font-weight: bold;">DocNum:</span> {{returnedDocNum}}</h5>
+                        </div>
+                        <div class="row justify-content-center">
+                            <h5><span style="font-weight: bold;">DocEntry:</span> {{returnedDocEntry}}</h5>
+                        </div>
+                        <div *ngIf="isOnInvoiceDocument" class="row justify-content-center">
+                            <h5><span style="font-weight: bold;">NumFe:</span> {{returnedNumFE}} </h5>
+                        </div>
+
+
+                        <div *ngIf="modalInvoiceContent">
+                            <div class="row justify-content-center">
+                                <h2>Vuelto</h2>
+                            </div>
+                            <div class="row justify-content-center">
+                                <h1>Colones: ₡ {{changeColones | number:'1.2-2'}}</h1>
+                            </div>
+                            <div class="row justify-content-center">
+                                <h1>Dólares: $ {{(changeColones / DailyExRate) | number: '1.2-2'}}</h1>
+                            </div>
+                        </div>
+
+                        <!-- <div class="row justify-content-center" *ngIf="!modalInvoiceContent">
+                      <h3>Intentos de duplicación: <label class="text-danger">{{attemptsWhileBilling}}</label>
+                      </h3>
+                  </div> -->
+
+
+
+
+
+                        <div class="row">
+                            <div class="offset-md-2 col-md-4 ">
+                                <button style="display: none;" id="triggerCloseAuxiliar" data-dismiss="modal"></button>
+                                <button id="triggerCloseAfterPay" type="button" (click)="CreateNew()"
+                                    class="btn btn-success btn-block" data-dismiss="modal"><i class="fas fa-check"></i>
+                                    Aceptar</button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-info ml-auto btn-block" (click)="printInvoice()">
+                                    <i class="fas fa-print"></i> Imprimir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <ng-template #payContent let-modal>
+            <div class="modal-body Text22">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ngb-tabset>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Efectivo</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="cashForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <label c for="AccountCash">Cuenta</label>
+                                                                <select class="form-control form-control-sm " formControlName="AccountCash">
+                                                                  <option *ngFor="let acc of accountList"
+                                                                      [value]="acc.Account">{{acc.AccountName}}
+                                                                  </option>
+                                                              </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-9">
+                                                                <div class="form-group">
+                                                                    <label for="TotalCash">Total</label>
+                                                                    <input ctrlKeys (ctrlB)="onCtrlBCash()" onClick="this.select();" type="number" formControlName="TotalCash" class="form-control" (keyup)="addAmountCash()" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="onCtrlBCash()" aria-label="Cancelar">
+                                                                      <i class="fa fa-plus"
+                                                                          aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                                  </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Tarjeta</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="creditCardForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="CreditCard">Nombre de tarjeta </label>
+                                                                <select class="form-control form-control-sm" formControlName="CreditCard" (change)="getSelectedOptionText($event)">
+                                                                  <option *ngFor="let acc of cardsList"
+                                                                      [value]="acc.CreditCard">{{acc.CardName}}
+                                                                  </option>
+                                                              </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="textNoMarginBottom" for="CardNum">Número de tarjeta</label>
+                                                                    <input type="number" formControlName="CardNum" disabled class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="OwnerIdNum">Número de voucher</label>
+                                                                <input type="text" formControlName="OwnerIdNum" class="form-control form-control-sm" />
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label class="textNoMarginBottom" for="CardValid">Válido hasta</label>
+                                                                    <input type="text" formControlName="CardValid" disabled class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label class="textNoMarginBottom" for="CreditSum">Monto</label>
+                                                                <input ctrlKeys (ctrlB)="onCtrlBTarjeta()" onClick="this.select();" type="number" formControlName="CreditSum" class="form-control form-control-sm" />
+                                                            </div>
+
+                                                            <div class="col-sm-3 ">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="onCtrlBTarjeta()" aria-label="Cancelar">
+                                                                      <i class="fa fa-plus"
+                                                                          aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                                  </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-1 "></div>
+                                                            <div class="col-sm-2 ">
+                                                                <div class="divButon">
+                                                                    <button class="btn btn-primary topPoscicion" (click)="addAmounCreditCard()" aria-label="Cancelar">
+                                                                      <i class="fa fa-plus"
+                                                                          aria-hidden="true"></i>&nbsp;
+                                                                  </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+
+                                                <div class="col-lg-12 table-responsive" style="overflow-x: auto;height: 100px !important">
+                                                    <table class="tableCreditCardPayment table-striped table-sm table-hover">
+                                                        <thead style="position:sticky; top:0px; width:100%">
+                                                            <tr class="tableCreditCardPayment" style="position:sticky; top:0px; width:100%">
+                                                                <th scope="col">Nombre tarjeta</th>
+                                                                <th scope="col">Cuenta</th>
+                                                                <th scope="col">Importe</th>
+                                                                <th scope="col">Opciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="tableCreditCardPayment" *ngFor="let cc of V_CreditCards; index as i">
+                                                                <td class="" scope="row">{{ cc.FormatCode }}</td>
+                                                                <td class="">{{ cc.CreditCard }}</td>
+                                                                <td class="">{{ cc.CreditSum | number:'.2-2'}}</td>
+                                                                <td class=" justify-content-center">
+                                                                    <button type="button" class="btn btn-link btn-xs" (click)="removeCreditCard(i)" placement="left" triggers="mouseenter:mouseleave" ngbPopover="Eliminar">
+                                                                      <i class="fa fa-trash"></i>
+                                                                  </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab>
+                                        <ng-template ngbTabTitle><b>Transferencia</b></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <form [formGroup]="transferForm">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label for="AccountTransf">Cuenta</label>
+                                                                <select class="form-control form-control-sm" formControlName="AccountTransf">
+                                                                  <option *ngFor="let acc of accountList"
+                                                                      [value]="acc.Account">{{acc.AccountName}}
+                                                                  </option>
+                                                              </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="DateTrans">Fecha de
+                                                                      transferencia</label>
+                                                                    <input type="date" formControlName="DateTrans" class="form-control form-control-sm" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <label for="Ref">Referencia</label>
+                                                                <input type="text" formControlName="Ref" class="form-control form-control-sm" />
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="TransSum">Importe</label>
+                                                                    <input ctrlKeys (ctrlB)="onCtrlBTransferencia()" onClick="this.select();" type="number" formControlName="TransSum" class="form-control form-control-sm" (keyup)="addAmountTransfer()" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-9 ">
+
+                                                            </div>
+                                                            <div class="col-sm-3 topPoscicion">
+                                                                <button class="btn btn-primary" (click)="onCtrlBTransferencia()" aria-label="Cancelar">
+                                                                  <i class="fa fa-plus"
+                                                                      aria-hidden="true"></i>&nbsp;Ctrl-B
+                                                              </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                </ngb-tabset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Cuenta</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="currencyPayment" (ngModelChange)="changeCurrency()" [disabled]="ReceivedG > 0 ? true : false">
+                                  <option *ngFor="let curr of currencyList" [value]="curr.Id">{{curr.Name}}</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="divButon">
+                                    <button class="btn btn-success topPoscicion" aria-label="Aceptar" [disabled]="ReceivedG >= TotalG ? false : true" (click)="CreatePay()">
+                                      <i class="fa fa-check" aria-hidden="true"></i>&nbsp;Aceptar
+                                  </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-3  ">
+                                <div class="divButon">
+                                    <button class="btn btn-danger topPoscicion" (click)="closePayModal()" aria-label="Cancelar">
+                                      <i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar
+                                  </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row topMinusNegative50">
+                            <hr>
+                            <div class="col-md-12">
+                                <div>
+                                    <label class="textNoMarginBottom">Total</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="TotalG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Recibido</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="ReceivedG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Diferencia</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="DifferenceG | number:'.2-2'" disabled>
+                                    <label class="textNoMarginBottom">Vuelto</label>
+                                    <input type="text" class="form-control text-right" [ngModel]="ChangeG | number:'.2-2'" disabled>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template> -->
+    </div>
+    <div *ngIf="!permisos">
+        <h2>No se tienen permisos para acceder a esta página</h2>
+    </div>
+</block-ui>

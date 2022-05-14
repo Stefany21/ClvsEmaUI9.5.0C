@@ -1,0 +1,96 @@
+::ng-deep .Modal-Xl .modal-dialog { 
+    max-width: 80%;
+    width: 80%;
+  
+}
+.justify-content-rigth {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.floatRight {
+    float: right;
+}
+
+.margin2px {
+    margin: 2px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.little-margin {
+    margin-right: 15px;
+}
+
+.checkBoxSm {
+    width: 18px !important;
+    height: 30px !important;
+}
+
+.invi {
+    border: none;
+    background-color: transparent;
+}
+
+.txtRigth {
+    text-align: right;
+}
+
+// tamaño de los textos de la modal de pagos
+.Text22 input, .Text22 select, .Text22 label{
+    font-size: 22px;
+}
+
+ thead th { position: sticky;top: 0; background-color: #3c75b5;  }
+ .table-scroll thead{
+	display: block;
+	width:2300px;
+}
+.divButon{ 
+    position:relative;
+}
+.div-container{
+    position:relative;
+}
+.topPoscicion{
+    position:absolute;
+    bottom:-75px;
+    right: auto;
+}
+.textNoMarginBottom{
+    margin-bottom:0px !important;
+}
+
+.disabled-content {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+
+.table-scroll tbody {
+    overflow-y: scroll;
+	display:block;
+	width: 2300px;
+	height:28vh;
+}
+.td.invi {
+    border: none;
+    background-color: transparent;
+    /*word-break:break-all;*/
+}
+.hiddenComponent {
+    display: none;
+  }
+
+.Rendered{
+    margin-right: 30px !important;
+
+}  
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}

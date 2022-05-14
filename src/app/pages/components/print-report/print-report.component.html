@@ -1,0 +1,124 @@
+<block-ui>
+  <div *ngIf="permisos" class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <form class="row" [formGroup]="parametersForm">
+          <div class="col-3 p-1 my-1" *ngFor="let paramList of paramaterListGroup; index as i">
+            <div class="container-fluid col-header">
+              <div class="row my-1" *ngFor="let param of paramList; index as j" [ngSwitch]="param.Type">
+                <div class="col-12 border rounded shadow-sm">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label [for]="'input' + i + '-' + j">{{ param.DisplayName
+                          }}<span class="text-danger" *ngIf="param.Required">
+                            *</span></label>
+                        <input type="text" class="form-control form-control-sm" [attr.id]="'input' + i + '-' + j"
+                          formControlName="{{ param.Name }}" *ngSwitchCase="1" />
+                        <input type="number" class="form-control form-control-sm" [attr.id]="'input' + i + '-' + j"
+                          formControlName="{{ param.Name }}" *ngSwitchCase="2" />
+                        <input type="date" class="form-control form-control-sm" [attr.id]="'input' + i + '-' + j"
+                          formControlName="{{ param.Name }}" *ngSwitchCase="3" />
+                        <input type="checkbox" class="form-control form-control-sm" [attr.id]="'input' + i + '-' + j"
+                          formControlName="{{ param.Name }}" *ngSwitchCase="4" />
+                        <select class="form-control form-control-sm" [attr.id]="'input' + i + '-' + j"
+                          formControlName="{{ param.Name }}" *ngSwitchCase="5">
+                          <option [value]="option.Value" *ngFor="let option of param.Options">
+                            {{ option.Key }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row justify-content-end">
+          <button class="btn btn-sm btn-light mx-1" [disabled]="parametersForm.invalid" (click)="onClickPrintReport()">
+            Descargar reporte
+          </button>
+          <button class="btn btn-sm btn-light mx-1" [disabled]="parametersForm.invalid"
+            (click)="onClickSendMailModal(modalSendMail)">
+            Enviar por correo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+</div>
+  <ng-template #modalSendMail let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Enviar por correo</h4>
+      <button type="button" class="close" aria-label="Close" (click)="dismissModal(false)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <form class="row my-2" [formGroup]="emailForm">
+              <div class="col-12">
+                <div class="form-group mb-0">
+                  <label>Destinatarios</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="Recipient"
+                    (keyup.enter)="addRecipient(emailForm.get('Recipient').value)" />
+                </div>
+              </div>
+              <div class="col-12 mb-2">
+                <button type="button" *ngFor="let recipient of emailRecipients; index as i" class="btn border mr-1 mt-1"
+                  style="box-shadow: none" (click)="onClickRemoveRecipient(i)">
+                  {{ recipient }}
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Asunto</label>
+                  <textarea class="form-control form-control-sm" formControlName="Subject" [ngClass]="{
+                      'is-invalid':
+                        emailFormControls.Subject.errors &&
+                        emailFormControls.Subject.touched
+                    }"></textarea>
+                  <div *ngIf="emailFormControls.Subject.errors" class="invalid-feedback">
+                    <div *ngIf="emailFormControls.Subject.errors.required">
+                      Este campo es requerido
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Mensaje</label>
+                  <textarea class="form-control form-control-sm" formControlName="Body" [ngClass]="{
+                      'is-invalid':
+                        emailFormControls.Body.errors &&
+                        emailFormControls.Body.touched
+                    }"></textarea>
+                  <div *ngIf="emailFormControls.Body.errors" class="invalid-feedback">
+                    <div *ngIf="emailFormControls.Body.errors.required">
+                      Este campo es requerido
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row justify-content-end">
+              <button class="btn btn-sm btn-light" [disabled]="
+                  emailForm.invalid ||
+                  !emailRecipients ||
+                  emailRecipients.length === 0
+                " (click)="onClickSendEmail()">
+                Enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</block-ui>

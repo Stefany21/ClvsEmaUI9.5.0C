@@ -1,0 +1,30 @@
+  :host ::ng-deep .tabset1 a.nav-link {
+    border-bottom: 1.2px solid gray;
+    color: gray;
+  }
+  
+  :host ::ng-deep .tabset1 a.nav-link.active {
+    background-color: transparent !important;
+    border-bottom: none;
+    border-right: 1.2px solid gray;
+    border-left: 1.2px solid gray;
+    border-top: 1.2px solid gray;
+    color: rgb(43, 42, 42);
+    font-size: 14px;
+    font-family: "Segoe UI";
+    font-weight: 500;
+   
+  }
+
+  .Rendered{
+    margin-right: 30px !important;
+
+}       
+.NoRendered {
+    margin-left: 0px !important;
+    margin: 0%;
+}
+
+.hiddenComponent {
+    display: none;
+  }

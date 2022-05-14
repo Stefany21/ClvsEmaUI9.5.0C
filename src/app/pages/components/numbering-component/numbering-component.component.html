@@ -1,0 +1,86 @@
+<block-ui>
+    <!-- <div *ngIf="permisos"> -->
+   
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="float-right ml-1">
+                    <a class="btn btn-success btn-sm button-action" (click)="CreateNumbering()">
+                        <i class="fa fa-plus cursor-hand" aria-hidden="true">                          
+                        </i> &nbsp;Nuevo</a>
+                </div>
+            </div>
+        </div>
+    
+
+    <!-- <div class="filter-container" style="display: inline-flex">
+          <div >
+              <input class="form-control" type="text" (keyup)='filterDatatable($event)'        
+              placeholder="Escriba aquí para filtrar el resultado"/>
+          </div>
+      </div> -->
+    <!--[reorderable]="reorderable"-->
+    <div class="row container-fluid  contenidoFacturacion ml-1 mr-1 pt-3">
+        <div class="col-md-12 pl-0 pr-0">
+        <table class="TableFacturacion invi" id="tbEnabled">
+          <thead>
+            <tr>
+              <th  scope="col"class="thHeader" width="2%">&nbsp;&nbsp;#</th>
+              <th  scope="col"class="thHeader" width="5%">Id</th>
+              <th  scope="col"class="thHeader" width="20%">Próximo número</th>
+              <th  scope="col"class="thHeader" width="20%">Sucursal</th>
+              <th  scope="col"class="thHeader" width="20%">Terminal</th>
+              <th  scope="col"class="thHeader" width="20%">Observación</th>
+              <th  scope="col"class="thHeader" width="20%">Tipo documento</th>
+              <th  scope="col"class="thHeader" width="20%">Activo</th>
+              <th  scope="col"class="thHeader" width="1%">Opciones&nbsp;&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody  style="width: 100%;">
+            <tr *ngFor="let num of NumberingList;let i=index;"  scope="row" class="invi">
+              <td>&nbsp;{{i + 1}}</td>
+              <td>{{num.Id}}</td>
+              <td>{{num.NextNumber}}</td>
+              <td>{{num.Sucursal}}</td>
+              <td>{{num.Terminal}}</td>
+              <td>{{num.Orbservacion}}</td>
+              <td>{{num.DocType}}</td>
+              <td ><i class="fas fa-{{num.Active? 'check': 'times'}}"></i></td>           
+              <td>
+                <span style="cursor: pointer" class="far fa-edit cursor-hand" (click)="EditNumbering(num.Id)"></span>
+            </td>  
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- <ngx-datatable style="height: 300px;" #table [rows]="NumberingList" [columnMode]="'force'" [draggable]="true" [rowHeight]="'auto'">
+
+        <ngx-datatable-column name="Id" prop="Id">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Proximo Número" prop="NextNumber">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Sucursal" prop="Sucursal">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Terminal" prop="Terminal">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Orbservación" prop="Orbservacion">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Tipo Doc." prop="DocType">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Activo" prop="active">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+                <input type="checkbox" [checked]=value [disabled]="true">
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Editar" prop="Id">
+            <ng-template let-value="value" ngx-datatable-cell-template>
+                <i class="far fa-edit cursor-hand" (click)="EditNumbering(value)"></i>
+            </ng-template>
+        </ngx-datatable-column>
+    </ngx-datatable> -->
+    <!-- </div>
+  <div *ngIf="permisos">
+    <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>	 -->
+</block-ui>

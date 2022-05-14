@@ -1,0 +1,101 @@
+<block-ui>
+    <div class="">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="float-right ml-1">
+                    <!--<input type="button" (click)="enviarInfo()" class=" btn btn-primary" value="Cancelar" />-->
+                    <a class="btn btn-danger btn-sm button-action" (click)="cancel()">
+                        <i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar</a>
+                </div>
+                <div class="float-right ml-1">
+                    <!--<input type="submit" id="btnSendInfo" class=" btn btn-primary btn-success" value="<i class="fas fa-search" aria-hidden="true"></i> Buscar" />-->
+                    <button class="btn btn-success btn-sm button-action" form="formComp" type="submit"><i class="fas fa-arrow-alt-circle-right"></i>&nbsp;{{btnSendInfo}}</button>
+                    <!-- <a class="btn btn-primary btn-md button-action" (click)="submit()" >
+						<i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>  -->
+                </div>
+            </div>
+            <!--
+                <div class="float-right mt-2" role="group">
+                    <input type="submit" id="btnSendBP" 
+                           [disabled]="SeriesGroup.invalid" 
+                           class=" btn btn-primary separator" value="{{btnSendInfo}}" />            
+
+                    <a class="btn btn-danger btn-md button-action" (click)="cancel()">
+                        Cancelar
+                    </a>                     
+                </div>
+				-->
+
+        </div>
+    </div>
+
+    <form novalidate id="formComp" (ngSubmit)="onSubmitCreate()" [formGroup]="SeriesGroup">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Name">Nombre</label>
+                    <input type="text" formControlName="Name" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': f.Name.errors && f.Name.touched}" />
+                    <div *ngIf="f.Name.errors" class="invalid-feedback">
+                        <div *ngIf="f.Name.errors.required">Nombre requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="CompanyName">Compañía</label>
+                    <select class="form-control form-control-sm" formControlName="CompanyName">
+                            <option  *ngFor="let company of companyList; index as i" value="{{company.Id}}">{{company.DBName}}</option>
+                        </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Serie">Serie</label>
+                    <input type="number" formControlName="Serie" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': f.Serie.errors && f.Serie.touched}" />
+                    <div *ngIf="f.Serie.errors" class="invalid-feedback">
+                        <div *ngIf="f.Serie.errors.required">Se require numero de serie</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="typeName">Tipo de Documento</label>
+                    <select class="form-control form-control-sm" formControlName="typeName">
+                            <option  *ngFor="let Enum of seriesEnuList; index as i" value="{{Enum.Value}}">{{Enum.Name}}</option>
+                        </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Numbering">Tipo de Serie</label>
+                    <select class="form-control form-control-sm" formControlName="Numbering">
+                            <option  *ngFor="let typeEnum of typeSeriesEnuList; index as i" value="{{typeEnum.Value}}">{{typeEnum.Name}}</option>
+                        </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="Active">Activo</label>
+                    <select class="form-control form-control-sm" formControlName="Active">
+                        <option value="1">Si</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="Numbering">Tipo</label>
+                    <select class="form-control form-control-sm" formControlName="Type">
+                    <option value="1">Online</option>
+                    <option value="2">Offline</option>  
+                </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</block-ui>

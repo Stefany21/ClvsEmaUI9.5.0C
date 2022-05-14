@@ -1,0 +1,939 @@
+<block-ui>
+    <div class="">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="float-right ml-1">
+                    <a class="btn btn-danger btn-sm button-action" (click)="cancel()">
+                        <i class="fas fa-ban" aria-hidden="true"></i>&nbsp;Cancelar</a>
+                </div>
+                <div class="float-right ml-1">
+                    <button class="btn btn-success btn-sm button-action" form="formComp" type="submit"
+                        [disabled]="!companyMailForm.valid"><i class="fas fa-arrow-alt-circle-right"></i>&nbsp;{{title}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="formComp" (ngSubmit)="onSubmit()" [formGroup]="companyMailForm">
+        <div class="mt-2 mb-5 pb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="DBName">Nombre compañía</label>
+                        <input type="text" formControlName="DBName" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.DBName.errors && fCM.DBName.touched }" autofocus />
+                        <div *ngIf="fCM.DBName.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.DBName.errors.required">El nombre de la DB es requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="DBCode">Código base de datos</label>
+                        <input type="text" formControlName="DBCode" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.DBCode.errors && fCM.DBCode.touched }" />
+                        <div *ngIf="fCM.DBCode.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.DBCode.errors.required">El nombre de la DB es requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SAPConnectionId">Conexión SAP</label>
+                        <select formControlName="SAPConnectionId" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.SAPConnectionId.errors && fCM.SAPConnectionId.touched }">
+                            <option *ngFor="let conn of sapConnectionList" [value]="conn.Id">{{ conn.Server }}</option>
+                        </select>
+                        <div *ngIf="fCM.SAPConnectionId.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.SAPConnectionId.errors.required">La conexion a SAP es requerido</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="ExchangeRate">Tipo de cambio a utilizar</label>
+                        <select formControlName="ExchangeRate" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.ExchangeRate.errors && fCM.ExchangeRate.touched }">
+                            <option *ngFor="let rate of exchangeRateList" [value]="rate.Id">{{ rate.Name }}</option>
+                        </select>
+                        <div *ngIf="fCM.ExchangeRate.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.ExchangeRate.errors.required">El tipo de cambio a utilizar es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="ExchangeRateValue">Valor del tipo de cambio</label>
+                        <input type="number" formControlName="ExchangeRateValue" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.ExchangeRateValue.errors && fCM.ExchangeRateValue.touched }" />
+                        <div *ngIf="fCM.ExchangeRateValue.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.ExchangeRateValue.errors.required">El valor del tipo de cambio es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-8">
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label for="Active">Activa</label>
+                            </div>
+                            <label class="switch" ngbPopover="Indica si la compañía esta activa"
+                                triggers="mouseenter:mouseleave">
+                                <input type="checkbox" class="for" formControlName="Active"
+                                    [ngClass]="{ 'is-invalid': fCM.Active.errors }">
+                                <span class="slider rounded"></span>
+                            </label>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label for="Editable">P. editable</label>
+                            </div>
+                            <label class="switch" ngbPopover="Permite editar el precio de los productos en facturación"
+                                triggers="mouseenter:mouseleave">
+                                <input type="checkbox" formControlName="Editable">
+                                <span class="slider rounded"></span>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label for="Active">P. cero</label>
+                            </div>
+                            <label class="switch" ngbPopover="Permite facturar precio" triggers="mouseenter:mouseleave">
+                                <input type="checkbox" class="for" formControlName="hasZeroBilling"
+                                    [ngClass]="{ 'is-invalid': fCM.Active.errors }">
+                                <span class="slider rounded"></span>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label for="Active">Offline</label>
+                            </div>
+                            <label class="switch" ngbPopover="Habilita el uso de facturación offline"
+                                triggers="mouseenter:mouseleave">
+                                <input type="checkbox" class="for" formControlName="hasOfflineMode"
+                                    [ngClass]="{ 'is-invalid': fCM.Active.errors }" (change)="ChangeConnectiontype()">
+                                <span class="slider rounded"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="LogoPath">Logo</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event,1)" #fileInput>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Imagen" triggers="mouseenter:mouseleave" (click)="fileInput.click()">
+                            <i class="far fa-image"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{imgFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="BillItem">Facturación de ítems</label>
+                        <select formControlName="BillItem" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.BillItem.errors && fCM.BillItem.touched }">
+                            <option *ngFor="let bill of billItemList" [value]="bill.Id">{{ bill.Name }}</option>
+                        </select>
+                        <div *ngIf="fCM.BillItem.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.BillItem.errors.required">La facturacion de items es requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="maxAs0">Máximo precio a tratar</label>
+                        <input type="number" formControlName="maxAs0" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="ignoreWeight">Peso a ignorar</label>
+                        <input type="number" formControlName="ignoreWeight" class="form-control form-control-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form [formGroup]="settingModalPayment">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group ml-auto" style="margin-bottom: 0px;">
+                                            <label for="LineMode">Usa pinpad</label>
+                                        </div>
+                                        <label class="switch ml-auto" ngbPopover="Indica si compañía usa pinpad"
+                                            triggers="mouseenter:mouseleave">
+                                            <input type="checkbox" class="for" formControlName="Pinpad">
+                                            <span class="slider rounded"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group ml-auto" style="margin-bottom: 0px;">
+                                            <label for="LineMode">Cuenta efectivo requerida</label>
+                                        </div>
+                                        <label class="switch ml-auto" ngbPopover="Indica si aplica validación de ui para no permitir enviar pago sin cuenta"
+                                            triggers="mouseenter:mouseleave">
+                                            <input type="checkbox" class="for" formControlName="RequiredCashAccount">
+                                            <span class="slider rounded"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group ml-auto" style="margin-bottom: 0px;">
+                                            <label for="LineMode">Cuenta transferencia requerida</label>
+                                        </div>
+                                        <label class="switch ml-auto" ngbPopover="Indica si aplica validación de ui para no permitir enviar pago sin cuenta"
+                                            triggers="mouseenter:mouseleave">
+                                            <input type="checkbox" class="for" formControlName="RequiredTransferAccount">
+                                            <span class="slider rounded"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group ml-auto" style="margin-bottom: 0px;">
+                                            <label for="LineMode">Cuenta tarjeta requerida</label>
+                                        </div>
+                                        <label class="switch ml-auto" ngbPopover="Indica si aplica validación de ui para no permitir agregar tarjeta sin cuenta"
+                                            triggers="mouseenter:mouseleave">
+                                            <input type="checkbox" class="for" formControlName="RequiredCardAccount">
+                                            <span class="slider rounded"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Fecha válido hasta modal de pagos</label>
+
+                                        <input type="month" formControlName="CardValid"
+                                            class="form-control form-control-sm" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Tarjeta por defecto</label>
+
+                                        <input type="text" formControlName="CardNumber"
+                                            class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="HandleItem">Manejo de ítems</label>
+                        <select formControlName="HandleItem" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.HandleItem.errors && fCM.HandleItem.touched}">
+                            <option *ngFor="let hand of handleItemList" [value]="hand.Id">{{ hand.Name }}</option>
+                        </select>
+                        <div *ngIf="fCM.HandleItem.errors" class="invalid-feedback">
+                            <div *ngIf="fCM.HandleItem.errors.required">El manejo de items es requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Active">&nbsp;</label>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-info btn-block"
+                        ngbPopover="Muestra los márgenes a manejar por vista" triggers="mouseenter:mouseleave"
+                        (click)="openModal(margenContent)">
+                        &nbsp;<i class="fas fa-layer-group"></i> Márgenes
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Editable">&nbsp;</label>
+                    </div>
+                    <button type="button" (click)="openModal(raiseModalConfigOfflinePP)"
+                        class="btn btn-sm btn-info btn-block"><i class="fas fa-layer-group"></i>
+                        Configuración rutas offline pinpad</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Editable">&nbsp;</label>
+                    </div>
+                    <button type="button" (click)="openModal(raiseModalDefaultSN)"
+                        class="btn btn-sm btn-info btn-block"><i class="fas fa-layer-group"></i>
+                        Socios de negocios por defecto</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Editable">&nbsp;</label>
+                    </div>
+                    <button type="button" data-toggle="modal" data-target="#decimalsModal"
+                        class="btn btn-sm btn-info btn-block"><i class="fas fa-sliders-h"></i>
+                        Decimales</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Editable">&nbsp;</label>
+                    </div>
+                    <!-- <label class="switch" ngbPopover="Muestra los márgenes a manejar por vista" triggers="mouseenter:mouseleave">
+                                <a class="btn form-control form-control-sm btn-sm btn-info" style="color:aliceblue;cursor: pointer;" (click)="openModal(margenContent)">
+                                    &nbsp;<i class="fas fa-layer-group"></i></a>
+                            </label> -->
+                    <button type="button" (click)="openModal(raiseModalSettings)"
+                        class="btn btn-sm btn-info btn-block"><i class="fas fa-layer-group"></i>
+                        Configuración inventario</button>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Active">&nbsp;</label>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-info btn-block"
+                        ngbPopover="Muestra las configuraciones para las facturas en memoria"
+                        triggers="mouseenter:mouseleave" (click)="openModal(InvoiceConfigContent)">
+                        &nbsp;<i class="fas fa-layer-group"></i> Configuración facturas</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <a class="btn form-control form-control-sm btn-sm btn-info" style="color:aliceblue"
+                            (click)="openModal(content)">
+                            &nbsp;<i class="fas fa-layer-group"></i> Configuración de líneas </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ignoreWeight">&nbsp;</label>
+                        <button (click)="downloadData()" ngbPopover="Descargar información"
+                            triggers="mouseenter:mouseleave" type="button"
+                            class="btn form-control form-control-sm btn-sm btn-info" style="color:aliceblue"><i
+                                class="fas fa-cloud-download-alt"></i> Descargar información</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ignoreWeight">&nbsp;</label>
+                        <button (click)="uploadData()" ngbPopover="Subir información" triggers="mouseenter:mouseleave"
+                            type="button" class="btn form-control form-control-sm btn-sm btn-info"
+                            style="color:aliceblue"><i class="fas fa-cloud-upload-alt"></i> Subir información</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="Active">&nbsp;</label>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-info btn-block"
+                        ngbPopover="Muestra nombre objetos de bd" triggers="mouseenter:mouseleave"
+                        (click)="openModal(ModalDBOBJECT)">
+                        &nbsp;<i class="fas fa-layer-group"></i> Objetos BD
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn form-control form-control-sm btn-sm btn-info"
+                            style="color:aliceblue" (click)="raisePrintersModal()">
+                            &nbsp;<i class="fas fa-print"></i> Impresoras</button>
+                        <button style="display: none;" id="triggerModalPrintersList" type="button"
+                            class="btn btn-primary" data-toggle="modal" data-target="#modalPrintersList"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 001 Ventana modal para la configuracion de margenes-->
+
+            <ng-template #margenContent let-modal>
+
+                <div class="modal-header">
+                    <p class="modal-title" id="modal-basic-title"><b>Configuración de márgenes</b></p>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body-scrollable">
+                    <table class="table">
+                        <thead>
+                            <tr style="position: sticky; top:0; z-index: 1; text-align: left;">
+                                <th scope="col" style="width: 1%;">#</th>
+                                <th scope="col" style="width: 10%;">Codigo</th>
+                                <th scope="col" style="width: 10%;">Nombre de vista</th>
+                                <th scope="col" style="width: 5%;">Margen % </th>
+                            </tr>
+                        </thead>
+                        <tbody data-spy="scroll">
+                            <tr *ngFor="let item of ViewMargins; index as i" style="text-align: left;">
+                                <td scope="row">{{ i + 1 }}</td>
+                                <td>{{item.Name}}</td>
+                                <td>{{item.Description}}</td>
+                                <td><input class="form-control form-control-sm" min="0" max="100"
+                                        [(ngModel)]="item.Value" [ngModelOptions]="{standalone: true}" type="number">
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button (click)="SaveMargins()" class="btn btn-light btn-sm" ngbPopover="Guardar Márgenes"
+                        triggers="mouseenter:mouseleave"> <i class="fas fa-check"></i> Guardar Márgenes</button>
+                    <button type="button" class="btn btn-light btn-sm" (click)="close()"> <i class="fas fa-times"></i>
+                        Cancelar</button>
+                </div>
+
+            </ng-template>
+
+
+            <!--Fin modal margenes-->
+
+            <!-- Modal para configuracion de facturas-->
+            <ng-template #InvoiceConfigContent let-modal>
+
+                <div class="modal-header">
+                    <p class="modal-title" id="modal-basic-title"><b>Configuración de facturas en memoria</b></p>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body-scrollable m-2">
+                    <form [formGroup]="settingInvoice">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="memoryInvoiceName">Nombre del documento</label>
+                                        <input id="memoryInvoiceName" class="form-control form-control-sm" type="text"
+                                            formControlName="Name" placeholder="Name">
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <label for="memoryInvoiceQuantity">Cantidad máxima de facturas</label>
+                                        <input id="memoryInvoiceQuantity" class="form-control form-control-sm"
+                                            formControlName="Quantity" type="number" min="1" max="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button (click)="SaveMemoryInvoiceConfig()" style="cursor: pointer;"
+                        ngbPopover="Guardar Configuración de facturas" triggers="mouseenter:mouseleave"
+                        class="btn btn-light btn-sm"> <i class="fas fa-check"></i> Guardar</button>
+                    <button type="button" (click)="close()" style="cursor: pointer;" class="btn btn-light btn-sm"><i
+                            class="fas fa-times"></i> Cancelar</button>
+                </div>
+
+            </ng-template>
+
+
+            <!-- Inicio modal configuracion de lineas-->
+            <ng-template #content let-modal>
+                <div class="modal-header">
+                    <p class="modal-title" id="modal-basic-title"><b>Configuracíon de líneas</b></p>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body-scrollable tableFixHead">
+                    <table class="table">
+                        <thead>
+                            <tr style="position: sticky; top:0; z-index: 1; text-align: left;">
+                                <th scope="col" style="width: 1%;">#</th>
+                                <th scope="col" style="width: 5%;">Cod numeración</th>
+                                <th scope="col" style="width: 10%;">Nombre de vista</th>
+                                <th scope="col" style="width: 5%;">Agrupación línea</th>
+                                <th scope="col" style="width: 5%;">Órden línea</th>
+
+                            </tr>
+                        </thead>
+                        <tbody data-spy="scroll">
+                            <tr *ngFor="let view of viewGroupList; index as i" style="text-align: left;">
+                                <td scope="row">{{ i + 1 }}</td>
+                                <td>{{ view.CodNum }}</td>
+                                <td>{{ view.NameView }}</td>
+                                <td scope="col" width="230vw" class="invi">
+                                    <input type="checkbox" [checked]="view.isGroup" [(ngModel)]="view.isGroup"
+                                        [ngModelOptions]="{standalone: true}" triggers="mouseenter:mouseleave"
+                                        ngbPopover="Agrupaciones de Líneas en los documentos">
+                                </td>
+                                <td scope="col" width="230vw" class="invi">
+                                    <label class="checkbox mr-2"
+                                        ngbPopover="Indica si las líneas se agregarán al inicio o al final en los documentos. Órden de línea al {{view.LineMode ?'Final':'Inicio'}}."
+                                        triggers="mouseenter:mouseleave">
+                                        <input type="checkbox" class="for" [checked]="view.LineMode"
+                                            [(ngModel)]="view.LineMode" [ngModelOptions]="{standalone: true}"
+                                            [ngClass]="{ 'is-invalid': fCM.Active.errors }">
+
+                                    </label>
+                                    <!-- <label for="LineMode" >{{view.LineMode ?'Final':'Inicio'}}</label>                                   -->
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="SaveAgrupation()" class="btn btn-success  btn-sm" ngbPopover="Guardar Agrupaciones"
+                        triggers="mouseenter:mouseleave">Guardar agrupaciones</button>
+                    <button type="button" class="btn btn-danger  btn-sm" (click)="close()">Cancelar</button>
+                </div>
+            </ng-template>
+            <!-- Fin modal configuracion de lineas -->
+            <h5>Correo</h5>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="subject">Asunto</label>
+                        <input type="text" formControlName="subject" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.subject.errors }" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="from">Cuenta</label>
+                        <input type="text" formControlName="from" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.from.errors }" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="user">Usuario (posible igual a la cuenta)</label>
+                        <input type="text" formControlName="user" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.user.errors }" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="pass">Contraseña</label>
+                        <input type="password" formControlName="pass" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.pass.errors }" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="port">Puerto</label>
+                        <input type="number" formControlName="port" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.port.errors }" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Host">Host</label>
+                        <input type="text" formControlName="Host" class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': fCM.Host.errors }" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group" style="margin-bottom: 0px;">
+                        <label for="SSL">SSL</label>
+                        <!-- <input type="checkbox" formControlName="SSL" class="form-control" [ngClass]="{ 'is-invalid': fCM.SSL.errors }"> -->
+                    </div>
+                </div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" formControlName="SSL" [ngClass]="{ 'is-invalid': fCM.Active.errors }">
+                <span class="slider round"></span>
+            </label>
+
+            <!-- Se agregan y modifican los formatos de imprecion -->
+            <h5>Formatos de Impresión</h5>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Facturas</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 2)" #fileInput2>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(1, InvFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput2.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{InvFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Cotizaciones</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 3)" #fileInput3>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(2, QuoFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput3.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{QuoFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Inventario</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 4)" #fileInput4>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(3, InvenFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput4.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{InvenFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Cierre de caja</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 5)" #fileInput5>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(4, BalanceFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput5.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{BalanceFileName}}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Órden de ventas</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 6)" #fileInput6>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(5, SOFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput6.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{SOFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Factura pinpad</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 7)" #fileInput7>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(6, OinvPPFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput7.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{OinvPPFileName}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Facturas copia</label>
+                        <input style="display: none;" type="file" (change)="onFileSelected($event, 8)" #fileInput8>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Descargar archivo" triggers="mouseenter:mouseleave"
+                            (click)="downloadReportFile(7, OinvCopyFileName)">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default blockContent right inline-button"
+                            ngbPopover="Adjuntar Formato" triggers="mouseenter:mouseleave" (click)="fileInput8.click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <input class="form-control form-control-sm" type="text" disabled value="{{OinvCopyFileName}}">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="decimalsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Configuración decimales</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="decimalsForm">
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-sm-8 col-form-label">Cant decimales precio: </label>
+                            <div class="col-sm-4">
+                                <input formControlName="price" type="number" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-8 col-form-label">Cant decimales total
+                                línea</label>
+                            <div class="col-sm-4">
+                                <input formControlName="totalLine" type="number" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-8 col-form-label">Cant decimales total
+                                documento</label>
+                            <div class="col-sm-4">
+                                <input formControlName="totalDocument" type="number"
+                                    class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button> -->
+                    <button [disabled]="decimalsForm.invalid" type="button" class="btn btn-light btn-sm"
+                        data-dismiss="modal" (click)="raiseAlertToSave()"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalPrintersList" tabindex="-1" role="dialog" aria-labelledby="modalPrintersListTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Lista de impresoras</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" class="text-left">Nombre impresora</th>
+                                <th scope="col" class="text-right">Favorita</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let printer of printersList; index as i">
+                                <td scope="row">{{i}}</td>
+                                <td class="text-left">{{printer.DisplayName}}</td>
+                                <td class="text-right">
+
+                                    <input type="radio" [checked]="printer.IsDefault" (change)="printer.IsDefault"
+                                        (click)="setDefaultPrinter(i)" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" data-dismiss="modal"
+                        (click)="raiseAlertToSave()"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Settings -->
+    <ng-template #raiseModalSettings let-modal>
+
+        <div class="modal-header">
+            <p class="modal-title" id="modal-basic-title"><b>Configuración ajuste de inventario</b></p>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="m-2 modal-body-scrollable">
+            <form [formGroup]="settingInventory">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="comments">Comentarios</label>
+                                <input id="comments" formControlName="Comments" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="GoodsReceiptAccount">Nombre cuenta</label>
+                                <input id="GoodsReceiptAccount" formControlName="GoodsReceiptAccount" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="SaveSettingsInventory()" type="button" title="Guardar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-check"></i> Guardar</button>
+            <button (click)="close()" type="button" title="Cancelar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-times"></i> Cancelar</button>
+        </div>
+
+    </ng-template>
+    <!-- Final Modal Settings -->
+
+    <!-- Final Modal DBOBJECT -->
+
+    <ng-template #ModalDBOBJECT let-modal>
+
+        <div class="modal-header">
+            <p class="modal-title" id="modal-basic-title"><b>Configuración nombre objetos</b></p>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="m-2 modal-body-scrollable tableFixHead">
+            <table class="table">
+                <thead>
+                    <tr style="position: sticky; top:0; z-index: 1; text-align: left;">
+                        <th scope="col" style="width: 1%; font-weight: 400;">#</th>
+                        <!-- <th scope="col" style="width: 10%; font-weight: 400;">Nombre</th> -->
+                        <th scope="col" style="width: 10%; font-weight: 400;">Descripción</th>
+                        <th scope="col" style="width: 20%; font-weight: 400;">Nombre objeto de bases de datos</th>
+                    </tr>
+                </thead>
+                <tbody data-spy="scroll">
+                    <tr *ngFor="let obj of DbObjectNames; index as i" style="text-align: left;">
+                        <td scope="row">{{ i + 1 }}</td>
+                        <!-- <td>{{ obj.Name }}</td> -->
+                        <td>{{ obj.Description }}</td>
+                        <td scope="col" width="230vw" class="invi">
+                            <input type="text" [(ngModel)]="obj.DbObject" [ngModelOptions]="{standalone: true}"
+                                class="form-control form-control-sm">
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button (click)="UpdateDbObjectNames()" type="button" title="Guardar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-check"></i> Guardar</button>
+            <button (click)="closeDbObjectName()" type="button" title="Cancelar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-times"></i> Cancelar</button>
+        </div>
+
+    </ng-template>
+    <!-- Final Modal DBOBJECT -->
+
+    <!--  Modal SOCIOS POR DEFECTO EN DOCUMENTS -->
+    <ng-template #raiseModalDefaultSN let-modal>
+        <div class="modal-header">
+            <p class="modal-title" id="modal-basic-title"><b>Configuración socios de negocios</b></p>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="m-2 modal-body-scrollable">
+            <form [formGroup]="settingDefaultSN">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Socio negocio ventas</label>
+                                <input formControlName="DefaultBussinesPartnerCustomer" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Socio negocio compras</label>
+                                <input formControlName="DefaultBussinesPartnerSupplier" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="SaveSettingsDefaultSN()" type="button" title="Guardar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-check"></i> Guardar</button>
+            <button (click)="close()" type="button" title="Cancelar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-times"></i> Cancelar</button>
+        </div>
+
+    </ng-template>
+    <!-- Final Modal SOCIOS POR DEFECTO EN DOCUMENTS -->
+    <!--Modal configurar direcciones de offline y/o pinpad -->
+    <ng-template #raiseModalConfigOfflinePP let-modal>
+        <div class="modal-header">
+            <p class="modal-title" id="modal-basic-title"><b>Configuración direcciones offline</b></p>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="m-2 modal-body-scrollable">
+            <form [formGroup]="settingOfflinePP">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Puerto servicio local</label>
+                                <input formControlName="RouteOfflineUrl" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Puerto servicio pinpad</label>
+                                <input formControlName="RoutePinpadUrl" type="text"
+                                    class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="SaveSettingsOfflinePP()" type="button" title="Guardar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-check"></i> Guardar</button>
+            <button (click)="close()" type="button" title="Cancelar" style="cursor: pointer;"
+                class="btn btn-light btn-sm">
+                <i class="fas fa-times"></i> Cancelar</button>
+        </div>
+
+    </ng-template>
+    <!-- Final Modal configurar direcciones de offline y/o pinpad -->
+
+</block-ui>

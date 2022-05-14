@@ -1,0 +1,69 @@
+<block-ui>
+    <div class="row h-100 w-100" style="padding-right: 50px;">
+        <div class="col-sm-12 my-auto">            
+            <div style="text-align: center"> 
+                <div class="login-page text-center ml-auto mr-auto" *ngIf="isLogin && !forgotPwsd">
+                    <div class="form">
+                        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+                            <div id="main"> 
+                                <div class="mb-1">
+                                    <span class="flux-brand-logo">
+                                        <div class="ema-logo"></div>   
+                                    </span>                                   
+                              </div>
+                                <div class="form-group">
+                                    <label for="email">Usuario</label>
+                                    <input type="text" formControlName="email" class="form-control form-control-sm"
+                                        [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+                                        [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)"
+                                        (click)="click$.next($any($event).target.value)" [inputFormatter]="formatter"
+                                        [resultFormatter]="formatter" #instance="ngbTypeahead" />
+                                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                        <div *ngIf="f.email.errors.required">El usuario es requerido</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Contraseña</label>
+                                <input type="password" formControlName="password" class="form-control form-control-sm"
+                                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                                    <div *ngIf="f.password.errors.required">La contraseña es requerida</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group"> 
+
+                                <div class="mr-1" style="float:left;width: 8%; margin:0!important;">
+                                    <input class="form-control form-control checkbox" type="checkbox"
+                                        formControlName="hasOfflineMode"/>
+                                </div>
+
+                                <div class="ml-2" style="float:left;width: 80%;margin-top: 8px !important;">
+                                    <label style="float: left;">Iniciar sesión offline</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button [disabled]="loading" class="btn btn-primary btn-sm">
+                                    <span *ngIf="!loading">Login</span>
+                                    <img *ngIf="loading" class="text-center"
+                                        src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </button>
+
+                                <br>
+                                <br>
+                                <p>
+                                    <strong>&copy; {{ annio }} Clavis Consultores S.A.</strong><br>
+                                    <strong>v2.6.0</strong>
+                                </p>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block-ui>

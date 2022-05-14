@@ -1,0 +1,74 @@
+<block-ui>
+  <div *ngIf="permisos">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="float-right ml-1">
+                  <!--<input type="submit" id="btnSendInfo" class=" btn btn-primary btn-success" value="<i class="fas fa-search" aria-hidden="true"></i> Buscar" />-->
+                  <button class="btn btn-primary btn-sm button-action" form="buscar" type="submit"><i class="fas fa-search"></i>&nbsp;Buscar</button>
+                  <!-- <a class="btn btn-primary btn-md button-action" (click)="submit()" >
+        <i class="fas fa-search" aria-hidden="true"></i>&nbsp;Buscar</a>  -->
+              </div>
+          </div>
+      </div>
+      <form (ngSubmit)="getPPTransactionsCanceled()" id="buscar" [formGroup]="TransactionCanceledCopy">
+          <div class="row">
+             
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="UserPrefix">Usuario </label>
+                      <input type="text" formControlName="UserPrefix" class="form-control form-control-sm" />
+                  </div>  
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="FechaIni">Fecha inicial</label>
+                      <input type="date" formControlName="FechaIni" class="form-control form-control-sm" />
+                  </div>
+              </div>    
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="FechaFin">Fecha final</label>
+                      <input type="date" formControlName="FechaFin" class="form-control form-control-sm" />
+                  </div>
+              </div>             
+          </div>
+      </form>   
+      <div class="row container-fluid  contenidoFacturacion ml-1 mr-1">
+          <div class="col-md-12 pl-0 pr-0">
+              <table class="TableFacturacion invi" id="tbEnabled">
+                  <thead>
+                      <tr>
+                          <th width="5%" class="thHeader" scope="col">&nbsp;&nbsp;Id</th>
+                          <th width="20%"class="thHeader"  scope="col">Usuario </th>  
+                          <th width="20%" class="thHeader" scope="col">Num transacción </th>
+                          <th width="20%" class="thHeader" scope="col">Num referencia </th> 
+                          <th width="20%" class="thHeader" scope="col">Num autorización </th> 
+                          <th width="35%" class="thHeader" scope="col">Fecha </th>                        
+                          <th width="20%"class="thHeader"  scope="col">Monto </th>                       
+                          <th width="20%" class="thHeader" scope="col">Terminal</th>
+                          <th width="1%" class="thHeader" scope="col">Opciones&nbsp;&nbsp;</th>
+                      </tr>
+                  </thead>
+                  <tbody style="width: 100%;">
+                      <tr scope="row" *ngFor="let inv of PPTransactionsCanceled" class="invi">
+                          <td>&nbsp;{{inv.Id}}</td>
+                          <td>{{inv.UserPrefix}}</td>  
+                          <td>{{inv.TransactionId}}</td>
+                          <td>{{inv.ReferenceNumber}}</td>  
+                          <td>{{inv.AuthorizationNumber}}</td>  
+                          <td>{{inv.CreationDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>                      
+                          <td>{{inv.Amount | number:'.2-2'}}</td>                      
+                          <td><span> {{NameTerminal(inv.TerminalId)}}</span></td>  
+                          <td>  
+                              <span style="cursor: pointer" class="fa fa-print icono" (click)="printPPTransactionCanceled(inv)"></span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+  <div *ngIf="!permisos">
+      <h2>No se tienen permisos para acceder a esta página</h2>
+  </div>
+</block-ui>
