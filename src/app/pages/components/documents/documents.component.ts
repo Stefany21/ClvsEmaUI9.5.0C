@@ -755,9 +755,10 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
         this.itemsList = [];
         this.baseLines = next.Data.DocumentLines;
         this.saleDocumentModel = next.Data;
-
+          
 
         setTimeout(() => {
+          
           this.documentForm.patchValue({
             PayTerms: this.saleDocumentModel.PaymentGroupCode,
             // BillOverdue: this.saleOrder.U_FacturaVencida === 'SI' ? '0' : '1',
@@ -770,7 +771,7 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
             Comment: this.saleDocumentModel.Comments
           });
         }, 500);
-
+        
         // if (this.bpList.length > 0) {
         //   const CUSTOMER = this.bpList.find(x => x.CardCode === this.saleDocumentModel.CardCode);
         //   if (CUSTOMER) this.priceList = CUSTOMER.ListNum;
@@ -1138,7 +1139,7 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
     // }
     this.isBilling = true;
     this.flagForm = true;
-    this.ppbackup = payment; 
+    this.ppbackup = payment;
     this.documentService.CreateInvoice(this.CreateInvoiceDocument(payment))
       .subscribe((data: any) => {
         this.blockUI.stop();
@@ -1262,7 +1263,7 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
       let printTags = '';
       for (let c = 0; c < MOBJECT.length; c++) {
         printTags += (MOBJECT[c] + ',');
-      }  
+      }
       printTags = printTags.slice(0, -1);
       const I_PP_TRANSACTION = {
         TerminalCode: this.pinPadCards[0].Terminal.TerminalId,
@@ -1534,7 +1535,7 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
 
       let item = {
         ItemCode: line.ItemCode.split('-')[0].trim(),
-        DiscountPercent: line.DiscountPercent,
+        DiscountPercent: line.DiscountPercent, 
         Quantity: line.Quantity,
         TaxCode: line.TaxCode,
         TaxRate: line.TaxRate,
@@ -3479,57 +3480,87 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
 
   IS() {
     return (text$: Observable<string>) =>
-      text$.pipe(
-        debounceTime(15),
-        distinctUntilChanged(),
-        map(term => term.length < 1 ? []
-          : this.itemsTypeaheadList.filter(v => {
-
-            let a = v.toLowerCase();
-
-            const stringSize = a.length;
-
-            const t = term.toLowerCase();
-
-            if (this.itemsTypeaheadList.find(r => r === t)) return true;
-
-            const b = t.split('*').filter(x => x !== '');
-
-            const size = b.length;
-
-            let isSorted = true;
-
-            if (size > 1) {
-
-              let indexes = [];
-
-              for (let c = 0; c < size; c++) {
-                b[c] = b[c].replace(' ', '');
-                let ii = a.indexOf(b[c]);
-                if (ii > -1) {
-                  ii++;
-                  a = a.slice(ii, stringSize);
-                  if (indexes.length > 0) indexes.push(indexes[indexes.length - 1] + ii);
-                  else indexes.push(ii);
-                }
-              }
-
-              let sizeIndexes = indexes.length;
-
-              if (sizeIndexes === size) {
-                for (let c = 0; c < sizeIndexes - 1; c++) {
-                  if (indexes[c] > indexes[c + 1]) {
-                    isSorted = false;
-                    c = sizeIndexes;
-                  }
-                }
-                return isSorted;
-              }
-            }
-            return v.toLowerCase().indexOf(term.toLowerCase()) > -1;
-          }).sort((x, y) => x.toLowerCase().indexOf(term.toLowerCase()) - y.toLowerCase().indexOf(term.toLowerCase())).slice(0, 50))
-      );
-  }
+    text$.pipe(
+    debounceTime(15),
+    distinctUntilChanged(),
+    map(term => term.length < 1 ? []
+    : this.itemsTypeaheadList.filter(v => {
+    
+    
+    
+    if (term.indexOf('*') == -1) {
+    return v.toLowerCase().indexOf(term.toLowerCase()) > -1;
+    }
+    
+    
+    
+    let a = v.toLowerCase();
+    
+    
+    
+    const stringSize = a.length;
+    
+    
+    
+    const t = term.toLowerCase();
+    
+    
+    
+    // if (this.itemsTypeaheadList.find(r => r === t)) return true;
+    
+    
+    
+    const b = t.split('*').filter(x => x !== '');
+    
+    
+    
+    const size = b.length;
+    
+    
+    
+    let isSorted = true;
+    
+    
+    
+    if (size > 1) {
+    
+    
+    
+    let indexes = [];
+    
+    
+    
+    for (let c = 0; c < size; c++) {
+    b[c] = b[c].replace(' ', '');
+    let ii = a.indexOf(b[c]);
+    if (ii > -1) {
+    ii++;
+    a = a.slice(ii, stringSize);
+    if (indexes.length > 0) indexes.push(indexes[indexes.length - 1] + ii);
+    else indexes.push(ii);
+    }
+    }
+    
+    
+    
+    let sizeIndexes = indexes.length;
+    
+    
+    
+    if (sizeIndexes === size) {
+    for (let c = 0; c < sizeIndexes - 1; c++) {
+    if (indexes[c] > indexes[c + 1]) {
+    isSorted = false;
+    c = sizeIndexes;
+    }
+    }
+    return isSorted;
+    }
+    }
+    return v.toLowerCase().indexOf(term.toLowerCase()) > -1;
+    }).sort((x, y) => x.toLowerCase().indexOf(term.toLowerCase()) - y.toLowerCase().indexOf(term.toLowerCase())).slice(0, 50))
+    );
+    }
   cantChange() {
     if (this.Cant.value < 1) {
       this.Cant.setValue(1);
@@ -3558,6 +3589,7 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
         if (this.PriceList && this.PriceList.length > 0) {
           this.currencyPayment = this.userCurrency;
           // this.priceList = customer[0].ListNum;
+
           this.userCurrency = this.PriceList.find(x => x.ListNum == customer[0].ListNum)!.PrimCurr;
         }
 
@@ -3576,7 +3608,13 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
             }
           }
         }
-        this.userCurrency = this.PriceList.find(x => x.ListNum == customer[0].ListNum)!.PrimCurr;
+        const DOC_ENTRY = this.storage.GetDocEntry();
+
+        if (DOC_ENTRY > 0 && this.saleDocumentModel) {  
+          this.userCurrency = this.saleDocumentModel.DocCurrency;          
+        } else {  
+          this.userCurrency = this.PriceList.find(x => x.ListNum == customer[0].ListNum)!.PrimCurr;
+        }
         this.currencyPayment = this.userCurrency;
 
         let nombre = "Contado";
@@ -4516,5 +4554,6 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
     }
   }
   //#endregion
+
 
 }

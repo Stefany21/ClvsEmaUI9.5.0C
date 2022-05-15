@@ -42,7 +42,11 @@ const printJS = require("print-js");
 export class IncomingPaymentComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
-
+  requiredCardAccount: string;
+  requiredCashAccount: string;
+  requiredTransferAccount: string;
+  defaultCardNumber: string;
+  isAllowedToEditCardNumber: boolean;
   fecha: Date; // fecha actual
 
   searchForm: FormGroup; // formulario para la busqueda de pagos
@@ -1051,12 +1055,16 @@ export class IncomingPaymentComponent implements OnInit {
       InvoiceInfo: InvoiceInfo,
       PinpadInfo: {
         PreDocument: this.GeneratePreInvoiceForPPPayment() // Documento que se requiere por el BAC para pp
-      },
+      }, 
       OnFail: {
         IsFail: this.IsPaymentFail,
         DataForFail: this.PaymentFail
       },
-      CardValid : this.DefaultCardValid
+      CardValid : this.DefaultCardValid,
+      DefaultCardNumber: this.defaultCardNumber,
+      RequiredCashAccount: this.requiredCashAccount,
+      RequiredTransferAccount: this.requiredTransferAccount,
+      RequiredCardAccount: this.requiredCardAccount
     };
 
     return requiredDataForPay;
@@ -1099,6 +1107,10 @@ export class IncomingPaymentComponent implements OnInit {
       if (response.Result) {
         let result = JSON.parse(response.Data.Json);
         this.DefaultCardValid = result.CardValid;
+        this.defaultCardNumber = result.CardNumber;
+        this.requiredCashAccount = result.RequiredCashAccount;
+        this.requiredTransferAccount = result.RequiredTransferAccount;
+        this.requiredCardAccount = result.RequiredCardAccount
       } else {
         this.alertService.errorAlert('Ocurrió un error obteniendo configuración de pagos ' + response.Error.Message);
       }
