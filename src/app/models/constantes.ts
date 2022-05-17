@@ -69,7 +69,7 @@ export class AppConstants {
 
     }
 
-    static getOnLine(): string { return this.GetTarget('ct'); }                        
+    static getOnLine(): string { return this.GetTarget('su'); }                             
   
 
     static getTokenPadron(): string { return 'https://padronapi.clavisco.com/'; }

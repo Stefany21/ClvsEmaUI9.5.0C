@@ -685,7 +685,7 @@ export class PaymentComponent implements OnInit {
       this.isRequestinBacPayment = false;
       return;
     }
-    const AMOUNT = +this.creditCardForm.value.CreditSum;
+    const AMOUNT = +this.creditCardForm.value.CreditSum; 
 
     if (AMOUNT <= 0) {
       this.alertService.infoInfoAlert(`El monto a cobrar debe ser superior a 0`);

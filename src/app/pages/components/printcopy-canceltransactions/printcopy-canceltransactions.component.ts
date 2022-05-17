@@ -175,9 +175,9 @@ export class PrintcopyCanceltransactionsComponent implements OnInit {
         this.blockUI.stop();
         if (data.Result) {
           this.PPTransactionsCanceled = data.PPTransactions;
-          this.PPTransactionsCanceled.forEach((x)=>{   
-            x.Amount = x.Amount.toString().slice(0, -2) + '.' + (x.Amount.toString()).slice(x.Amount.toString().length-2);;
-          });           
+          // this.PPTransactionsCanceled.forEach((x)=>{   
+          //   x.Amount = x.Amount.toString().slice(0, -2) + '.' + (x.Amount.toString()).slice(x.Amount.toString().length-2);;
+          // });           
         } else {
           this.alertService.infoInfoAlert('No se encontraron transacciones dentro de estos parámetros de búsqueda') 
         }
