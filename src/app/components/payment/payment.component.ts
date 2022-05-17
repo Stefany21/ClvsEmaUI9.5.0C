@@ -454,7 +454,8 @@ export class PaymentComponent implements OnInit {
     _pPTransaction.Amount = stringedAmount.substring(-1, stringedAmount.length - 2) + '.' + stringedAmount.substring(stringedAmount.length - 2);
 
     // _pPTransaction.Amount = +(+_pPTransaction.Amount).toFixed(2);
-    _pPTransaction.CreationDate = DAYS + ' / ' + MONTHS + ' / ' + YEAR;
+    // _pPTransaction.CreationDate = DAYS + ' / ' + MONTHS + ' / ' + YEAR;    
+    _pPTransaction.CreationDate = formatDate(_pPTransaction.CreationDate, 'yyyy-MM-dd', 'en'); 
     this.blockUI.start('Procesando, espere por favor');
 
     this.reportsService.PrintVoucher(_pPTransaction).pipe(finalize(() => this.blockUI.stop())).subscribe(data => {
