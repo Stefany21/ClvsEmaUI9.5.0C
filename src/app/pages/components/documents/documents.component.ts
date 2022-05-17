@@ -1448,9 +1448,28 @@ export class DocumentsComponent implements OnInit, OnDestroy, AfterViewInit, DoC
     }
 
 
-    if (this.documentForm.invalid && this.isEditable) {
+    // if (this.documentForm.invalid && this.isEditable) {
+    //   this.isOnSubmit = false;
+    //   this.alertService.infoAlert("No es permitido cambiar el nombre a clientes de crédito");
+    //   return;
+    // }
+
+    let bpCode = this.documentForm.get('cardCode').value;
+    let bpName = this.documentForm.get('cardName').value;
+
+    if ((this.bpList.find(bp => bp.CardCode === bpCode).CardName !== bpName) && this.isEditable) {
       this.isOnSubmit = false;
-      this.alertService.infoAlert("No es permitido cambiar el nombre a clientes de crédito");
+      this.alertService.infoAlert(
+        "No es permitido cambiar el nombre a clientes de crédito"
+      );
+      return; 
+    }
+
+    if (this.documentForm.invalid) {
+      this.isOnSubmit = false;
+      this.alertService.infoAlert(
+        "Debe haber seleccionado tipo factura, cliente, término de pago"
+      );
       return;
     }
 
